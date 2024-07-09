@@ -12,12 +12,15 @@ npm-debug.log*
 
 # Dependencies
 node_modules/
+/node_modules
+/.pnp
+.pnp.js
 
 # Coverage
 coverage
 
 # Transpiled files
-build/
+dist/
 
 # VS Code
 .vscode

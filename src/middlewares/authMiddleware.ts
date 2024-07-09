@@ -1,8 +1,7 @@
 // src/middleware/jwtMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-
-const Secret = process.env.SECRET_KEY; // You should store this in an environment variable
+import config from '../config/config';
 
 interface CustomRequest extends Request {
   user?: string | object;
@@ -16,7 +15,7 @@ const authenticationMiddleware = (req: CustomRequest, res: Response, next: NextF
   }
 
   try {
-    const decoded = jwt.verify(token, Secret);
+    const decoded = jwt.verify(token, config.JWT_KEY);
     req.user = decoded;
     next();
   } catch (error) {
