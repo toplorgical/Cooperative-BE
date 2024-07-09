@@ -29,6 +29,13 @@ const User = dbClient.sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    accountNumber: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        const _this: any = this;
+        return _this.id;
+      },
+    },
     personalDetails: {
       type: DataTypes.TEXT,
       get() {
@@ -93,13 +100,11 @@ const User = dbClient.sequelize.define(
 
 dbClient.sequelize
   .sync()
-  .then(async() =>{
-    console.log("users table")
+  .then(async () => {
+    console.log("users table");
     const sequenceName = `users_id_seq`;
     await dbClient.sequelize.query(`SELECT setval('${sequenceName}', 3398987, false);`);
-
-  }
-    )
+  })
   .catch((error) => console.error(error));
 
 export default User;
