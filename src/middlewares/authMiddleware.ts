@@ -1,17 +1,17 @@
 // src/middleware/jwtMiddleware.ts
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import config from '../config/config';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import config from "../config/config";
 
 interface CustomRequest extends Request {
   user?: string | object;
 }
 
 const authenticationMiddleware = (req: CustomRequest, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+  const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return res.status(401).send({ error: 'No token provided.' });
+    return res.status(401).send({ error: "No token provided." });
   }
 
   try {
@@ -19,7 +19,7 @@ const authenticationMiddleware = (req: CustomRequest, res: Response, next: NextF
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).send({ error: 'Invalid token.' });
+    res.status(401).send({ error: "Invalid token." });
   }
 };
 
