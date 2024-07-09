@@ -25,22 +25,20 @@ class UserService {
     if (error){
       throw new ValidationError(error, 400)
     }
-    const user = await UserRepository.findOne({phone : data.phone} as UserProps);
+    let user = await UserRepository.findOne({phone : data.phone} as UserProps);
     if (!user){
       throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400)
     }
     const isPasswordCorrect = await comparePassword(data.password, user.password)
     if (!isPasswordCorrect){
       throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400)
-      
-
+    
     }
 
-    return {}
+    user = _.omit(user, ["password"]) as UserProps;
+    return { user };
+
 
   }
-  
-
 }
-
 export default UserService;
