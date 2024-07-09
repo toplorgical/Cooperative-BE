@@ -12,11 +12,8 @@ export const comparePassword = async (password: string, hashed: string) => {
   return await bcrypt.compare(password, hashed);
 };
 
-export const generateToken = (
-  userId: number,
-  expiresIn: "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d"
-) => {
-  return jwt.sign({ id: userId }, config.JWT_KEY, { expiresIn });
+export const generateToken = (data: any, expiresIn: "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d") => {
+  return jwt.sign({ data }, config.JWT_KEY, { expiresIn });
 };
 
 export function verifyToken(token: string) {

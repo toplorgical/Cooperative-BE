@@ -9,7 +9,7 @@ class UserController {
     const data = req.body as UserProps;
     const result = await UserService.signup(data);
 
-    const token = generateToken(result.user.id, "7d");
+    const token = generateToken(result.user, "7d");
     res.header("Authorization", "Bearer " + token);
     ResponseManager.success(res, result.user, 201);
   }
