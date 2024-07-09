@@ -18,7 +18,8 @@ class UserController {
   static async signin(req : Request, res : Response){
     const data = req.body as UserProps;
     const user = await UserService.sigin(data) 
-    ResponseManager.success(res, user, 200);
+    const token: string = generateToken(user, "7d")  ;
+    ResponseManager.success(res, {user :user.user, token}, 200);
 
   }
 }
