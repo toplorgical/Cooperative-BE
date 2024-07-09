@@ -88,15 +88,14 @@ const User = dbClient.sequelize.define(
       allowNull: false,
     },
   },
-  { timestamps: true, initialAutoIncrement: "3398987" }
+  { timestamps: true,  }
 );
 
 dbClient.sequelize
   .sync()
   .then(async() =>{
-    console.log("users table")
     const sequenceName = `users_id_seq`;
-    await dbClient.sequelize.query(`SELECT setval('${sequenceName}', 3398987, false);`);
+    await dbClient.sequelize.query(`SELECT setval('${sequenceName}', 1040010100, false);`);
 
   }
     )
