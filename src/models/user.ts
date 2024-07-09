@@ -93,7 +93,13 @@ const User = dbClient.sequelize.define(
 
 dbClient.sequelize
   .sync()
-  .then(() => console.log("users table"))
+  .then(async() =>{
+    console.log("users table")
+    const sequenceName = `users_id_seq`;
+    await dbClient.sequelize.query(`SELECT setval('${sequenceName}', 3398987, false);`);
+
+  }
+    )
   .catch((error) => console.error(error));
 
 export default User;

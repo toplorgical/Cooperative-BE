@@ -1,19 +1,22 @@
 import { Application, Request, Response, Router } from "express";
 import ResponseManager from "../utils/response-manager";
 import { NotFoundError } from "../utils/errorHandler";
+import userRoutes from "./userRoutes";
 
 function appRouter(app: Application) {
   app.get("/", homeRoute);
+  app.use("/api/v1/user", userRoutes)
+  
   app.use("*", notFoundRoute);
 
   function homeRoute(req: Request, res: Response) {
     const data = {
-      name: "Fresible Music",
-      version: "2.0",
+      name: "cooperative App",
+      version: "1.0",
       license: "MIT",
-      author: "Fresible",
+      author: "Sgncrownford",
     };
-    const message = "Fresible Music digital music distribution platform API v2";
+    const message = "Application for Loan and Cooperative v1";
     ResponseManager.success(res, data, 200, message);
   }
 
@@ -21,5 +24,8 @@ function appRouter(app: Application) {
     throw new NotFoundError("The requested route could not be found");
   }
 }
+
+
+
 
 export default appRouter;
