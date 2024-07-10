@@ -3,7 +3,7 @@ import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
 import { UserProps, VerificationProps } from "../types";
-import { hashPassword, comparePassword, generateOtp, isValidPhone } from "../utils";
+import { hashPassword, comparePassword, generateOtp, isValidPhone, generateToken } from "../utils";
 import { ApplicationError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
@@ -63,16 +63,23 @@ class UserService {
       expiresAt: moment().add(10, "minutes").format("YYYY-MM-DD HH:mm:ss"),
     };
     const message = smsResponse.message.replace("code", code);
-    const verificationRepo = await VerificationRepository.create(optInfo);
+    await VerificationRepository.create(optInfo);
 
     const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps);
     if (sendSms.status === "success") return { data: sendSms.response };
     else throw new ApplicationError(RESPONSE.SMS_FAILED);
   }
 
-  static async forgotPassword(data: UserProps, user: UserProps) {
+  static async forgotPassword(data: UserProps) {
     if (!isValidPhone(data.phone)) throw new ValidationError(RESPONSE.INVALID_PHONE, 400);
+
+    const user = await UserRepository.findOne({ phone: data.phone });
+    if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
+
+    const token = generateToken({ userId: user.id }, "10m");
     await UserService.requestOTP(user);
+
+    return { token };
   }
   static async resetPassword(req: Request, res: Response) {}
 }

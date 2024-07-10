@@ -13,7 +13,10 @@ export const comparePassword = async (password: string, hashed: string) => {
   return await bcrypt.compare(password, hashed);
 };
 
-export const generateToken = (data: any, expiresIn: "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d") => {
+export const generateToken = (
+  data: any,
+  expiresIn: "10m" | "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d"
+) => {
   return jwt.sign({ data }, config.JWT_KEY, { expiresIn });
 };
 

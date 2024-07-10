@@ -24,7 +24,7 @@ class UserController {
 
   static async requestOTP(req: Request, res: Response) {
     const data = req.body as UserProps;
-    const otpResponse = await UserService.requestOTP(data)
+    const otpResponse = await UserService.requestOTP(data);
     ResponseManager.success(res, null, 200, otpResponse.data);
   }
   static async verifyOTP(req: any, res: Response) {
@@ -33,8 +33,8 @@ class UserController {
     ResponseManager.success(res, null, 200, result.message);
   }
   static async forgotPassword(req: any, res: Response) {
-    const user = req.user as UserProps;
-    const result = await UserService.forgotPassword(req.body, user);
+    const result = await UserService.forgotPassword(req.body);
+    ResponseManager.success(res, result, 200);
   }
   static async resetPassword(req: Request, res: Response) {}
 }

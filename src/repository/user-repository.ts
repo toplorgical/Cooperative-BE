@@ -13,7 +13,7 @@ class UserRepository {
   static async findByPk(id: number) {
     return await User.findByPk(id);
   }
-  static async findOne(query: UserProps) {
+  static async findOne(query: Partial<UserProps>) {
     const where = {} as UserProps;
     if (query.isActive) where.isActive = query.isActive;
     if (query.isBanned) where.isBanned = query.isBanned;
