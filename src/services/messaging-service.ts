@@ -17,7 +17,8 @@ class MessagingService {
     data.type = "plain";
     data.channel = "generic";
 
-    await axios.post(config.TERMII.URL, data);
+    const { data: response } = await axios.post(config.TERMII.URL, data);
+    console.log("MESSAGE SENT::", response);
   }
 }
 

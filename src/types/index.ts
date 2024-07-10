@@ -41,17 +41,9 @@ export interface UserQueryProps extends UserProps {
   limit: string;
 }
 
-
-
-export interface VerificationPros {
-  id : number;
-  code : number;
-  userId : number;
+export type VerificationProps = {
+  id: number;
+  code: number;
+  userId: number;
   createdAt?: Date;
-  
-
-}
-
-
- 
- 
+};
