@@ -20,6 +20,10 @@ export function verifyToken(token: string) {
   return jwt.verify(token, config.JWT_KEY) as { id: string | number };
 }
 
+export function isValidPhone(phone: string) {
+  return true;
+}
+
 export const cookieProperties = {
   httpOnly: true,
   secure: true,
@@ -38,12 +42,10 @@ export const maxAge = {
   "90d": 1000 * 60 * 60 * 24 * 90,
 };
 
-
-
-export const generateOtp = (length : number)=>{
-  let digits = '';
+export const generateOtp = (length: number) => {
+  let digits = "";
   for (let i = 0; i < length; i++) {
-    digits += Math.floor(Math.random() * 10)
+    digits += Math.floor(Math.random() * 10);
   }
   return digits;
-}
+};
