@@ -18,7 +18,7 @@ class UserController {
     const data = req.body as UserProps;
     const result = await UserService.sigin(data);
     const token: string = generateToken(result, "7d");
-    ResponseManager.success(res, { user: result.user, token }, 200);
+    ResponseManager.success(res,  token, 200);
   }
   static async requestOTP(req: Request, res: Response) {}
   static async verification(req: Request, res: Response) {}

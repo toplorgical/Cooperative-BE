@@ -40,3 +40,14 @@ export interface UserQueryProps extends UserProps {
   page: string;
   limit: string;
 }
+
+
+
+export interface VerificationPros {
+  id : number;
+  code : number,
+  userId : number;
+  expiresAt : string
+  
+
+}
