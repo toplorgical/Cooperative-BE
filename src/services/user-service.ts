@@ -83,7 +83,7 @@ class UserService {
   }
 
   static async resetPassword(data: VerificationProps) {
-    const userInfo = await VerificationRepository.findOne({ id: data.userId } as UserProps);
+    const userInfo = await VerificationRepository.findOne({ userId: data.userId } as VerificationProps);
     if (!userInfo) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
     if (userInfo.code !== data.code) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS);
     const UpdatePassord = await UserRepository.update({ password: data.password } as UserProps, data.id as number);
