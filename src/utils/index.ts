@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import config from "../config/config";
 import jwt from "jsonwebtoken";
 import { phone } from "phone";
+import { ApplicationError } from "./errorHandler";
 
 export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
@@ -21,7 +22,12 @@ export const generateToken = (
 };
 
 export function verifyToken(token: string) {
-  return jwt.verify(token, config.JWT_KEY) as { id: string | number };
+  try {
+    const result = jwt.verify(token, config.JWT_KEY) as { id: string | number };
+    return result;
+  } catch (error) {
+    throw new ApplicationError("Invalid or expired token", 400);
+  }
 }
 
 export function isValidPhone(phoneNumber: string) {
