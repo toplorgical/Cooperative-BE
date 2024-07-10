@@ -37,3 +37,13 @@ export const maxAge = {
   "60d": 1000 * 60 * 60 * 24 * 60,
   "90d": 1000 * 60 * 60 * 24 * 90,
 };
+
+
+
+export const generateOtp = (length : number)=>{
+  let digits = '';
+  for (let i = 0; i < length; i++) {
+    digits += Math.floor(Math.random() * 10).toString();
+  }
+  return digits;
+}

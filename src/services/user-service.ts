@@ -17,6 +17,7 @@ class UserService {
     data.password = await hashPassword(data.password);
     user = await UserRepository.create(data);
     user = _.omit(user, ["password"]) as UserProps;
+    
     return { user };
   }
 
