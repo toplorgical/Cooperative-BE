@@ -65,15 +65,18 @@ class UserService {
     const verificationRepo = VerificationRepository.create(optInfo)
     
     const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps)
-
-
-    
-
-
+    if (sendSms.status==="success"){
+      return {data : sendSms.response}
+    }else{
+      throw new ApplicationError (RESPONSE.SMS_FAILED)
+    }
 
   }
   static async verification(req: Request, res: Response) {}
   static async forgotPassword(req: Request, res: Response) {}
-  static async resetPassword(req: Request, res: Response) {}
+  static async resetPassword(req: Request, res: Response) {
+    
+
+  }
 }
 export default UserService;

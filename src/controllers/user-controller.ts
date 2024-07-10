@@ -22,8 +22,11 @@ class UserController {
     ResponseManager.success(res, { accessToken }, 200);
   }
 
-  static async requestOTP(req: Request, res: Response) {}
-
+  static async requestOTP(req: Request, res: Response) {
+    const data = req.body as UserProps;
+    const otpResponse = await UserService.requestOTP(data)
+    ResponseManager.success(res, null, 200, otpResponse.data);
+  }
   static async verifyOTP(req: any, res: Response) {
     const user = req.user as UserProps;
     const result = await UserService.verifyOTP(req.body, user);
