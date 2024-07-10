@@ -1,7 +1,7 @@
 import axios from "axios";
 import config from "../config/config";
 
-interface MassagingProps {
+export interface MassagingProps {
   from: string;
   to: string[];
   sms: string;
@@ -10,20 +10,16 @@ interface MassagingProps {
   api_key: string;
 }
 
-class MessagingService {
-  static async send(data: Partial<MassagingProps>) {
-    try {
-      data.from = "Toplorgical";
-      data.api_key = config.TERMII.API_KEY;
-      data.type = "plain";
-      data.channel = "generic";
-      const { data: response } = await axios.post(config.TERMII.URL, data);
-      return { status: "success", response };
-    } catch (error) {
-      console.log("MESSAGE SENT::", error);
-      return { status: "error", error };
-    }
+export class MessagingService {
+  static async send(data: MassagingProps) {
+    data.from = "Toplorgical";
+    data.api_key = config.TERMII.API_KEY;
+    data.type = "plain";
+    data.channel = "generic";
+
+    const { data: response } = await axios.post(config.TERMII.URL, data);
+    console.log("MESSAGE SENT::", response);
   }
 }
 
-export default MessagingService;
+
