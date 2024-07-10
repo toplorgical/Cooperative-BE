@@ -31,9 +31,9 @@ dbClient.sequelize
   .then(() => {})
   .catch((error) => console.error(error));
 
-dbClient.sequelize
-  .query(`ALTER SEQUENCE \"verifications_id_seq\" RESTART WITH 3477879;`)
-  .then(() => {})
-  .catch((error) => console.error(error));
+// dbClient.sequelize
+//   .query(`ALTER SEQUENCE \"verifications_id_seq\" RESTART WITH 3477879;`)
+//   .then(() => {})
+//   .catch((error) => console.error(error));
 
 export default VerificationModel;

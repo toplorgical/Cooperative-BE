@@ -105,9 +105,9 @@ dbClient.sequelize
   .then(() => {})
   .catch((error) => console.error(error));
 
-dbClient.sequelize
-  .query(`ALTER SEQUENCE \"users_id_seq\" RESTART WITH 1007897760;`)
-  .then(() => {})
-  .catch((error) => console.error(error));
+// dbClient.sequelize
+//   .query(`ALTER SEQUENCE \"users_id_seq\" RESTART WITH 1007897760;`)
+//   .then(() => {})
+//   .catch((error) => console.error(error));
 
 export default User;

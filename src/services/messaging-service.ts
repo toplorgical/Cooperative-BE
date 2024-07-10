@@ -13,6 +13,7 @@ export interface MassagingProps {
 export class MessagingService {
   static async send(data: Partial<MassagingProps>) {
     try {
+      data.to = data.to?.map((item) => item.replace("+", ""));
       data.from = "Toplorgical";
       data.api_key = config.TERMII.API_KEY;
       data.type = "plain";

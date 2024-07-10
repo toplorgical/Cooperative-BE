@@ -62,7 +62,7 @@ class UserService {
       userId: user.id,
       expiresAt: moment().add(10, "minutes").format("YYYY-MM-DD HH:mm:ss"),
     } as VerificationProps;
-    const message = smsResponse.message.replace("code", code);
+    const message = smsResponse.message.replace("otp", code);
     await VerificationRepository.create(optInfo);
 
     const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps);
@@ -86,6 +86,8 @@ class UserService {
     const userInfo = await VerificationRepository.findOne({ userId: data.userId } as VerificationProps);
     if (!userInfo) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
     if (userInfo.code !== data.code) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS);
+
+    data.password = await hashPassword(data.password);
     const UpdatePassord = await UserRepository.update({ password: data.password } as UserProps, data.id as number);
 
     if (!UpdatePassord) {
