@@ -86,6 +86,8 @@ class UserService {
     const userInfo = await VerificationRepository.findOne({ userId: data.userId } as VerificationProps);
     if (!userInfo) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
     if (userInfo.code !== data.code) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS);
+
+    data.password = await hashPassword(data.password);
     const UpdatePassord = await UserRepository.update({ password: data.password } as UserProps, data.id as number);
 
     if (!UpdatePassord) {

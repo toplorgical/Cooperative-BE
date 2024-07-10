@@ -14,7 +14,7 @@ function appRouter(app: Application) {
       name: "cooperative App",
       version: "1.0",
       license: "MIT",
-      author: "Sgncrownford",
+      author: "Toplorgical",
     };
     const message = "Application for Loan and Cooperative v1";
     ResponseManager.success(res, data, 200, message);
@@ -24,8 +24,5 @@ function appRouter(app: Application) {
     throw new NotFoundError("The requested route could not be found");
   }
 }
-
-
-
 
 export default appRouter;

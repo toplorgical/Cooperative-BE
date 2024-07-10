@@ -23,6 +23,7 @@ class UserController {
 
   static async requestOTP(req: any, res: Response) {
     const data = req.user as UserProps;
+
     const otpResponse = await UserService.requestOTP(data);
     ResponseManager.success(res, null, 200, otpResponse.data);
   }
