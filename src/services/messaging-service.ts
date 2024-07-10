@@ -1,7 +1,7 @@
 import axios from "axios";
 import config from "../config/config";
 
-interface MassagingProps {
+export interface MassagingProps {
   from: string;
   to: string[];
   sms: string;
@@ -10,7 +10,7 @@ interface MassagingProps {
   api_key: string;
 }
 
-class MessagingService {
+export class MessagingService {
   static async send(data: MassagingProps) {
     data.from = "Toplorgical";
     data.api_key = config.TERMII.API_KEY;
@@ -22,4 +22,4 @@ class MessagingService {
   }
 }
 
-export default MessagingService;
+

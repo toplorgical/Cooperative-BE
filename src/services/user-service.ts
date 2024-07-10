@@ -6,7 +6,8 @@ import { UserProps, VerificationPros } from "../types";
 import { hashPassword, comparePassword, generateOtp } from "../utils";
 import { ApplicationError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
-import { RESPONSE } from "../constants";
+import { RESPONSE, smsResponse } from "../constants";
+import {MessagingService, MassagingProps} from "./messaging-service";
 
 class UserService {
   static async signup(data: UserProps) {
@@ -46,8 +47,14 @@ class UserService {
       expiresAt: moment().add(10, "minutes").format("YYYY-MM-DD HH:mm:ss") 
       
     };
+    const message = smsResponse.message.replace("code", code)
     const verificationRepo = VerificationRepository.create(optInfo)
     
+    const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps)
+
+
+    
+
 
 
   }
