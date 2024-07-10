@@ -21,8 +21,10 @@ const User = dbClient.sequelize.define(
     phone: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     email: {
+      unique: true,
       type: DataTypes.STRING,
     },
     password: {
@@ -99,7 +101,7 @@ const User = dbClient.sequelize.define(
 );
 
 dbClient.sequelize
-  .sync()
+  .sync({ alter: true })
   .then(() => {})
   .catch((error) => console.error(error));
 

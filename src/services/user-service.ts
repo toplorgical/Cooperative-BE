@@ -3,16 +3,17 @@ import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
 import { UserProps, VerificationProps } from "../types";
-import { hashPassword, comparePassword, generateOtp } from "../utils";
+import { hashPassword, comparePassword, generateOtp, isValidPhone, generateToken } from "../utils";
 import { ApplicationError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
-import {MessagingService, MassagingProps} from "./messaging-service";
+import { MessagingService, MassagingProps } from "./messaging-service";
 
 class UserService {
   static async signup(data: UserProps) {
     const error = UserValidations.signup(data);
     if (error) throw new ValidationError(error, 400);
+    if (!isValidPhone(data.phone)) throw new ValidationError(RESPONSE.INVALID_PHONE, 400);
 
     let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
     if (user) throw new ApplicationError(RESPONSE.USER_EXIST, 400);
@@ -62,15 +63,13 @@ class UserService {
       expiresAt: new Date(moment().add(10, "minutes").toISOString())
     };
     const message = smsResponse.message.replace("code", code)
-    const verificationRepo = await VerificationRepository.create(optInfo)
+    await VerificationRepository.create(optInfo)
     
-    const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps)
-    if (sendSms.status==="success"){
-      return {data : sendSms.response}
-    }else{
-      throw new ApplicationError (RESPONSE.SMS_FAILED)
-    }
 
+
+    const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps);
+    if (sendSms.status === "success") return { data: sendSms.response };
+    else throw new ApplicationError(RESPONSE.SMS_FAILED);
   }
 
   static async resetPassword(data : VerificationProps) {

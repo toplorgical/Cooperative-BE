@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import config from "../config/config";
 import jwt from "jsonwebtoken";
+import { phone } from "phone";
 
 export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
@@ -12,7 +13,10 @@ export const comparePassword = async (password: string, hashed: string) => {
   return await bcrypt.compare(password, hashed);
 };
 
-export const generateToken = (data: any, expiresIn: "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d") => {
+export const generateToken = (
+  data: any,
+  expiresIn: "10m" | "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d"
+) => {
   return jwt.sign({ data }, config.JWT_KEY, { expiresIn });
 };
 
@@ -20,8 +24,8 @@ export function verifyToken(token: string) {
   return jwt.verify(token, config.JWT_KEY) as { id: string | number };
 }
 
-export function isValidPhone(phone: string) {
-  return false;
+export function isValidPhone(phoneNumber: string) {
+  return phone(phoneNumber, { country: "NGN" }).isValid;
 }
 
 export const cookieProperties = {
