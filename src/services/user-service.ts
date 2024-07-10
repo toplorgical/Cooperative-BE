@@ -59,10 +59,10 @@ class UserService {
     let optInfo: VerificationProps = {
       code: code,
       userId: user.id,
-      expiresAt: moment().add(10, "minutes").format("YYYY-MM-DD HH:mm:ss"),
+      expiresAt: new Date(moment().add(10, "minutes").toISOString())
     };
     const message = smsResponse.message.replace("code", code)
-    const verificationRepo = VerificationRepository.create(optInfo)
+    const verificationRepo = await VerificationRepository.create(optInfo)
     
     const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps)
     if (sendSms.status==="success"){
@@ -72,11 +72,21 @@ class UserService {
     }
 
   }
-  static async verification(req: Request, res: Response) {}
-  static async forgotPassword(req: Request, res: Response) {}
-  static async resetPassword(req: Request, res: Response) {
-    
 
+  static async resetPassword(data : VerificationProps) {
+    const userInfo = await VerificationRepository.findOne({id: data.userId}as UserProps)
+    if (!userInfo) throw new ApplicationError(RESPONSE.USER_NOT_FOUND)
+    if(userInfo.code !== data.code) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS)
+      const UpdatePassord = await UserRepository.update({ password: data.password } as UserProps, data.id as number);
+
+    if (!UpdatePassord) {
+      throw new ApplicationError(RESPONSE.FAILED_UPDATE);
+    }
+    await VerificationRepository.destroy({code : userInfo.code} as VerificationProps)
+    
+    return RESPONSE.SUCCESS
   }
+
+
 }
 export default UserService;

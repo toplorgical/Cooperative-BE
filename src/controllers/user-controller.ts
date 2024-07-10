@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserProps } from "../types";
+import { UserProps, VerificationProps } from "../types";
 import UserService from "../services/user-service";
 import { generateToken } from "../utils";
 import ResponseManager from "../utils/response-manager";
@@ -32,8 +32,14 @@ class UserController {
     const result = await UserService.verifyOTP(req.body, user);
     ResponseManager.success(res, null, 200, result.message);
   }
-  static async forgotPassword(req: Request, res: Response) {}
-  static async resetPassword(req: Request, res: Response) {}
+
+  static async resetPassword(req: any, res: any) {
+    const data = req.body as VerificationProps;
+    const result = await UserService.resetPassword(data);
+    ResponseManager.success(res, null, 200, result);
+
+
+  }
 }
 
 export default UserController;
