@@ -18,11 +18,11 @@ export class MessagingService {
       data.type = "plain";
       data.channel = "generic";
       const { data: response } = await axios.post(config.TERMII.URL, data);
+      console.log("MESSAGE SENT::", response);
       return { status: "success", response };
     } catch (error) {
-      console.log("MESSAGE SENT::", error);
+      console.log("MESSAGE NOT SENT::", error);
       return { status: "error", error };
     }
   }
 }
-
