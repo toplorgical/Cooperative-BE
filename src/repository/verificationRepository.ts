@@ -4,7 +4,7 @@ import { VerificationPros } from "../types";
 import VerificationModel from "../models/verification";
 
 class VerificationRepository {
-  static async create(data: VerificationPros): Promise<VerificationPros> {
+  static async create(data: VerificationPros) {
     const result = await VerificationModel.create(data);
     return result.toJSON() as VerificationPros;
   }
