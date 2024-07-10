@@ -21,7 +21,7 @@ export function verifyToken(token: string) {
 }
 
 export function isValidPhone(phone: string) {
-  return true;
+  return false;
 }
 
 export const cookieProperties = {
