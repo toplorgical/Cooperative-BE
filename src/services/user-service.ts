@@ -63,8 +63,10 @@ class UserService {
     };
     const verificationRepo = VerificationRepository.create(optInfo);
   }
-  static async verification(req: Request, res: Response) {}
-  static async forgotPassword(req: Request, res: Response) {}
+  static async forgotPassword(data: UserProps, user: UserProps) {
+    if (!isValidPhone(data.phone)) throw new ValidationError(RESPONSE.INVALID_PHONE, 400);
+    await UserService.requestOTP(user);
+  }
   static async resetPassword(req: Request, res: Response) {}
 }
 export default UserService;

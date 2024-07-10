@@ -29,7 +29,10 @@ class UserController {
     const result = await UserService.verifyOTP(req.body, user);
     ResponseManager.success(res, null, 200, result.message);
   }
-  static async forgotPassword(req: Request, res: Response) {}
+  static async forgotPassword(req: any, res: Response) {
+    const user = req.user as UserProps;
+    const result = await UserService.forgotPassword(req.body, user);
+  }
   static async resetPassword(req: Request, res: Response) {}
 }
 
