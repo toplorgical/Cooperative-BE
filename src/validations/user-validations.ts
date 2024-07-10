@@ -24,7 +24,7 @@ class UserValidations {
     if (error) return error.details[0].message;
     return null;
   }
-  static verification(data: { code: number }) {
+  static verification(data: { code: string }) {
     const schema = Joi.object({
       code: UserValidations.userProperties.code,
     });

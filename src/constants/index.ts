@@ -6,3 +6,7 @@ export const RESPONSE = {
   OTP_EXPIRED: "Verification code is invalid or expired",
   USER_VERIFIED: "Request could not be completed as accoutn is already verified",
 };
+
+export const smsResponse = {
+  message: `Your verification code is otp Use this code to verify your account`,
+};

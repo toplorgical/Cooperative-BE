@@ -3,7 +3,6 @@ import { UserProps } from "../types";
 import UserService from "../services/user-service";
 import { generateToken } from "../utils";
 import ResponseManager from "../utils/response-manager";
-import MessagingService from "../services/messaging-service";
 
 class UserController {
   static async signup(req: Request, res: Response) {
@@ -13,7 +12,7 @@ class UserController {
     const accessToken = generateToken(result.user, "7d");
     ResponseManager.success(res, { accessToken }, 201);
 
-    MessagingService.send({ sms: "", to: [result.user.phone] });
+    UserService.requestOTP(result.user);
   }
 
   static async signin(req: Request, res: Response) {
