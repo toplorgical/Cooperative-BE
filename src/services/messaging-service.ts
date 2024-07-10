@@ -11,7 +11,7 @@ interface MassagingProps {
 }
 
 class MessagingService {
-  static async send(data: MassagingProps) {
+  static async send(data: Partial<MassagingProps>) {
     data.from = "Toplorgical";
     data.api_key = config.TERMII.API_KEY;
     data.type = "plain";

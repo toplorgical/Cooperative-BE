@@ -3,6 +3,7 @@ import { UserProps } from "../types";
 import UserService from "../services/user-service";
 import { generateToken } from "../utils";
 import ResponseManager from "../utils/response-manager";
+import MessagingService from "../services/messaging-service";
 
 class UserController {
   static async signup(req: Request, res: Response) {
@@ -11,6 +12,8 @@ class UserController {
 
     const accessToken = generateToken(result.user, "7d");
     ResponseManager.success(res, { accessToken }, 201);
+
+    MessagingService.send({ sms: "", to: [result.user.phone] });
   }
 
   static async signin(req: Request, res: Response) {
@@ -21,7 +24,12 @@ class UserController {
   }
 
   static async requestOTP(req: Request, res: Response) {}
-  static async verification(req: Request, res: Response) {}
+
+  static async verifyOTP(req: any, res: Response) {
+    const user = req.user as UserProps;
+    const result = await UserService.verifyOTP(req.body, user);
+    ResponseManager.success(res, null, 200, result.message);
+  }
   static async forgotPassword(req: Request, res: Response) {}
   static async resetPassword(req: Request, res: Response) {}
 }

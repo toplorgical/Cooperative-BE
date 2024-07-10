@@ -45,5 +45,6 @@ export type VerificationProps = {
   id: number;
   code: number;
   userId: number;
-  createdAt?: Date;
+  createdAt?: string;
+  expiresAt?: string;
 };

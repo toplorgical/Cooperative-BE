@@ -5,6 +5,8 @@ import { hashPassword, comparePassword } from "../utils";
 import { ApplicationError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE } from "../constants";
+import VerificationRepository from "../repository/verificationRepository";
+import moment from "moment";
 
 class UserService {
   static async signup(data: UserProps) {
@@ -17,7 +19,6 @@ class UserService {
     data.password = await hashPassword(data.password);
     user = await UserRepository.create(data);
     user = _.omit(user, ["password"]) as UserProps;
-    
     return { user };
   }
 
@@ -33,6 +34,21 @@ class UserService {
 
     user = _.omit(user, ["password"]) as UserProps;
     return { user };
+  }
+
+  static async verifyOTP(data: { code: number }, user: UserProps) {
+    if (user.isVerified) throw new ApplicationError(RESPONSE.USER_VERIFIED, 400);
+
+    const error = UserValidations.verification(data);
+    if (error) throw new ValidationError(error, 400);
+
+    const code = await VerificationRepository.findOne({ code: data.code, userId: user.id });
+    if (!code) throw new ApplicationError(RESPONSE.OTP_EXPIRED, 400);
+    if (moment() > moment(code.expiresAt)) throw new ApplicationError(RESPONSE.OTP_EXPIRED, 400);
+
+    const _userPayload = { isVerified: true } as UserProps;
+    await UserRepository.update(_userPayload, user.id);
+    return { message: "Account verification successful." };
   }
 }
 export default UserService;
