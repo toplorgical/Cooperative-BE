@@ -47,7 +47,11 @@ export interface VerificationPros {
   id : number;
   code : number;
   userId : number;
-  expiresAt : string
+  createdAt?: Date;
   
 
 }
+
+
+ 
+ 
