@@ -9,17 +9,22 @@ class UserController {
     const data = req.body as UserProps;
     const result = await UserService.signup(data);
 
-    const token = generateToken(result.user, "7d");
-    res.header("Authorization", "Bearer " + token);
-    ResponseManager.success(res, result.user, 201);
+    const accessToken = generateToken(result.user, "7d");
+    ResponseManager.success(res, { accessToken }, 201);
   }
 
   static async signin(req: Request, res: Response) {
     const data = req.body as UserProps;
     const result = await UserService.sigin(data);
+<<<<<<< HEAD
     const token: string = generateToken(result, "7d");
     ResponseManager.success(res,  token, 200);
+=======
+    const accessToken = generateToken(result, "7d");
+    ResponseManager.success(res, { accessToken }, 200);
+>>>>>>> bf067150b8726a77eb7b0b996ec698d2d0d1b09d
   }
+
   static async requestOTP(req: Request, res: Response) {}
   static async verification(req: Request, res: Response) {}
   static async forgotPassword(req: Request, res: Response) {}

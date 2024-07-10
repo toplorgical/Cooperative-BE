@@ -45,7 +45,7 @@ export interface UserQueryProps extends UserProps {
 
 export interface VerificationPros {
   id : number;
-  code : number,
+  code : number;
   userId : number;
   expiresAt : string
   

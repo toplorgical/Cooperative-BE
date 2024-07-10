@@ -1,17 +1,18 @@
 import { Op } from "sequelize";
-import Verification from "../models/verificationModel";
+
 import { UserProps, UserQueryProps, VerificationPros } from "../types";
+import VerificationModel from "../models/verification";
 
 class VerificationRepository {
   static async create(data: VerificationPros) {
-    const result = await Verification.create(data);
+    const result = await VerificationModel.create(data);
     return result.toJSON() as VerificationPros;
   }
   static async findAndDelete(query: VerificationPros) {
     const where = {} as VerificationPros;
     if (query.code) where.code = query.code;
     if (query.userId) where.userId = query.userId;
-    const result = await Verification.findAndDelete({ where });
+    const result = await VerificationModel.findAndDelete({ where });
     return result?.toJSON() as UserProps;
   }
 
@@ -19,7 +20,7 @@ class VerificationRepository {
     const where = {} as VerificationPros;
     if (query.code) where.code = query.code;
     if (query.userId) where.userId = query.userId;
-    const result = await Verification.findOne({ where });
+    const result = await VerificationModel.findOne({ where });
     return result?.toJSON() as VerificationPros;
   }
 
