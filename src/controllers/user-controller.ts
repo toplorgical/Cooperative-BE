@@ -27,11 +27,13 @@ class UserController {
     const otpResponse = await UserService.requestOTP(data);
     ResponseManager.success(res, null, 200, otpResponse.data);
   }
+
   static async verifyOTP(req: any, res: Response) {
     const user = req.user as UserProps;
     const result = await UserService.verifyOTP(req.body, user);
     ResponseManager.success(res, null, 200, result.message);
   }
+
   static async forgotPassword(req: any, res: Response) {
     const result = await UserService.forgotPassword(req.body);
     ResponseManager.success(res, result, 200);
