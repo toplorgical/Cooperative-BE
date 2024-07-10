@@ -32,7 +32,7 @@ dbClient.sequelize
   .catch((error) => console.error(error));
 
 dbClient.sequelize
-  .query(`SELECT setval(verifications_id_seq, 3477879, false);`)
+  .query(`ALTER SEQUENCE \"verifications_id_seq\" RESTART WITH 3477879;`)
   .then(() => {})
   .catch((error) => console.error(error));
 
