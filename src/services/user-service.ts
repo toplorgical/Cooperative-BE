@@ -57,11 +57,11 @@ class UserService {
     const user = await UserRepository.findOne({ phone: data.phone } as UserProps);
     if (!user) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
     const code = generateOtp(6);
-    let optInfo: VerificationProps = {
+    let optInfo = {
       code: code,
       userId: user.id,
       expiresAt: moment().add(10, "minutes").format("YYYY-MM-DD HH:mm:ss"),
-    };
+    } as VerificationProps;
     const message = smsResponse.message.replace("code", code);
     await VerificationRepository.create(optInfo);
 
@@ -81,6 +81,19 @@ class UserService {
 
     return { token };
   }
-  static async resetPassword(req: Request, res: Response) {}
+
+  static async resetPassword(data: VerificationProps) {
+    const userInfo = await VerificationRepository.findOne({ id: data.userId } as UserProps);
+    if (!userInfo) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
+    if (userInfo.code !== data.code) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS);
+    const UpdatePassord = await UserRepository.update({ password: data.password } as UserProps, data.id as number);
+
+    if (!UpdatePassord) {
+      throw new ApplicationError(RESPONSE.FAILED_UPDATE);
+    }
+    await VerificationRepository.destroy({ code: userInfo.code } as VerificationProps);
+
+    return RESPONSE.SUCCESS;
+  }
 }
 export default UserService;

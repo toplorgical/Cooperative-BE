@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserProps } from "../types";
+import { UserProps, VerificationProps } from "../types";
 import UserService from "../services/user-service";
 import { generateToken } from "../utils";
 import ResponseManager from "../utils/response-manager";
@@ -11,7 +11,6 @@ class UserController {
 
     const accessToken = generateToken(result.user, "7d");
     ResponseManager.success(res, { accessToken }, 201);
-
     UserService.requestOTP(result.user);
   }
 
@@ -22,8 +21,8 @@ class UserController {
     ResponseManager.success(res, { accessToken }, 200);
   }
 
-  static async requestOTP(req: Request, res: Response) {
-    const data = req.body as UserProps;
+  static async requestOTP(req: any, res: Response) {
+    const data = req.user as UserProps;
     const otpResponse = await UserService.requestOTP(data);
     ResponseManager.success(res, null, 200, otpResponse.data);
   }
@@ -38,7 +37,11 @@ class UserController {
     const result = await UserService.forgotPassword(req.body);
     ResponseManager.success(res, result, 200);
   }
-  static async resetPassword(req: Request, res: Response) {}
+  static async resetPassword(req: any, res: any) {
+    const data = req.body as VerificationProps;
+    const result = await UserService.resetPassword(data);
+    ResponseManager.success(res, null, 200, result);
+  }
 }
 
 export default UserController;

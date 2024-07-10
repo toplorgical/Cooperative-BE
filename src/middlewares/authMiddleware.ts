@@ -2,11 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
 
-interface CustomRequest extends Request {
-  user?: string | object;
-}
-
-const authenticationMiddleware = (req: CustomRequest, res: Response, next: NextFunction) => {
+const authenticationMiddleware = (req: any, res: Response, next: NextFunction) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {

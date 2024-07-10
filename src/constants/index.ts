@@ -7,6 +7,7 @@ export const RESPONSE = {
   USER_VERIFIED: "Request could not be completed as accoutn is already verified",
   INVALID_PHONE: "Phone number is invalid",
   SMS_FAILED: "could not send sms",
+  FAILED_UPDATE: "could not update request",
 };
 
 export const smsResponse = {
