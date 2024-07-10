@@ -106,7 +106,7 @@ dbClient.sequelize
   .catch((error) => console.error(error));
 
 dbClient.sequelize
-  .query(`SELECT setval(users_id_seq, 1040010100, false);`)
+  .query(`ALTER SEQUENCE \"users_id_seq\" RESTART WITH 1007897760;`)
   .then(() => {})
   .catch((error) => console.error(error));
 
