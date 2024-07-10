@@ -5,8 +5,8 @@ import userRoutes from "./userRoutes";
 
 function appRouter(app: Application) {
   app.get("/", homeRoute);
-  app.use("/api/v1/user", userRoutes)
-  
+  app.use("/api/v1/users", userRoutes)
+
   app.use("*", notFoundRoute);
 
   function homeRoute(req: Request, res: Response) {

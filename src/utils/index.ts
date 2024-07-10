@@ -31,7 +31,7 @@ export function verifyToken(token: string) {
 }
 
 export function isValidPhone(phoneNumber: string) {
-  return phone(phoneNumber, { country: "NGN" }).isValid;
+  return phone(phoneNumber, { country: "NG" }).isValid;
 }
 
 export const cookieProperties = {
