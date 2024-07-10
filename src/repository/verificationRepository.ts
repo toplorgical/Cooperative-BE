@@ -1,14 +1,14 @@
 import VerificationModel from "../models/verification";
-import { VerificationPros } from "../types";
+import { VerificationProps } from "../types";
 
 class VerificationRepository {
-  static async create(data: VerificationPros) {
+  static async create(data: VerificationProps) {
     const result = await VerificationModel.create(data);
-    return result.toJSON() as VerificationPros;
+    return result.toJSON() as VerificationProps;
   }
 
-  static async destroy(query: VerificationPros): Promise<number> {
-    const where = {} as Partial<VerificationPros>;
+  static async destroy(query: VerificationProps) {
+    const where = {} as Partial<VerificationProps>;
     if (query.code) where.code = query.code;
     if (query.userId) where.userId = query.userId;
 
@@ -16,13 +16,13 @@ class VerificationRepository {
     return result;
   }
 
-  static async findOne(query: VerificationPros): Promise<VerificationPros | null> {
-    const where = {} as Partial<VerificationPros>;
+  static async findOne(query: Partial<VerificationProps>) {
+    const where = {} as Partial<VerificationProps>;
     if (query.code) where.code = query.code;
     if (query.userId) where.userId = query.userId;
 
     const result = await VerificationModel.findOne({ where });
-    return result ? (result.toJSON() as VerificationPros) : null;
+    return result?.toJSON() as VerificationProps;
   }
 }
 
