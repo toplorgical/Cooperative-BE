@@ -1,7 +1,5 @@
-import { Op } from "sequelize";
-
-import { VerificationPros } from "../types";
 import VerificationModel from "../models/verification";
+import { VerificationPros } from "../types";
 
 class VerificationRepository {
   static async create(data: VerificationPros) {
@@ -13,6 +11,7 @@ class VerificationRepository {
     const where = {} as Partial<VerificationPros>;
     if (query.code) where.code = query.code;
     if (query.userId) where.userId = query.userId;
+
     const result = await VerificationModel.destroy({ where });
     return result;
   }
@@ -21,6 +20,7 @@ class VerificationRepository {
     const where = {} as Partial<VerificationPros>;
     if (query.code) where.code = query.code;
     if (query.userId) where.userId = query.userId;
+
     const result = await VerificationModel.findOne({ where });
     return result ? (result.toJSON() as VerificationPros) : null;
   }
