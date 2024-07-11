@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import config from "../config/config";
 import jwt from "jsonwebtoken";
 import { phone } from "phone";
+import crypto from "crypto";
 import { ApplicationError } from "./errorHandler";
 
 export const hashPassword = async (password: string) => {
@@ -18,20 +19,24 @@ export const generateToken = (
   data: any,
   expiresIn: "10m" | "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d"
 ) => {
-  return jwt.sign({ data }, config.JWT_KEY, { expiresIn });
+  return jwt.sign({ id: data }, config.JWT_KEY, { expiresIn });
 };
 
 export function verifyToken(token: string) {
   try {
-    const result = jwt.verify(token, config.JWT_KEY) as { id: string | number };
+    const result = jwt.verify(token, config.JWT_KEY) as any;
     return result;
   } catch (error) {
-    throw new ApplicationError("Invalid or expired token", 400);
+    throw new ApplicationError("Token is invalid or expired", 400);
   }
 }
 
 export function isValidPhone(phoneNumber: string) {
   return phone(phoneNumber, { country: "NG" }).isValid;
+}
+
+export function generateRandomUUID() {
+  return crypto.randomUUID();
 }
 
 export const cookieProperties = {

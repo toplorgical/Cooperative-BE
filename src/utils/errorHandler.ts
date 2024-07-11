@@ -5,7 +5,7 @@ export class ApplicationError extends Error {
   constructor(public message: string, public statusCode?: number) {
     super(message);
     this.name = "ApplicationError";
-    this.statusCode = statusCode;
+    this.statusCode = statusCode || 400;
   }
 }
 export class ValidationError extends ApplicationError {
@@ -28,6 +28,14 @@ export class AuthorizationError extends ApplicationError {
     super(message);
     this.statusCode = 401;
     this.name = "AuthorizationError";
+  }
+}
+
+export class LoanRequestError extends ApplicationError {
+  constructor(public message: string, public statusCode?: number) {
+    super(message);
+    this.statusCode = 401;
+    this.name = "LoanRequestError";
   }
 }
 

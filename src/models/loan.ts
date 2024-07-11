@@ -35,6 +35,7 @@ import { duration } from "moment";
     allowNull: true,
     values:["PENDING","APPROVED","REJECTED","CANCELED"]
   },
+
   
 });
 

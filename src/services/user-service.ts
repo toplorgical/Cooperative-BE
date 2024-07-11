@@ -2,9 +2,17 @@ import _ from "lodash";
 import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
-import { UserProps, VerificationProps } from "../types";
-import { hashPassword, comparePassword, generateOtp, isValidPhone, generateToken } from "../utils";
-import { ApplicationError, ValidationError } from "../utils/errorHandler";
+import { ResetPasswordProps, UserProps, VerificationProps } from "../types";
+import {
+  hashPassword,
+  comparePassword,
+  generateOtp,
+  isValidPhone,
+  generateToken,
+  verifyToken,
+  generateRandomUUID,
+} from "../utils";
+import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
 import { MessagingService, MassagingProps } from "./messaging-service";
@@ -31,11 +39,29 @@ class UserService {
     let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
-    const isPasswordCorrect = await comparePassword(data.password, user.password);
-    if (!isPasswordCorrect) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
+    const isValidPassword = await comparePassword(data.password, user.password);
+    if (!isValidPassword) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
     user = _.omit(user, ["password"]) as UserProps;
     return { user };
+  }
+
+  static async requestOTP(data: UserProps) {
+    const user = await UserRepository.findOne({ phone: data.phone } as UserProps);
+    if (!user) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
+
+    const _data = {} as VerificationProps;
+    _data.code = generateOtp(6);
+    _data.userId = user.id;
+    _data.expiresAt = moment().add(10, "minutes").format("YYYY-MM-DD HH:mm:ss");
+
+    const message = smsResponse.message.replace("otp", _data.code);
+    await VerificationRepository.create(_data);
+
+    const _message = { to: [user.phone], sms: message } as MassagingProps;
+    const result = await MessagingService.send(_message);
+    if (result.status === "success") return { data: result.response };
+    else throw new ApplicationError(RESPONSE.SMS_FAILED);
   }
 
   static async verifyOTP(data: { code: string }, user: UserProps) {
@@ -53,49 +79,71 @@ class UserService {
     return { message: "Account verification successful." };
   }
 
-  static async requestOTP(data: UserProps) {
-    const user = await UserRepository.findOne({ phone: data.phone } as UserProps);
-    if (!user) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
-    const code = generateOtp(6);
-    let optInfo = {
-      code: code,
-      userId: user.id,
-      expiresAt: moment().add(10, "minutes").format("YYYY-MM-DD HH:mm:ss"),
-    } as VerificationProps;
-    const message = smsResponse.message.replace("otp", code);
-    await VerificationRepository.create(optInfo);
-
-    const sendSms = await MessagingService.send({ to: [user.phone], sms: message } as MassagingProps);
-    if (sendSms.status === "success") return { data: sendSms.response };
-    else throw new ApplicationError(RESPONSE.SMS_FAILED);
-  }
-
   static async forgotPassword(data: UserProps) {
     if (!isValidPhone(data.phone)) throw new ValidationError(RESPONSE.INVALID_PHONE, 400);
 
     const user = await UserRepository.findOne({ phone: data.phone });
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
-    const token = generateToken({ userId: user.id }, "10m");
+    const publicId = generateRandomUUID();
+    await UserRepository.update({ publicId }, user.id);
+    const token = generateToken(publicId, "10m");
     await UserService.requestOTP(user);
 
     return { token };
   }
 
-  static async resetPassword(data: VerificationProps) {
-    const userInfo = await VerificationRepository.findOne({ userId: data.userId } as VerificationProps);
-    if (!userInfo) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
-    if (userInfo.code !== data.code) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS);
+  static async resetPassword(data: ResetPasswordProps) {
+    const error = UserValidations.resetPassword(data);
+    if (error) throw new ValidationError(error, 400);
+
+    const decoded = verifyToken(data.token);
+    const publicId = decoded?.id;
+
+    const user = await UserRepository.findOne({ publicId });
+    if (!user) throw new ApplicationError("Token is invalid or expired", 400);
+
+    const _vQuery = { userId: user.id, code: data.code } as VerificationProps;
+    const code = await VerificationRepository.findOne(_vQuery);
+    if (!code) throw new ApplicationError(RESPONSE.OTP_EXPIRED);
+    if (moment() > moment(code.expiresAt)) throw new ApplicationError(RESPONSE.OTP_EXPIRED);
 
     data.password = await hashPassword(data.password);
-    const UpdatePassord = await UserRepository.update({ password: data.password } as UserProps, data.id as number);
+    await UserRepository.update({ password: data.password }, user.id);
+    await VerificationRepository.destroy(_vQuery);
 
-    if (!UpdatePassord) {
-      throw new ApplicationError(RESPONSE.FAILED_UPDATE);
-    }
-    await VerificationRepository.destroy({ code: userInfo.code } as VerificationProps);
+    return "Password reset successful";
+  }
 
-    return RESPONSE.SUCCESS;
+  static async personalInfo(data: UserProps, user: UserProps) {
+    const error = UserValidations.personalInfo(data);
+    if (error) throw new ValidationError(error, 400);
+
+    if (user.profileSetup === "PERSONAL_INFO") data.profileSetup = "WORK_INFO";
+    await UserRepository.update(data, user.id);
+
+    return "Personal info updated successfully";
+  }
+
+  static async workInfo(data: UserProps, user: UserProps) {
+    const error = UserValidations.workInfo(data);
+    if (error) throw new ValidationError(error, 400);
+
+    if (user.profileSetup === "WORK_INFO") data.profileSetup = "COMPLETED";
+    await UserRepository.update(data, user.id);
+    return "Work info updated successfully";
+  }
+
+  static async changePassword(data: UserProps, user: UserProps) {
+    const error = UserValidations.changePassword(data);
+    if (error) throw new ValidationError(error, 400);
+
+    const isValidPassword = await comparePassword(data.password, user.password);
+    if (!isValidPassword) throw new ApplicationError("Current password is invalid");
+
+    data.password = await hashPassword(data.password);
+    await UserRepository.update({ password: data.password }, user.id);
+    return "Password updated successfully";
   }
 }
 export default UserService;

@@ -10,6 +10,9 @@ const User = dbClient.sequelize.define(
       autoIncrement: true,
       allowNull: false,
     },
+    publicId: {
+      type: DataTypes.UUID,
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -17,6 +20,9 @@ const User = dbClient.sequelize.define(
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    middleName: {
+      type: DataTypes.STRING,
     },
     phone: {
       type: DataTypes.STRING,
@@ -31,6 +37,50 @@ const User = dbClient.sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    nationality: {
+      type: DataTypes.STRING,
+    },
+    country: {
+      type: DataTypes.STRING,
+    },
+    gender: {
+      type: DataTypes.STRING,
+    },
+    lga: {
+      type: DataTypes.STRING,
+    },
+    state: {
+      type: DataTypes.STRING,
+    },
+    contactAddress: {
+      type: DataTypes.STRING,
+    },
+    postalCode: {
+      type: DataTypes.STRING,
+    },
+    dateOfBirth: {
+      type: DataTypes.DATE,
+    },
+    registrationStatus: {
+      type: DataTypes.ENUM,
+      defaultValue: "PENDING",
+      values: ["PENDING", "APPROVED", "REJECTED"],
+    },
+    companyName: {
+      type: DataTypes.STRING,
+    },
+    jobTitle: {
+      type: DataTypes.STRING,
+    },
+    employmentStartDate: {
+      type: DataTypes.STRING,
+    },
+    employmentType: {
+      type: DataTypes.STRING,
+    },
+    employmentLocation: {
+      type: DataTypes.STRING,
+    },
     accountNumber: {
       type: DataTypes.VIRTUAL,
       get() {
@@ -38,26 +88,12 @@ const User = dbClient.sequelize.define(
         return _this.id;
       },
     },
-    personalDetails: {
-      type: DataTypes.TEXT,
+    balance: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
       get() {
-        const value = this.getDataValue("personalDetails");
-        if (!value) return {};
-        return JSON.parse(value);
-      },
-      set(value) {
-        this.setDataValue("personalDetails", JSON.stringify(value));
-      },
-    },
-    employmentDetails: {
-      type: DataTypes.TEXT,
-      get() {
-        const value = this.getDataValue("employmentDetails");
-        if (!value) return {};
-        return JSON.parse(value);
-      },
-      set(value) {
-        this.setDataValue("employmentDetails", JSON.stringify(value));
+        const value = this.getDataValue("balance");
+        return value === null ? 0 : parseFloat(value);
       },
     },
     documents: {
@@ -73,8 +109,8 @@ const User = dbClient.sequelize.define(
     },
     profileSetup: {
       type: DataTypes.ENUM,
-      defaultValue: "personal-details",
-      values: ["personal-details", "employment-details", "completed"],
+      defaultValue: "PERSONAL_INFO",
+      values: ["PERSONAL_INFO", "WORK_INFO", "COMPLETED"],
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
@@ -97,17 +133,12 @@ const User = dbClient.sequelize.define(
       allowNull: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true, initialAutoIncrement: "1007897760" }
 );
 
 dbClient.sequelize
   .sync({ alter: true })
-  .then(() => {})
+  .then(() => console.log("users table"))
   .catch((error) => console.error(error));
-
-// dbClient.sequelize
-//   .query(`ALTER SEQUENCE \"users_id_seq\" RESTART WITH 1007897760;`)
-//   .then(() => {})
-//   .catch((error) => console.error(error));
 
 export default User;

@@ -7,12 +7,11 @@ class LoanRepository {
     const result = await Loan.create(data);
     return result.toJSON() as LoanProps;
   }
-  static async updateLoanById(data: LoanProps, id: number) {
+  static async updateById(data: LoanProps, id: number) {
     return await Loan.update(data, { where: { id } });
   }
-  static async findLoanById(id: number) {
-    return await Loan.findByPk(id);
-  }
+  
+ 
   static async findOne(query: Partial<LoanProps>) {
     const where = {} as LoanProps;
     if (query.status) where.status = query.status;

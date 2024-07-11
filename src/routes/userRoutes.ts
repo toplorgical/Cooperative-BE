@@ -7,11 +7,24 @@ const userRoutes = Router();
 
 userRoutes.post("/signup", asyncHandler(UserController.signup));
 userRoutes.post("/signin", asyncHandler(UserController.signin));
-userRoutes.post("/verify-otp", [authenticationMiddleware], asyncHandler(UserController.verifyOTP));
+userRoutes.post("/verify-otp", [asyncHandler(authenticationMiddleware)], asyncHandler(UserController.verifyOTP));
 userRoutes.post("/forgot-password", asyncHandler(UserController.forgotPassword));
 userRoutes.post("/reset-password", asyncHandler(UserController.resetPassword));
-userRoutes.post("/requst-opt", asyncHandler(UserController.requestOTP));
 
-userRoutes.get("/request-otp", [authenticationMiddleware], asyncHandler(UserController.requestOTP));
+userRoutes.put(
+  "/me/personal-info",
+  [asyncHandler(authenticationMiddleware)],
+  asyncHandler(UserController.personalInfo)
+);
+
+userRoutes.put("/me/work-info", [asyncHandler(authenticationMiddleware)], asyncHandler(UserController.workInfo));
+userRoutes.put(
+  "/me/change-password",
+  [asyncHandler(authenticationMiddleware)],
+  asyncHandler(UserController.changePassword)
+);
+
+userRoutes.get("/me", [asyncHandler(authenticationMiddleware)], asyncHandler(UserController.getUser));
+userRoutes.get("/request-otp", [asyncHandler(authenticationMiddleware)], asyncHandler(UserController.requestOTP));
 
 export default userRoutes;

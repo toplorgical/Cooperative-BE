@@ -7,29 +7,34 @@ export type UserProps = {
   phone: string;
   password: string;
   email: string;
+  publicId: string;
   isVerified: boolean | number;
   rememberMe: boolean;
   token: string;
   userAgent?: string;
-  personalDetails: {
-    address: string;
-    city: string;
-    state: string;
-    postCode: string;
-    country: string;
-    dateOfBirth: string;
-    gender: string;
-  };
-  employmentDetails: {
-    position: string;
-    type: "full-time" | "contract";
-  };
+  nationality: string;
+  address: string;
+  lga: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  dateOfBirth: string;
+  gender: string;
+  contactAddress: string;
+  registrationStatus: "PENDING" | "APPROVED" | "REJECTED";
+  companyName: string;
+  jobTitle: string;
+  employmentStartDate: string;
+  employmentType: string;
+  employmentLocation: string;
+  balance : number
+
   documents: {
     title: string;
     url: string;
     description: string;
   }[];
-  profileSetup: "personal-details" | "employment-details" | "completed";
+  profileSetup: "PERSONAL_INFO" | "WORK_INFO" | "COMPLETED";
   isActive: boolean;
   isBanned: boolean;
   isDeleted: boolean;
@@ -48,13 +53,18 @@ export type VerificationProps = {
   code: string;
   userId: number;
   expiresAt: string;
+};
+
+export type ResetPasswordProps = {
+  code: string;
+  token: string;
   password: string;
 };
 
 
 export type LoanProps = {
   id: number;
-  amount: DecimalDataType;
+  amount: number;
   userId: number;
   disbursedAt: string;
   approvedAt : string;

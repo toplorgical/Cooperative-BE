@@ -5,7 +5,8 @@ import authenticationMiddleware from "../middlewares/authMiddleware";
 
 const loanRoutes = Router();
 
-loanRoutes.post("/loan-request",authenticationMiddleware, asyncHandler(LoanController.create));
+loanRoutes.post("/request-loan",authenticationMiddleware, asyncHandler(LoanController.create));
+loanRoutes.post("/cancel-loan/:id",authenticationMiddleware, asyncHandler(LoanController.cancel));
 
 
 
