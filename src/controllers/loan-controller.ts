@@ -7,10 +7,15 @@ import { RESPONSE } from "../constants/index";
 
 class LoanController{
      static async create(req: any ,res: Response, ){
-        const {userId} = req.user  
-        const {amount, duration} = req.body  
+        const userId = req.user.data.user.id as number 
+        const data ={
+            amount:req.body.amount,
+            duration : req.body.duration,
+            userId
 
-        const loanDetails = await LoanServices.create({ amount, duration, userId} as LoanProps)
+        } as LoanProps
+       console.log(data)
+        const loanDetails = await LoanServices.create(data)
         ResponseManager.success(res, null, 200, RESPONSE.SUCCESS);
 
     } 

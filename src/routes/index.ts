@@ -2,10 +2,12 @@ import { Application, Request, Response, Router } from "express";
 import ResponseManager from "../utils/response-manager";
 import { NotFoundError } from "../utils/errorHandler";
 import userRoutes from "./userRoutes";
+import loanRoutes from "./loanRoute";
 
 function appRouter(app: Application) {
   app.get("/", homeRoute);
   app.use("/api/v1/users", userRoutes)
+  app.use("/api/v1/loans", loanRoutes)
 
   app.use("*", notFoundRoute);
 

@@ -9,6 +9,7 @@ class LoanValidations {
     const schema = Joi.object({
       amount: LoanValidations.loanProperties.amount,
       duration: LoanValidations.loanProperties.duration,
+      userId: LoanValidations.loanProperties.userId,
     });
 
     const { error } = schema.validate(data);
@@ -18,7 +19,8 @@ class LoanValidations {
 
 
   static loanProperties = {
-    amount: Joi.string().regex(/^\d+(\.\d{1,2})?$/).required().label("amount"),
+    amount: Joi.number().required().label("amount"),
+    userId: Joi.number().required().label("userId"),
     duration: Joi.string().regex(/^[0-9]$/).required().label("duration"),
    
   };

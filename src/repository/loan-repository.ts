@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import {Loan} from "../models/loan";
-import { LoanProps, LoanQueryProps } from "../types";
+import { LoanProps, LoanQueryProps } from "../types/index";
 
 class LoanRepository {
   static async create(data: LoanProps) {

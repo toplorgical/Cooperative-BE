@@ -8,6 +8,7 @@ export const RESPONSE = {
   INVALID_PHONE: "Phone number is invalid",
   SMS_FAILED: "could not send sms",
   FAILED_UPDATE: "could not update request",
+  NOT_ELIGIBLE_FOR_LOAN : "You Are Not Eligible This Loan"
 };
 
 export const smsResponse = {

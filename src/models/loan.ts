@@ -5,7 +5,7 @@ import { duration } from "moment";
 
 
 
-export const Loan = dbClient.sequelize.define('loan', {
+ const Loan = dbClient.sequelize.define('loan', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -35,18 +35,11 @@ export const Loan = dbClient.sequelize.define('loan', {
     allowNull: true,
     values:["PENDING","APPROVED","REJECTED","CANCELED"]
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: 'id',
-    },
-  },
+  
 });
 
 
-export const LoanPayment = dbClient.sequelize.define('LoanPayment', {
+ const LoanPayment = dbClient.sequelize.define('LoanPayment', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -63,14 +56,8 @@ satus: {
     allowNull: true,
     values:["PENDING", "COMPLETED", ]
   },
-  loanId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+  
+  
 });
 
 // Define relationships
@@ -88,9 +75,12 @@ LoanPayment.belongsTo(Loan, { foreignKey: 'loanId' });
 
 
 dbClient.sequelize
-  .sync({ alter: true })
-  .then(() => {})
+  .sync()
+  .then(() => {console.log('loans table sync')})
   .catch((error) => console.error(error));
+
+
+  export {Loan,LoanPayment}
 
 
 
