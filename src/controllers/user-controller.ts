@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserProps, VerificationProps } from "../types";
+import { ResetPasswordProps, UserProps } from "../types";
 import UserService from "../services/user-service";
 import { generateToken } from "../utils";
 import ResponseManager from "../utils/response-manager";
@@ -39,9 +39,9 @@ class UserController {
     ResponseManager.success(res, result, 200);
   }
   static async resetPassword(req: any, res: any) {
-    const data = req.body as VerificationProps;
-    const result = await UserService.resetPassword(data);
-    ResponseManager.success(res, null, 200, result);
+    const data = req.body as ResetPasswordProps;
+    const message = await UserService.resetPassword(data);
+    ResponseManager.success(res, null, 200, message);
   }
 }
 

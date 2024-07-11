@@ -1,21 +1,15 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import config from "../config/config";
+import { Response, NextFunction } from "express";
+import { AuthorizationError } from "../utils/errorHandler";
+import { verifyToken } from "../utils";
 
 const authenticationMiddleware = (req: any, res: Response, next: NextFunction) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
-  if (!token) {
-    return res.status(401).send({ error: "No token provided." });
-  }
+  if (!token) throw new AuthorizationError("No token provided");
 
-  try {
-    const decoded = jwt.verify(token, config.JWT_KEY);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).send({ error: "Invalid token." });
-  }
+  const result = verifyToken(token);
+  req.user = result;
+  next();
 };
 
 export default authenticationMiddleware;

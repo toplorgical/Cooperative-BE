@@ -5,7 +5,7 @@ export class ApplicationError extends Error {
   constructor(public message: string, public statusCode?: number) {
     super(message);
     this.name = "ApplicationError";
-    this.statusCode = statusCode;
+    this.statusCode = statusCode || 400;
   }
 }
 export class ValidationError extends ApplicationError {

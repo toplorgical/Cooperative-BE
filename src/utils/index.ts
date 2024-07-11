@@ -23,10 +23,10 @@ export const generateToken = (
 
 export function verifyToken(token: string) {
   try {
-    const result = jwt.verify(token, config.JWT_KEY) as { id: string | number };
+    const result = jwt.verify(token, config.JWT_KEY) as any;
     return result;
   } catch (error) {
-    throw new ApplicationError("Invalid or expired token", 400);
+    throw new ApplicationError("Token is invalid or expired", 400);
   }
 }
 

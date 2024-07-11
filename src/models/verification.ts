@@ -23,17 +23,12 @@ const VerificationModel = dbClient.sequelize.define(
       allowNull: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true, initialAutoIncrement: "239876" }
 );
 
 dbClient.sequelize
   .sync()
   .then(() => {})
   .catch((error) => console.error(error));
-
-// dbClient.sequelize
-//   .query(`ALTER SEQUENCE \"verifications_id_seq\" RESTART WITH 3477879;`)
-//   .then(() => {})
-//   .catch((error) => console.error(error));
 
 export default VerificationModel;

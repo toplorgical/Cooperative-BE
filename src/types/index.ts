@@ -5,6 +5,7 @@ export type UserProps = {
   phone: string;
   password: string;
   email: string;
+  publicId: string;
   isVerified: boolean | number;
   rememberMe: boolean;
   token: string;
@@ -46,5 +47,10 @@ export type VerificationProps = {
   code: string;
   userId: number;
   expiresAt: string;
+};
+
+export type ResetPasswordProps = {
+  code: string;
+  token: string;
   password: string;
 };

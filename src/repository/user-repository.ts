@@ -7,7 +7,7 @@ class UserRepository {
     const result = await User.create(data);
     return result.toJSON() as UserProps;
   }
-  static async update(data: UserProps, id: number) {
+  static async update(data: Partial<UserProps>, id: number) {
     return await User.update(data, { where: { id } });
   }
   static async findByPk(id: number) {
@@ -15,14 +15,15 @@ class UserRepository {
   }
   static async findOne(query: Partial<UserProps>) {
     const where = {} as UserProps;
+    if (query.id) where.id = query.id;
+    if (query.phone) where.phone = query.phone;
+    if (query.publicId) where.publicId = query.publicId;
     if (query.isActive) where.isActive = query.isActive;
     if (query.isBanned) where.isBanned = query.isBanned;
     if (query.email) where.email = query.email;
-    if (query.id) where.id = query.id;
     if (query.isDeleted) where.isDeleted = query.isDeleted;
     if (query.isVerified) where.isVerified = query.isVerified;
     if (query.profileSetup) where.profileSetup = query.profileSetup;
-    if (query.phone) where.phone = query.phone;
     const result = await User.findOne({ where });
     return result?.toJSON() as UserProps;
   }

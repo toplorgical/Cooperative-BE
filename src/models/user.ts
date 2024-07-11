@@ -10,6 +10,11 @@ const User = dbClient.sequelize.define(
       autoIncrement: true,
       allowNull: false,
     },
+    publicId: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -97,17 +102,12 @@ const User = dbClient.sequelize.define(
       allowNull: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true, initialAutoIncrement: "1007897760" }
 );
 
 dbClient.sequelize
-  .sync({ alter: true })
+  .sync()
   .then(() => {})
   .catch((error) => console.error(error));
-
-// dbClient.sequelize
-//   .query(`ALTER SEQUENCE \"users_id_seq\" RESTART WITH 1007897760;`)
-//   .then(() => {})
-//   .catch((error) => console.error(error));
 
 export default User;
