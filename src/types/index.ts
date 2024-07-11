@@ -10,19 +10,23 @@ export type UserProps = {
   rememberMe: boolean;
   token: string;
   userAgent?: string;
-  personalDetails: {
-    address: string;
-    city: string;
-    state: string;
-    postCode: string;
-    country: string;
-    dateOfBirth: string;
-    gender: string;
-  };
-  employmentDetails: {
-    position: string;
-    type: "full-time" | "contract";
-  };
+
+  nationality: string;
+  address: string;
+  lga: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  dateOfBirth: string;
+  gender: string;
+  contactAddress: string;
+  registrationStatus: string;
+  companyName: string;
+  jobTitle: string;
+  employmentStartDate: string;
+  employmentType: string;
+  employmentLocation: string;
+
   documents: {
     title: string;
     url: string;
@@ -53,4 +57,9 @@ export type ResetPasswordProps = {
   code: string;
   token: string;
   password: string;
+};
+
+export type ChangePasswordProps = {
+  password: string;
+  newPassword: string;
 };

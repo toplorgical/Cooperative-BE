@@ -11,7 +11,8 @@ class UserRepository {
     return await User.update(data, { where: { id } });
   }
   static async findByPk(id: number) {
-    return await User.findByPk(id);
+    const result = await User.findByPk(id);
+    return result?.toJSON() as UserProps;
   }
   static async findOne(query: Partial<UserProps>) {
     const where = {} as UserProps;

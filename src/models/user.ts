@@ -23,6 +23,9 @@ const User = dbClient.sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    middleName: {
+      type: DataTypes.STRING,
+    },
     phone: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -36,33 +39,55 @@ const User = dbClient.sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    nationality: {
+      type: DataTypes.STRING,
+    },
+    country: {
+      type: DataTypes.STRING,
+    },
+    gender: {
+      type: DataTypes.STRING,
+    },
+    lga: {
+      type: DataTypes.STRING,
+    },
+    state: {
+      type: DataTypes.STRING,
+    },
+    contactAddress: {
+      type: DataTypes.STRING,
+    },
+    postalCode: {
+      type: DataTypes.STRING,
+    },
+    dateOfBirth: {
+      type: DataTypes.DATE,
+    },
+    registrationStatus: {
+      type: DataTypes.ENUM,
+      defaultValue: "PENDING",
+      values: ["PENDING", "APPROVED", "REJECTED"],
+    },
+    companyName: {
+      type: DataTypes.STRING,
+    },
+    jobTitle: {
+      type: DataTypes.STRING,
+    },
+    employmentStartDate: {
+      type: DataTypes.STRING,
+    },
+    employmentType: {
+      type: DataTypes.STRING,
+    },
+    employmentLocation: {
+      type: DataTypes.STRING,
+    },
     accountNumber: {
       type: DataTypes.VIRTUAL,
       get() {
         const _this: any = this;
         return _this.id;
-      },
-    },
-    personalDetails: {
-      type: DataTypes.TEXT,
-      get() {
-        const value = this.getDataValue("personalDetails");
-        if (!value) return {};
-        return JSON.parse(value);
-      },
-      set(value) {
-        this.setDataValue("personalDetails", JSON.stringify(value));
-      },
-    },
-    employmentDetails: {
-      type: DataTypes.TEXT,
-      get() {
-        const value = this.getDataValue("employmentDetails");
-        if (!value) return {};
-        return JSON.parse(value);
-      },
-      set(value) {
-        this.setDataValue("employmentDetails", JSON.stringify(value));
       },
     },
     documents: {

@@ -18,7 +18,7 @@ export const generateToken = (
   data: any,
   expiresIn: "10m" | "1h" | "6h" | "12h" | "24h" | "7d" | "30d" | "60d" | "90d"
 ) => {
-  return jwt.sign({ data }, config.JWT_KEY, { expiresIn });
+  return jwt.sign({ id: data }, config.JWT_KEY, { expiresIn });
 };
 
 export function verifyToken(token: string) {

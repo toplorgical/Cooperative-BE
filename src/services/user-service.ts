@@ -4,7 +4,7 @@ import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
 import { ResetPasswordProps, UserProps, VerificationProps } from "../types";
 import { hashPassword, comparePassword, generateOtp, isValidPhone, generateToken, verifyToken } from "../utils";
-import { ApplicationError, ValidationError } from "../utils/errorHandler";
+import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
 import { MessagingService, MassagingProps } from "./messaging-service";
@@ -31,8 +31,8 @@ class UserService {
     let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
-    const isPasswordCorrect = await comparePassword(data.password, user.password);
-    if (!isPasswordCorrect) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
+    const isValidPassword = await comparePassword(data.password, user.password);
+    if (!isValidPassword) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
     user = _.omit(user, ["password"]) as UserProps;
     return { user };
@@ -88,8 +88,7 @@ class UserService {
     if (error) throw new ValidationError(error, 400);
 
     const decoded = verifyToken(data.token);
-    const publicId = "";
-    console.log(decoded);
+    const publicId = decoded?.publicId;
 
     const user = await UserRepository.findOne({ publicId });
     if (!user) throw new ApplicationError("Token is invalid or expired", 400);
@@ -104,6 +103,35 @@ class UserService {
     await VerificationRepository.destroy(_vQuery);
 
     return "Password reset successful";
+  }
+
+  static async personalInfo(data: UserProps, userId: number) {
+    const error = UserValidations.personalInfo(data);
+    if (error) throw new ValidationError(error, 400);
+
+    await UserRepository.update(data, userId);
+
+    return "Personal info updated successfully";
+  }
+
+  static async workInfo(data: UserProps, userId: number) {
+    const error = UserValidations.workInfo(data);
+    if (error) throw new ValidationError(error, 400);
+
+    await UserRepository.update(data, userId);
+    return "Work info updated successfully";
+  }
+
+  static async changePassword(data: UserProps, user: UserProps) {
+    const error = UserValidations.changePassword(data);
+    if (error) throw new ValidationError(error, 400);
+
+    const isValidPassword = await comparePassword(data.password, user.password);
+    if (!isValidPassword) throw new ApplicationError("Current password is invalid");
+
+    data.password = await hashPassword(data.password);
+    await UserRepository.update({ password: data.password }, user.id);
+    return "Password updated successfully";
   }
 }
 export default UserService;

@@ -3,6 +3,7 @@ import { ResetPasswordProps, UserProps } from "../types";
 import UserService from "../services/user-service";
 import { generateToken } from "../utils";
 import ResponseManager from "../utils/response-manager";
+import _ from "lodash";
 
 class UserController {
   static async signup(req: Request, res: Response) {
@@ -38,10 +39,35 @@ class UserController {
     const result = await UserService.forgotPassword(req.body);
     ResponseManager.success(res, result, 200);
   }
+
   static async resetPassword(req: any, res: any) {
     const data = req.body as ResetPasswordProps;
     const message = await UserService.resetPassword(data);
     ResponseManager.success(res, null, 200, message);
+  }
+
+  static async changePassword(req: any, res: any) {
+    const data = req.body as UserProps;
+    const user = req.user as UserProps;
+    const message = await UserService.changePassword(data, user);
+    ResponseManager.success(res, null, 200, message);
+  }
+
+  static async getUser(req: any, res: any) {
+    const user = _.omit(req.user, ["password"]) as UserProps;
+    ResponseManager.success(res, user, 200);
+  }
+
+  static async personalInfo(req: any, res: any) {
+    const user = req.user as UserProps;
+    await UserService.personalInfo(req.body, user.id);
+    ResponseManager.success(res, user, 200);
+  }
+
+  static async workInfo(req: any, res: any) {
+    const user = req.user as UserProps;
+    await UserService.workInfo(req.body, user.id);
+    ResponseManager.success(res, user, 200);
   }
 }
 
