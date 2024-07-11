@@ -105,20 +105,22 @@ class UserService {
     return "Password reset successful";
   }
 
-  static async personalInfo(data: UserProps, userId: number) {
+  static async personalInfo(data: UserProps, user: UserProps) {
     const error = UserValidations.personalInfo(data);
     if (error) throw new ValidationError(error, 400);
 
-    await UserRepository.update(data, userId);
+    if (user.profileSetup === "PERSONAL_INFO") data.profileSetup = "WORK_INFO";
+    await UserRepository.update(data, user.id);
 
     return "Personal info updated successfully";
   }
 
-  static async workInfo(data: UserProps, userId: number) {
+  static async workInfo(data: UserProps, user: UserProps) {
     const error = UserValidations.workInfo(data);
     if (error) throw new ValidationError(error, 400);
 
-    await UserRepository.update(data, userId);
+    if (user.profileSetup === "WORK_INFO") data.profileSetup = "COMPLETED";
+    await UserRepository.update(data, user.id);
     return "Work info updated successfully";
   }
 

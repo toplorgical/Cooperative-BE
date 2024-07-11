@@ -60,13 +60,13 @@ class UserController {
 
   static async personalInfo(req: any, res: any) {
     const user = req.user as UserProps;
-    await UserService.personalInfo(req.body, user.id);
+    await UserService.personalInfo(req.body, user);
     ResponseManager.success(res, user, 200);
   }
 
   static async workInfo(req: any, res: any) {
     const user = req.user as UserProps;
-    await UserService.workInfo(req.body, user.id);
+    await UserService.workInfo(req.body, user);
     ResponseManager.success(res, user, 200);
   }
 }

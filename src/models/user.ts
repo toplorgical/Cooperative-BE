@@ -103,8 +103,8 @@ const User = dbClient.sequelize.define(
     },
     profileSetup: {
       type: DataTypes.ENUM,
-      defaultValue: "personal-details",
-      values: ["personal-details", "employment-details", "completed"],
+      defaultValue: "PERSONAL_INFO",
+      values: ["PERSONAL_INFO", "WORK_INFO", "COMPLETED"],
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
@@ -131,8 +131,8 @@ const User = dbClient.sequelize.define(
 );
 
 dbClient.sequelize
-  .sync()
-  .then(() => {})
+  .sync({ alter: true })
+  .then(() => console.log("users table"))
   .catch((error) => console.error(error));
 
 export default User;

@@ -10,7 +10,6 @@ export type UserProps = {
   rememberMe: boolean;
   token: string;
   userAgent?: string;
-
   nationality: string;
   address: string;
   lga: string;
@@ -20,7 +19,7 @@ export type UserProps = {
   dateOfBirth: string;
   gender: string;
   contactAddress: string;
-  registrationStatus: string;
+  registrationStatus: "PENDING" | "APPROVED" | "REJECTED";
   companyName: string;
   jobTitle: string;
   employmentStartDate: string;
@@ -32,7 +31,7 @@ export type UserProps = {
     url: string;
     description: string;
   }[];
-  profileSetup: "personal-details" | "employment-details" | "completed";
+  profileSetup: "PERSONAL_INFO" | "WORK_INFO" | "COMPLETED";
   isActive: boolean;
   isBanned: boolean;
   isDeleted: boolean;
