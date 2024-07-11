@@ -12,6 +12,8 @@ export interface MassagingProps {
 
 export class MessagingService {
   static async send(data: Partial<MassagingProps>) {
+    console.log(data);
+    return { status: "success", sms: data.sms };
     try {
       data.to = data.to?.map((item) => item.replace("+", ""));
       data.from = "Toplorgical";
