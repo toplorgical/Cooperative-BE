@@ -3,7 +3,15 @@ import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
 import { ResetPasswordProps, UserProps, VerificationProps } from "../types";
-import { hashPassword, comparePassword, generateOtp, isValidPhone, generateToken, verifyToken } from "../utils";
+import {
+  hashPassword,
+  comparePassword,
+  generateOtp,
+  isValidPhone,
+  generateToken,
+  verifyToken,
+  generateRandomUUID,
+} from "../utils";
 import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
@@ -77,7 +85,9 @@ class UserService {
     const user = await UserRepository.findOne({ phone: data.phone });
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
-    const token = generateToken({ publicId: user.publicId }, "10m");
+    const publicId = generateRandomUUID();
+    await UserRepository.update({ publicId }, user.id);
+    const token = generateToken(publicId, "10m");
     await UserService.requestOTP(user);
 
     return { token };
@@ -88,7 +98,7 @@ class UserService {
     if (error) throw new ValidationError(error, 400);
 
     const decoded = verifyToken(data.token);
-    const publicId = decoded?.publicId;
+    const publicId = decoded?.id;
 
     const user = await UserRepository.findOne({ publicId });
     if (!user) throw new ApplicationError("Token is invalid or expired", 400);

@@ -12,8 +12,6 @@ const User = dbClient.sequelize.define(
     },
     publicId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
     },
     firstName: {
       type: DataTypes.STRING,
@@ -88,6 +86,14 @@ const User = dbClient.sequelize.define(
       get() {
         const _this: any = this;
         return _this.id;
+      },
+    },
+    balance: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
+      get() {
+        const value = this.getDataValue("balance");
+        return value === null ? 0 : parseFloat(value);
       },
     },
     documents: {
