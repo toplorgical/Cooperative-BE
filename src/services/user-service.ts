@@ -3,21 +3,17 @@ import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
 import { ResetPasswordProps, UserProps, VerificationProps } from "../types";
-import {
-  hashPassword,
-  comparePassword,
-  generateOtp,
-  isValidPhone,
-  generateToken,
-  verifyToken,
-  generateRandomUUID,
-} from "../utils";
-import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
+import { hashPassword, comparePassword, generateOtp, isValidPhone, generateRandomUUID } from "../utils";
+import { ApplicationError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
 import { MessagingService, MassagingProps } from "./messaging-service";
+import UserEventEmitter from "../event/user-event-emitter";
+import JWTManager from "../manager/jwtManager";
 
 class UserService {
+  static generatedTokens = {} as { [key: string]: string };
+
   static async signup(data: UserProps) {
     const error = UserValidations.signup(data);
     if (error) throw new ValidationError(error, 400);
@@ -29,7 +25,10 @@ class UserService {
     data.password = await hashPassword(data.password);
     user = await UserRepository.create(data);
     user = _.omit(user, ["password"]) as UserProps;
-    return { user };
+
+    const accessToken = JWTManager.generate(user.id, "7d");
+    UserEventEmitter.emit("REQUEST_OTP", user);
+    return { accessToken };
   }
 
   static async sigin(data: UserProps) {
@@ -43,7 +42,8 @@ class UserService {
     if (!isValidPassword) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
     user = _.omit(user, ["password"]) as UserProps;
-    return { user };
+    const accessToken = JWTManager.generate(user.id, "7d");
+    return { accessToken };
   }
 
   static async requestOTP(data: UserProps) {
@@ -87,19 +87,16 @@ class UserService {
 
     const publicId = generateRandomUUID();
     await UserRepository.update({ publicId }, user.id);
-    const token = generateToken(publicId, "10m");
-    await UserService.requestOTP(user);
-
-    return { token };
+    const accessToken = JWTManager.generate(publicId, "10m");
+    UserEventEmitter.emit("REQUEST_OTP", user);
+    return { token: accessToken };
   }
 
   static async resetPassword(data: ResetPasswordProps) {
     const error = UserValidations.resetPassword(data);
     if (error) throw new ValidationError(error, 400);
 
-    const decoded = verifyToken(data.token);
-    const publicId = decoded?.id;
-
+    const publicId = JWTManager.verify(data.token)?.id;
     const user = await UserRepository.findOne({ publicId });
     if (!user) throw new ApplicationError("Token is invalid or expired", 400);
 
@@ -111,7 +108,6 @@ class UserService {
     data.password = await hashPassword(data.password);
     await UserRepository.update({ password: data.password }, user.id);
     await VerificationRepository.destroy(_vQuery);
-
     return "Password reset successful";
   }
 
@@ -121,7 +117,6 @@ class UserService {
 
     if (user.profileSetup === "PERSONAL_INFO") data.profileSetup = "WORK_INFO";
     await UserRepository.update(data, user.id);
-
     return "Personal info updated successfully";
   }
 

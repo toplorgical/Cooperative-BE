@@ -1,24 +1,20 @@
 import { Request, Response } from "express";
 import { ResetPasswordProps, UserProps } from "../types";
 import UserService from "../services/user-service";
-import { generateToken } from "../utils";
 import ResponseManager from "../utils/response-manager";
 import _ from "lodash";
+import UserRepository from "../repository/user-repository";
 
 class UserController {
   static async signup(req: Request, res: Response) {
     const data = req.body as UserProps;
-    const result = await UserService.signup(data);
-
-    const accessToken = generateToken(result.user, "7d");
+    const accessToken = await UserService.signup(data);
     ResponseManager.success(res, { accessToken }, 201);
-    UserService.requestOTP(result.user);
   }
 
   static async signin(req: Request, res: Response) {
     const data = req.body as UserProps;
-    const result = await UserService.sigin(data);
-    const accessToken = generateToken(result, "7d");
+    const accessToken = await UserService.sigin(data);
     ResponseManager.success(res, { accessToken }, 200);
   }
 
@@ -68,6 +64,14 @@ class UserController {
     const user = req.user as UserProps;
     await UserService.workInfo(req.body, user);
     ResponseManager.success(res, user, 200);
+  }
+
+  static async findUsers(req: any, res: any) {
+    const query = { ...req.query };
+    if (req.user) query.userId = req.user.id;
+
+    const result = UserRepository.findAll(query);
+    ResponseManager.success(res, result, 200);
   }
 }
 
