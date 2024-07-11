@@ -1,3 +1,5 @@
+import { DecimalDataType } from "sequelize";
+
 export type UserProps = {
   id: number;
   firstName: string;
@@ -48,3 +50,22 @@ export type VerificationProps = {
   expiresAt: string;
   password: string;
 };
+
+
+export type LoanProps = {
+  id: number;
+  amount: DecimalDataType;
+  userId: number;
+  disbursedAt: string;
+  approvedAt : string;
+  loanId : number;
+  duration : string;
+  status : string;
+};
+
+
+export interface   LoanQueryProps extends LoanProps {
+  keyword: string;
+  page: string;
+  limit: string;
+}
