@@ -10,7 +10,7 @@ class UserController {
     const data = req.body as UserProps;
     const result = await UserService.signup(data);
 
-    const accessToken = generateToken(result.user, "7d");
+    const accessToken = generateToken(result.user.id, "7d");
     ResponseManager.success(res, { accessToken }, 201);
     UserService.requestOTP(result.user);
   }
@@ -18,7 +18,7 @@ class UserController {
   static async signin(req: Request, res: Response) {
     const data = req.body as UserProps;
     const result = await UserService.sigin(data);
-    const accessToken = generateToken(result, "7d");
+    const accessToken = generateToken(result.user.id, "7d");
     ResponseManager.success(res, { accessToken }, 200);
   }
 
