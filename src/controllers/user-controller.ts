@@ -68,9 +68,13 @@ class UserController {
 
   static async findUsers(req: any, res: any) {
     const query = { ...req.query };
-    if (req.user) query.userId = req.user.id;
 
-    const result = UserRepository.findAll(query);
+    const result = await UserRepository.findAll(query);
+    ResponseManager.success(res, result, 200);
+  }
+  static async findOneUser(req: any, res: any) {
+    const id = req.params.id;
+    const result = await UserRepository.findByPk(id);
     ResponseManager.success(res, result, 200);
   }
 }

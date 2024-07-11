@@ -9,6 +9,7 @@ class JWTManager {
   static revoke(data: string | number) {
     delete JWTManager.tokens[data];
   }
+
   static generate(data: string | number, expiresIn: ExpiresInProps) {
     const result = jwt.sign({ id: data }, config.JWT_KEY, { expiresIn });
     JWTManager.tokens[data] = result;

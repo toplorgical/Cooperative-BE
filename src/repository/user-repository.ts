@@ -42,12 +42,13 @@ class UserRepository {
     if (query.isVerified) where.isVerified = query.isVerified;
     if (query.profileSetup) where.profileSetup = query.profileSetup;
     if (query.phone) where.phone = query.phone;
-    if (query.keyword)
+    if (query.keyword) {
       where[Op.or] = {
         email: { [Op.like]: `%${query.keyword.trim().split("").join("%")}%` },
         lastName: { [Op.like]: `%${query.keyword.trim().split("").join("%")}%` },
         firstName: { [Op.like]: `%${query.keyword.trim().split("").join("%")}%` },
       };
+    }
     const response = await User.findAll({
       where,
       limit: limit,

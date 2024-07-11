@@ -4,7 +4,6 @@ import cors from "cors";
 import appRouter from "./routes";
 import errorHandler from "./utils/errorHandler";
 import Logger from "./utils/logger";
-import { MessagingService } from "./services/messaging-service";
 
 const app = express();
 

@@ -1,7 +1,7 @@
 import { Application, Request, Response, Router } from "express";
 import ResponseManager from "../utils/response-manager";
 import { NotFoundError } from "../utils/errorHandler";
-import userRoutes from "./userRoutes";
+import {userRoutes} from "./userRoutes";
 import loanRoutes from "./loanRoute";
 
 function appRouter(app: Application) {
