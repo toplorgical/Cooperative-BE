@@ -11,6 +11,10 @@ class LoanRepository {
     return await Loan.update(data, { where: { id } });
   }
   
+  static async findById(id: number) {
+    const result = await Loan.findByPk(id);
+    return result?.toJSON() as LoanProps;
+  }
  
   static async findOne(query: Partial<LoanProps>) {
     const where = {} as LoanProps;

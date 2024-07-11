@@ -21,20 +21,21 @@ class LoanController{
         ResponseManager.success(res, null, 200, RESPONSE.SUCCESS);
 
     } 
-    static async findAll(req: any ,res: Response, ){
+    static async getAllLone(req: any ,res: Response, ){
         const query = {...req.query} as any;
         if(req.user)query.userId = req.user.id;
         const result = await LoanRepository.findAll(query)
         ResponseManager.success(res, result, 200);
     } 
-    static async findone(req: any ,res: Response, ){
+    static async getLoan(req: any ,res: Response, ){
         const query = {...req.query} as any;
+        //console.log()
         if(req.user)query.userId = req.user.id;
         const result = await LoanRepository.findAll(query)
         ResponseManager.success(res, result, 200);
     } 
 
-    static async cancel(req: any ,res: Response, ){
+    static async cancelLoan(req: any ,res: Response, ){
         const userId = req.user.id 
         const loanId = req.params.id
         if (!loanId && !userId) throw new LoanRequestError(RESPONSE.INVALID_CREDENTAILS)
