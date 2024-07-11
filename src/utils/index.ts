@@ -23,24 +23,6 @@ export function generateRandomUUID() {
   return crypto.randomUUID();
 }
 
-export const cookieProperties = {
-  httpOnly: true,
-  secure: true,
-  maxAge: 1000 * 60 * 60 * 24 * 7,
-  sameSite: "strict",
-};
-
-export const maxAge = {
-  "1h": 1000 * 60 * 60,
-  "6h": 1000 * 60 * 60 * 6,
-  "12h": 1000 * 60 * 60 * 12,
-  "24h": 1000 * 60 * 60 * 24,
-  "7d": 1000 * 60 * 60 * 24 * 7,
-  "30d": 1000 * 60 * 60 * 24 * 30,
-  "60d": 1000 * 60 * 60 * 24 * 60,
-  "90d": 1000 * 60 * 60 * 24 * 90,
-};
-
 export const generateOtp = (length: number) => {
   let digits = "";
   for (let i = 0; i < length; i++) {
