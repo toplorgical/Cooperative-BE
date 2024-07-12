@@ -1,3 +1,5 @@
+import { number } from "joi";
+import { FLOAT } from "sequelize";
 import { DecimalDataType } from "sequelize";
 
 export type UserProps = {
@@ -48,7 +50,11 @@ export interface UserQueryProps extends UserProps {
   limit: string;
 }
 
-
+export interface CalculatorTypeProps {
+  rate :number,
+  amount : number,
+  duration : number
+}
 
 export interface LoanTypeProps{
   id: number;
@@ -70,14 +76,18 @@ export type ResetPasswordProps = {
 };
 
 export type LoanProps = {
+  totalAmountToBePaid :number,
+  interest : number,
   id: number;
   amount: number;
   userId: number;
   disbursedAt: string;
   approvedAt: string;
   loanId: number;
-  duration: string;
+  duration: number;
   status: string;
+  rate : number;
+  loanTypeId :number
 };
 export type LoanPaymentProps = {
   id: number;

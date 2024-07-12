@@ -1,11 +1,12 @@
 import _ from "lodash";
-import { LoanProps } from "../types/index";
+import { LoanProps ,CalculatorTypeProps} from "../types/index";
 import { LoanRequestError, ValidationError } from "../utils/errorHandler";
 import LoanValidations from "../validations/loan-validation";
 import { RESPONSE } from "../constants/index";
 import LoanRepository from "../repository/loan-repository";
  import UserRepository from "../repository/user-repository";
 import { number } from "joi";
+import { duration } from "moment";
 
 
 class LoanServices {
@@ -14,17 +15,38 @@ class LoanServices {
        
         const validate=   LoanValidations.validate(data)
         
-        if (validate) throw new ValidationError(RESPONSE.INVALID_CREDENTAILS)
+        if (validate) throw new ValidationError(validate)
          const getUserDetails = await UserRepository.findByPk(data.userId)
-        if (getUserDetails.balance < data.amount/2 && getUserDetails.registrationStatus!=="APPROVED")
-            throw new  LoanRequestError(RESPONSE.NOT_ELIGIBLE_FOR_LOAN)
+       // if (getUserDetails.balance < data.amount/2 && getUserDetails.registrationStatus!=="APPROVED")
+           // throw new  LoanRequestError(RESPONSE.NOT_ELIGIBLE_FOR_LOAN)
+            let loanData = await LoanRepository.getLoanType()
+            if (!loanData.length) throw new LoanRequestError(RESPONSE.NO_LOAN_TYPE)
+            let loanType = loanData[0];
+            let result = {
+                rate: loanType.rate,  
+                amount: data.amount,
+                duration: data.duration
+            } as CalculatorTypeProps;
 
+            let calculate = LoanServices.calculateLoan(result);
 
-        const loanDetails = await LoanRepository.create(data)
-
+            const loanDetails = await LoanRepository.create({
+                ...data,
+                ...calculate,
+                loanTypeId: loanType.id 
+            });
         return loanDetails
     }
 
+    static calculateLoan (data:CalculatorTypeProps){
+      const{rate, amount, duration} = data 
+      const interest = (amount * rate * duration);
+      const totalAmountToBePaid = amount + interest
+      const monthlyReturn = totalAmountToBePaid/duration
+      
+      return  {interest, totalAmountToBePaid}
+
+    }
     static async cancel(data: any) {
         if (!data.loanId && !data.userId) {
           throw new LoanRequestError(RESPONSE.INVALID_CREDENTAILS);

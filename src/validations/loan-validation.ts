@@ -21,7 +21,7 @@ class LoanValidations {
   static loanProperties = {
     amount: Joi.number().required().label("amount"),
     userId: Joi.number().required().label("userId"),
-    duration: Joi.string().regex(/^[0-9]$/).required().label("duration"),
+    duration: Joi.number().integer().required().label("duration"),
    
   };
 }
