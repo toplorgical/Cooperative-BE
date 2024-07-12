@@ -35,6 +35,12 @@ class LoanController{
         ResponseManager.success(res, result, 200);
     } 
 
+    static async getLoanType(req: any ,res: Response, ){
+        const result = await LoanRepository.getLoanType()
+        ResponseManager.success(res, result, 200);
+    } 
+
+
     static async cancelLoan(req: any ,res: Response, ){
         const userId = req.user.id 
         const loanId = req.params.id

@@ -11,17 +11,18 @@ import { number } from "joi";
 class LoanServices {
 
     static async create(data : LoanProps){
-        console.log(data)
+       
         const validate=   LoanValidations.validate(data)
         
         if (validate) throw new ValidationError(RESPONSE.INVALID_CREDENTAILS)
          const getUserDetails = await UserRepository.findByPk(data.userId)
-        if (getUserDetails.balance < data.amount/2 && getUserDetails.registrationStatus==="APPROVED")
+        if (getUserDetails.balance < data.amount/2 && getUserDetails.registrationStatus!=="APPROVED")
             throw new  LoanRequestError(RESPONSE.NOT_ELIGIBLE_FOR_LOAN)
+
 
         const loanDetails = await LoanRepository.create(data)
 
-        return "loanDetails"
+        return loanDetails
     }
 
     static async cancel(data: any) {
