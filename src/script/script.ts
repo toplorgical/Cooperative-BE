@@ -1,3 +1,4 @@
+import LoanRepository from "../repository/loan-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
 import { LoanTypeProps } from "../types";
 
@@ -15,6 +16,12 @@ class AppScript {
     if (isExist) return;
     await LoanTypeRepository.bulkCreate(AppScript.loanTypes);
     console.log("LOAN TYPES: created successfully...");
+  }
+  static async updateLoanDates() {
+    // const isExist = await LoanRepository.upd({});
+    // if (isExist) return;
+    // await LoanTypeRepository.bulkCreate(AppScript.loanTypes);
+    // console.log("LOAN TYPES: created successfully...");
   }
 }
 

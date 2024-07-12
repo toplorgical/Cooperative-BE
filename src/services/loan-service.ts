@@ -5,7 +5,6 @@ import LoanValidations from "../validations/loan-validation";
 import { RESPONSE } from "../constants/index";
 import LoanRepository from "../repository/loan-repository";
 import UserRepository from "../repository/user-repository";
-import { number } from "joi";
 import LoanTypeRepository from "../repository/loan-type-repository";
 
 class LoanServices {
