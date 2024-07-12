@@ -60,7 +60,7 @@ export interface LoanTypeProps{
   id: number;
   rate: number;
   name: string;
-}
+};
 
 export type VerificationProps = {
   id: number;
@@ -84,16 +84,27 @@ export type LoanProps = {
   disbursedAt: string;
   approvedAt: string;
   loanId: number;
+<<<<<<< HEAD
   duration: number;
   status: string;
   rate : number;
   loanTypeId :number
+=======
+  duration: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+>>>>>>> 2037a5d4a621bb243c217ea5a2be0b76931a1c04
 };
 export type LoanPaymentProps = {
   id: number;
+  loanId: number;
   amount: number;
   status: "PENDING" | "COMPLETED";
 };
+
+export interface LoanPaymentQueryProps extends LoanPaymentProps {
+  page: string;
+  limit: string;
+}
 
 export interface LoanQueryProps extends LoanProps {
   keyword: string;

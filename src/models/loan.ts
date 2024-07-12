@@ -16,11 +16,19 @@ const Loan = dbClient.sequelize.define(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       defaultValue: 0,
+      get() {
+        const value = this.getDataValue("amount");
+        return value === null ? 0 : parseFloat(value);
+      },
     },
     totalAmount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       defaultValue: 0,
+      get() {
+        const value = this.getDataValue("totalAmount");
+        return value === null ? 0 : parseFloat(value);
+      },
     },
     amountPaid: {
       type: DataTypes.VIRTUAL,
@@ -86,6 +94,11 @@ const LoanPayment = dbClient.sequelize.define(
     amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
+      defaultValue: 0,
+      get() {
+        const value = this.getDataValue("amount");
+        return value === null ? 0 : parseFloat(value);
+      },
     },
     satus: {
       type: DataTypes.ENUM,
@@ -114,6 +127,10 @@ const LoanType = dbClient.sequelize.define(
       type: DataTypes.DECIMAL,
       allowNull: false,
       defaultValue: 0,
+      get() {
+        const value = this.getDataValue("rate");
+        return value === null ? 0 : parseFloat(value);
+      },
     },
   },
   { timestamps: true }

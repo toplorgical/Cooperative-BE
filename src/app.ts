@@ -4,6 +4,7 @@ import cors from "cors";
 import appRouter from "./routes/baseRoutes";
 import errorHandler from "./utils/errorHandler";
 import Logger from "./utils/logger";
+import AppScript from "./script/script";
 
 const app = express();
 
@@ -15,5 +16,7 @@ app.use(cookieParser());
 appRouter(app);
 Logger.setupErrorLogging();
 app.use(errorHandler);
+
+AppScript.initialize();
 
 export default app;

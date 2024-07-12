@@ -1,10 +1,7 @@
 import Joi from "joi";
-import { LoanProps } from "../types";
-
+import { LoanProps, LoanTypeProps } from "../types";
 
 class LoanValidations {
-  
-
   static validate(data: LoanProps) {
     const schema = Joi.object({
       amount: LoanValidations.loanProperties.amount,
@@ -16,7 +13,16 @@ class LoanValidations {
     if (error) return error.details[0].message;
     return null;
   }
+  static loanType(data: LoanTypeProps) {
+    const schema = Joi.object({
+      name: Joi.string().required(),
+      rate: Joi.number().required(),
+    });
 
+    const { error } = schema.validate(data);
+    if (error) return error.details[0].message;
+    return null;
+  }
 
   static loanProperties = {
     amount: Joi.number().required().label("amount"),
