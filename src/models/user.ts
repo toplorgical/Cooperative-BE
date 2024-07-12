@@ -137,7 +137,7 @@ const User = dbClient.sequelize.define(
 );
 
 dbClient.sequelize
-  .sync({ alter: true })
+  .sync()
   .then(() => console.log("users table"))
   .catch((error) => console.error(error));
 

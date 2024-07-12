@@ -73,9 +73,19 @@ export type LoanProps = {
 };
 export type LoanPaymentProps = {
   id: number;
+  loanId: number;
   amount: number;
   status: "PENDING" | "COMPLETED";
 };
+export type LoanTypeProps = {
+  id: number;
+  name: string;
+  rate: number;
+};
+export interface LoanPaymentQueryProps extends LoanPaymentProps {
+  page: string;
+  limit: string;
+}
 
 export interface LoanQueryProps extends LoanProps {
   keyword: string;
