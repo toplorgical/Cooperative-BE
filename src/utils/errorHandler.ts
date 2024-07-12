@@ -31,10 +31,18 @@ export class AuthorizationError extends ApplicationError {
   }
 }
 
+export class LoanRequestError extends ApplicationError {
+  constructor(public message: string, public statusCode?: number) {
+    super(message);
+    this.statusCode = 401;
+    this.name = "LoanRequestError";
+  }
+}
+
 function errorHandler(err: ApplicationError, req: Request, res: Response, next: NextFunction) {
   if (err.statusCode) ResponseManager.error(res, err.name, err.message, err.statusCode);
   else ResponseManager.error(res, err.name, err.message, 500);
-  if (!err.statusCode || err.statusCode >= 500) console.log(err, req);
+ // if (!err.statusCode || err.statusCode >= 500) console.log(err, req);
 }
 
 export default errorHandler;
