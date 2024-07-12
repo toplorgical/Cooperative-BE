@@ -75,7 +75,7 @@ export type LoanProps = {
   approvedAt: string;
   loanId: number;
   duration: string;
-  status: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
 };
 export type LoanPaymentProps = {
   id: number;

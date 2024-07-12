@@ -12,7 +12,7 @@ class LoanTypeRepository {
     return result?.map((item) => item.toJSON()) as LoanTypeProps[];
   }
 
-  static async updateById(data: LoanTypeProps, id: number) {
+  static async update(data: LoanTypeProps, id: number) {
     return await LoanType.update(data, { where: { id } });
   }
 
@@ -21,9 +21,14 @@ class LoanTypeRepository {
     return result?.toJSON() as LoanTypeProps;
   }
 
+  static async deleteOne(id: number) {
+    return await LoanType.destroy({ where: { id } });
+  }
+
   static async findOne(query?: Partial<LoanTypeProps>) {
     const where = {} as LoanTypeProps;
     if (query?.id) where.id = query.id;
+    if (query?.name) where.name = query.name;
 
     const result = await LoanType.findOne({ where });
     return result?.toJSON() as LoanTypeProps;
