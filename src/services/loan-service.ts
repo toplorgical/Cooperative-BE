@@ -5,8 +5,11 @@ import LoanValidations from "../validations/loan-validation";
 import { RESPONSE } from "../constants/index";
 import LoanRepository from "../repository/loan-repository";
 import UserRepository from "../repository/user-repository";
+<<<<<<< HEAD
 import { number } from "joi";
 import { duration } from "moment";
+=======
+>>>>>>> b8f1cc66820321e8af034fdcee27a38cc65588e8
 import LoanTypeRepository from "../repository/loan-type-repository";
 
 
