@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
-const routes_1 = __importDefault(require("./routes"));
+const routes_1 = __importDefault(require("./routes/routes"));
 const errorHandler_1 = __importDefault(require("./utils/errorHandler"));
 const logger_1 = __importDefault(require("./utils/logger"));
 const app = (0, express_1.default)();

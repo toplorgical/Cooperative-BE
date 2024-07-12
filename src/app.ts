@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import appRouter from "./routes";
+import appRouter from "./routes/baseRoutes";
 import errorHandler from "./utils/errorHandler";
 import Logger from "./utils/logger";
 

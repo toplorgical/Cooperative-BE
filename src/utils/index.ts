@@ -1,9 +1,6 @@
 import bcrypt from "bcryptjs";
-import config from "../config/config";
-import jwt from "jsonwebtoken";
 import { phone } from "phone";
 import crypto from "crypto";
-import { ApplicationError } from "./errorHandler";
 
 export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
