@@ -27,7 +27,7 @@ export type UserProps = {
   employmentStartDate: string;
   employmentType: string;
   employmentLocation: string;
-  balance : number
+  balance: number;
 
   documents: {
     title: string;
@@ -61,20 +61,23 @@ export type ResetPasswordProps = {
   password: string;
 };
 
-
 export type LoanProps = {
   id: number;
   amount: number;
   userId: number;
   disbursedAt: string;
-  approvedAt : string;
-  loanId : number;
-  duration : string;
-  status : string;
+  approvedAt: string;
+  loanId: number;
+  duration: string;
+  status: string;
+};
+export type LoanPaymentProps = {
+  id: number;
+  amount: number;
+  status: "PENDING" | "COMPLETED";
 };
 
-
-export interface   LoanQueryProps extends LoanProps {
+export interface LoanQueryProps extends LoanProps {
   keyword: string;
   page: string;
   limit: string;

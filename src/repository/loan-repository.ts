@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import {Loan} from "../models/loan";
+import { Loan, LoanPayment } from "../models/loan";
 import { LoanProps, LoanQueryProps } from "../types/index";
 
 class LoanRepository {
@@ -10,19 +10,19 @@ class LoanRepository {
   static async updateById(data: LoanProps, id: number) {
     return await Loan.update(data, { where: { id } });
   }
-  
+
   static async findById(id: number) {
     const result = await Loan.findByPk(id);
     return result?.toJSON() as LoanProps;
   }
- 
+
   static async findOne(query: Partial<LoanProps>) {
     const where = {} as LoanProps;
     if (query.status) where.status = query.status;
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
     if (query.loanId) where.loanId = query.loanId;
-    const result = await Loan.findOne({ where });
+    const result = await Loan.findOne({ where, include: [{ model: LoanPayment }] });
     return result?.toJSON() as LoanProps;
   }
 
@@ -45,14 +45,15 @@ class LoanRepository {
         [Op.or]: [
           { status: { [Op.like]: keyword } },
           { loanId: { [Op.like]: keyword } },
-          { userId: { [Op.like]: keyword } }
-        ]
+          { userId: { [Op.like]: keyword } },
+        ],
       };
     }
 
     const response = await Loan.findAll({
       where,
       limit,
+      attributes: { exclude: ["amountPaid", "balance"] },
       offset: (page - 1) * limit,
       order: [["id", "DESC"]],
     });
