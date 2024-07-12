@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
-import { Loan, LoanPayment, LoanType } from "../models/loan";
-import { LoanProps, LoanQueryProps,LoanTypeProps } from "../types/index";
+import { Loan, LoanPayment } from "../models/loan";
+import { LoanProps, LoanQueryProps } from "../types/index";
 
 class LoanRepository {
   static async create(data: LoanProps) {
@@ -16,10 +16,6 @@ class LoanRepository {
     return result?.toJSON() as LoanProps;
   }
 
-  static async getLoanType() {
-    const result = await LoanType.findAll();
-    return result.map((loanType) => loanType.toJSON()) as LoanProps[]
-  }
   static async findOne(query: Partial<LoanProps>) {
     const where = {} as LoanProps;
     if (query.status) where.status = query.status;
@@ -33,16 +29,13 @@ class LoanRepository {
   static async findAll(query: LoanQueryProps) {
     const limit = parseInt(query.limit || "20");
     const page = parseInt(query.page || "1");
-
     const totalPages = (count: number, limit: number) => Math.ceil(count / limit);
 
     let where: any = {};
-
     if (query.status) where.status = query.status;
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
     if (query.loanId) where.loanId = query.loanId;
-
     if (query.keyword) {
       const keyword = `%${query.keyword.trim().split("").join("%")}%`;
       where = {

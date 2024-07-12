@@ -48,13 +48,11 @@ export interface UserQueryProps extends UserProps {
   limit: string;
 }
 
-
-
-export interface LoanTypeProps{
+export type LoanTypeProps = {
   id: number;
   rate: number;
   name: string;
-}
+};
 
 export type VerificationProps = {
   id: number;
@@ -85,11 +83,7 @@ export type LoanPaymentProps = {
   amount: number;
   status: "PENDING" | "COMPLETED";
 };
-export type LoanTypeProps = {
-  id: number;
-  name: string;
-  rate: number;
-};
+
 export interface LoanPaymentQueryProps extends LoanPaymentProps {
   page: string;
   limit: string;
