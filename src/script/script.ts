@@ -17,12 +17,6 @@ class AppScript {
     await LoanTypeRepository.bulkCreate(AppScript.loanTypes);
     console.log("LOAN TYPES: created successfully...");
   }
-  static async updateLoanDates() {
-    // const isExist = await LoanRepository.upd({});
-    // if (isExist) return;
-    // await LoanTypeRepository.bulkCreate(AppScript.loanTypes);
-    console.log("LOAN TYPES: created successfully...");
-  }
 }
 
 export default AppScript;
