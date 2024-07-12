@@ -56,7 +56,7 @@ export interface CalculatorTypeProps {
   duration : number
 }
 
-export interface LoanTypeProps{
+export type LoanTypeProps={
   id: number;
   rate: number;
   name: string;
@@ -84,15 +84,9 @@ export type LoanProps = {
   disbursedAt: string;
   approvedAt: string;
   loanId: number;
-<<<<<<< HEAD
   duration: number;
-  status: string;
-  rate : number;
-  loanTypeId :number
-=======
-  duration: string;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
->>>>>>> 2037a5d4a621bb243c217ea5a2be0b76931a1c04
+  loanTypeId : number
 };
 export type LoanPaymentProps = {
   id: number;

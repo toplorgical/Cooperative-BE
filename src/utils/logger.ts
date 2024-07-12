@@ -24,7 +24,7 @@ class Logger {
         timeStamp: new Date(),
       },
     };
-    //console.log(_d);
+    console.log(_d);
   }
 }
 
