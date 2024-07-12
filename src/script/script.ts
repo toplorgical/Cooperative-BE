@@ -21,7 +21,7 @@ class AppScript {
     // const isExist = await LoanRepository.upd({});
     // if (isExist) return;
     // await LoanTypeRepository.bulkCreate(AppScript.loanTypes);
-    // console.log("LOAN TYPES: created successfully...");
+    console.log("LOAN TYPES: created successfully...");
   }
 }
 
