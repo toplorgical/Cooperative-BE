@@ -48,6 +48,14 @@ export interface UserQueryProps extends UserProps {
   limit: string;
 }
 
+
+
+export interface LoanTypeProps{
+  id: number;
+  rate: number;
+  name: string;
+}
+
 export type VerificationProps = {
   id: number;
   code: string;
