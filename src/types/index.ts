@@ -92,6 +92,7 @@ export type LoanProps = {
   loanTypeId : number
 };
 export type LoanPaymentProps = {
+  userId: number
   id: number;
   loanId: number;
   amount: number;
@@ -125,4 +126,10 @@ export type AccountProps = {
   accountNumber: number;
   balance: number;
   userId: number;
+  amount : number;
+  
 };
+
+
+
+
