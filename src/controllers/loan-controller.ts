@@ -10,13 +10,14 @@ class LoanController {
   static async create(req: any, res: Response) {
     const userId = req.user.id as number;
     const data = {
+      loanTypeId : req.body.loanTypeId,
       amount: req.body.amount,
       duration: req.body.duration,
       userId,
     } as LoanProps;
 
-    const loanDetails = await LoanServices.create(data);
-    ResponseManager.success(res, null, 200, RESPONSE.SUCCESS);
+    const result = await LoanServices.create(data);
+    ResponseManager.success(res, result, 200, RESPONSE.SUCCESS);
   }
 
   static async getLoans(req: any, res: Response) {

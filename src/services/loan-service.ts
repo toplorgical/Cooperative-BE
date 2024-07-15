@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { LoanProps, LoanTypeProps } from "../types/index";
+import { CalculatorTypeProps, LoanProps, LoanTypeProps } from "../types/index";
 import { ApplicationError, LoanRequestError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import LoanValidations from "../validations/loan-validation";
 import { RESPONSE } from "../constants/index";
@@ -8,18 +8,45 @@ import UserRepository from "../repository/user-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
 
 class LoanServices {
-  static async create(data: LoanProps) {
-    const validate = LoanValidations.validate(data);
-    if (validate) throw new ValidationError(RESPONSE.INVALID_CREDENTAILS);
+  static async create(data : LoanProps){
+       
+    const validate=   LoanValidations.validate(data)
+    
+    if (validate) throw new ValidationError(validate)
+     const getUserDetails = await UserRepository.findByPk(data.userId)
+   // if (getUserDetails.balance < data.amount/2 && getUserDetails.registrationStatus!=="APPROVED")
+       // throw new  LoanRequestError(RESPONSE.NOT_ELIGIBLE_FOR_LOAN)
+        let loanData = await LoanTypeRepository.findById(data.loanTypeId)
+        if (!loanData) throw new LoanRequestError(RESPONSE.NO_LOAN_TYPE)
+        let result = {
+        amount:data.amount,
+         duration:data.duration,
+          rate:loanData.rate,
+        } as CalculatorTypeProps;
 
-    const getUserDetails = await UserRepository.findByPk(data.userId);
-    if (getUserDetails.balance < data.amount / 2 && getUserDetails.registrationStatus !== "APPROVED")
-      throw new LoanRequestError(RESPONSE.NOT_ELIGIBLE_FOR_LOAN);
+        let calculate = LoanServices.calculateLoan(result);
+        
+        const loan = {
+          ...data,
+            ...calculate,
+            loanTypeId: loanData.id 
+        }
+        console.log(loan, "loan")
+        const loanDetails = await LoanRepository.create(
+           loan
+        );
+    return loanDetails
+}
 
-    const loanDetails = await LoanRepository.create(data);
+static calculateLoan (data:CalculatorTypeProps){
+  const{rate, amount, duration} = data 
+  const interest = (amount * rate * duration/12);
+  const totalAmount = amount + interest
+  const monthlyReturn = totalAmount/duration
+  
+  return  {interest, totalAmount}
 
-    return loanDetails;
-  }
+}
 
   static async cancel(id: number, userId: number) {
     const loan = await LoanRepository.findOne({ id, userId });

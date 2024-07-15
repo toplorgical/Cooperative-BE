@@ -34,7 +34,7 @@ const Loan = dbClient.sequelize.define(
       type: DataTypes.VIRTUAL,
       get() {
         const _this: any = this;
-        const successfulPayments = _this.loanPayments.filter((item: LoanPaymentProps) => {
+        const successfulPayments = _this?.loanPayments?.filter((item: LoanPaymentProps) => {
           return item?.status === "COMPLETED";
         }) as LoanPaymentProps[];
         return successfulPayments?.reduce((a, c) => a + c?.amount, 0);
@@ -44,10 +44,10 @@ const Loan = dbClient.sequelize.define(
       type: DataTypes.VIRTUAL,
       get() {
         const _this: any = this;
-        const successfulPayments = _this.loanPayments.filter((item: LoanPaymentProps) => {
+        const successfulPayments = _this?.loanPayments?.filter((item: LoanPaymentProps) => {
           return item?.status === "COMPLETED";
         }) as LoanPaymentProps[];
-        const pendingPayments = _this.loanPayments.filter((item: LoanPaymentProps) => {
+        const pendingPayments = _this?.loanPayments?.filter((item: LoanPaymentProps) => {
           return item?.status === "PENDING";
         }) as LoanPaymentProps[];
 
