@@ -12,8 +12,6 @@ import UserEventEmitter from "../event/user-event-emitter";
 import JWTManager from "../manager/jwtManager";
 
 class UserService {
-  static generatedTokens = {} as { [key: string]: string };
-
   static async signup(data: UserProps) {
     const error = UserValidations.signup(data);
     if (error) throw new ValidationError(error, 400);
