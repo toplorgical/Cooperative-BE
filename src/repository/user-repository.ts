@@ -3,7 +3,9 @@ import User from "../models/user";
 import { UserProps, UserQueryProps, AccountProps } from "../types";
 import { Loan } from "../models/loan";
 import AccountRepository from "./account-repository";
-import transaction from
+import dbClient from "../config/dbClient";
+import Account from "../models/account";
+
 
 class UserRepository {
   static async create(data: UserProps) {

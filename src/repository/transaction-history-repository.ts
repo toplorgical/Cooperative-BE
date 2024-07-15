@@ -1,4 +1,4 @@
-import { LoanPayment } from "../models/loan";
+
 import TransactionHistory from "../models/transaction-history";
 import { LoanPaymentProps, LoanPaymentQueryProps } from "../types/index";
 
