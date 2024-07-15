@@ -13,6 +13,11 @@ const User = dbClient.sequelize.define(
     publicId: {
       type: DataTypes.UUID,
     },
+    registrationId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -92,11 +97,6 @@ const User = dbClient.sequelize.define(
         this.setDataValue("documents", JSON.stringify(value));
       },
     },
-    profileSetup: {
-      type: DataTypes.ENUM,
-      defaultValue: "PERSONAL_INFO",
-      values: ["PERSONAL_INFO", "WORK_INFO", "COMPLETED"],
-    },
     isVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -118,7 +118,7 @@ const User = dbClient.sequelize.define(
       allowNull: false,
     },
   },
-  { timestamps: true, initialAutoIncrement: "1007897760" }
+  { timestamps: true }
 );
 
 dbClient.sequelize
