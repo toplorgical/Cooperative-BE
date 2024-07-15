@@ -81,21 +81,6 @@ const User = dbClient.sequelize.define(
     employmentLocation: {
       type: DataTypes.STRING,
     },
-    accountNumber: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        const _this: any = this;
-        return _this.id;
-      },
-    },
-    balance: {
-      type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 0,
-      get() {
-        const value = this.getDataValue("balance");
-        return value === null ? 0 : parseFloat(value);
-      },
-    },
     documents: {
       type: DataTypes.TEXT,
       get() {

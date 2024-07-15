@@ -13,7 +13,7 @@ const Loan = dbClient.sequelize.define(
       allowNull: false,
     },
     amount: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DECIMAL,
       allowNull: true,
       defaultValue: 0,
       get() {
@@ -22,7 +22,7 @@ const Loan = dbClient.sequelize.define(
       },
     },
     totalAmount: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DECIMAL,
       allowNull: true,
       defaultValue: 0,
       get() {
@@ -92,7 +92,7 @@ const LoanPayment = dbClient.sequelize.define(
       allowNull: false,
     },
     amount: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DECIMAL,
       allowNull: true,
       defaultValue: 0,
       get() {
