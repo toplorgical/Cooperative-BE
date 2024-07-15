@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { phone } from "phone";
 import crypto from "crypto";
+import generateUniqueId from "generate-unique-id";
 
 export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
@@ -18,6 +19,10 @@ export function isValidPhone(phoneNumber: string) {
 
 export function generateRandomUUID() {
   return crypto.randomUUID();
+}
+
+export function generateId(length: number, useLetters: boolean = false) {
+  return generateUniqueId({ length, useLetters });
 }
 
 export const generateOtp = (length: number) => {

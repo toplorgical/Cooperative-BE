@@ -108,3 +108,21 @@ export interface LoanQueryProps extends LoanProps {
   page: string;
   limit: string;
 }
+
+export type TransactionHistoryProps = {
+  id: number;
+  accountId: number;
+  date: string | Date;
+  metadata: { [key: string]: any };
+  description: string;
+  type: "DEPOSIT" | "WITHDRAWAL" | "TRANSFER";
+  amount: number;
+  reference: string;
+};
+
+export type AccountProps = {
+  id: number;
+  accountNumber: number;
+  balance: number;
+  userId: number;
+};
