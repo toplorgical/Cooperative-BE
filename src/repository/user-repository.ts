@@ -7,18 +7,15 @@ import AccountRepository from "./account-repository";
 
 class UserRepository {
   static async create(data: UserProps) {
+    const _accountData = {} as AccountProps;
+    data.registrationId = await UserRepository.generateRegNumber();
+    _accountData.accountNumber = await AccountRepository.generateAccountNumber();
+
     return await dbClient.sequelize.transaction(async (transaction) => {
-      const lastInserted = await User.findOne({ order: ["id", "DESC"], transaction });
-      const _lastUser = lastInserted?.toJSON() as UserProps;
-
-      const prevRegId = _lastUser?.registrationId;
-      data.registrationId = UserRepository.generateRegNumber(prevRegId);
-
       const result = await User.create(data, { transaction });
       const _user = result.toJSON() as UserProps;
 
-      const _accountData = { userId: _user.id } as AccountProps;
-      _accountData.accountNumber = await AccountRepository.generateAccountNumber();
+      _accountData.userId = _user.id;
       await Account.create(_accountData, { transaction });
       return _user;
     });
@@ -28,12 +25,15 @@ class UserRepository {
     return await User.update(data, { where: { id } });
   }
 
-  static generateRegNumber(lastInserted: string) {
+  static async generateRegNumber() {
     const year = new Date().getFullYear().toString().slice(-2);
+    const lastInserted = await User.findOne({ order: [["id", "DESC"]] });
+    const _lastUser = lastInserted?.toJSON() as UserProps;
+    const prevRegId = _lastUser?.registrationId;
 
-    if (!lastInserted) return `SGN-REG-${year}-00001`;
+    if (!prevRegId) return `SGN-REG-${year}-00001`;
 
-    const lastSequentialNumber = parseInt(lastInserted.slice(-5), 10);
+    const lastSequentialNumber = parseInt(prevRegId.slice(-5), 10);
     const newSequentialNumber = lastSequentialNumber + 1;
     return `SGN-REG-${year}-${newSequentialNumber.toString().padStart(5, "0")}`;
   }
