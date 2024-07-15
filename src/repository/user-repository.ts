@@ -1,16 +1,43 @@
 import { Op } from "sequelize";
 import User from "../models/user";
-import { UserProps, UserQueryProps } from "../types";
+import { UserProps, UserQueryProps, AccountProps } from "../types";
 import { Loan } from "../models/loan";
+import AccountRepository from "./account-repository";
+import transaction from
 
 class UserRepository {
   static async create(data: UserProps) {
-    const result = await User.create(data);
-    return result.toJSON() as UserProps;
+    const _accountData = {} as AccountProps;
+    data.registrationId = await UserRepository.generateRegNumber();
+    _accountData.accountNumber = await AccountRepository.generateAccountNumber();
+
+    return await dbClient.sequelize.transaction(async (transaction) => {
+      const result = await User.create(data, { transaction });
+      const _user = result.toJSON() as UserProps;
+
+      _accountData.userId = _user.id;
+      await Account.create(_accountData, { transaction });
+      return _user;
+    });
   }
+
   static async update(data: Partial<UserProps>, id: number) {
     return await User.update(data, { where: { id } });
   }
+
+  static async generateRegNumber() {
+    const year = new Date().getFullYear().toString().slice(-2);
+    const lastInserted = await User.findOne({ order: [["id", "DESC"]] });
+    const _lastUser = lastInserted?.toJSON() as UserProps;
+    const prevRegId = _lastUser?.registrationId;
+
+    if (!prevRegId) return `SGN-REG-${year}-00001`;
+
+    const lastSequentialNumber = parseInt(prevRegId.slice(-5), 10);
+    const newSequentialNumber = lastSequentialNumber + 1;
+    return `SGN-REG-${year}-${newSequentialNumber.toString().padStart(5, "0")}`;
+  }
+
   static async findByPk(id: number) {
     const result = await User.findByPk(id);
     return result?.toJSON() as UserProps;

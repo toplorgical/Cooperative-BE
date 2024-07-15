@@ -28,7 +28,7 @@ const VerificationModel = dbClient.sequelize.define(
 
 dbClient.sequelize
   .sync()
-  .then(() => {})
+  .then(() => console.log("verification table"))
   .catch((error) => console.error(error));
 
 export default VerificationModel;

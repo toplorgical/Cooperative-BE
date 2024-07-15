@@ -12,6 +12,7 @@ export type UserProps = {
   publicId: string;
   isVerified: boolean | number;
   rememberMe: boolean;
+  registrationId: string;
   token: string;
   userAgent?: string;
   nationality: string;
@@ -53,12 +54,12 @@ export interface UserQueryProps extends UserProps {
 }
 
 export interface CalculatorTypeProps {
-  rate :number,
-  amount : number,
-  duration : number
+  rate: number;
+  amount: number;
+  duration: number;
 }
 
-export type LoanTypeProps={
+export type LoanTypeProps = {
   id: number;
   rate: number;
   name: string;
@@ -89,7 +90,7 @@ export type LoanProps = {
   loanId: number;
   duration: number;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
-  loanTypeId : number
+  loanTypeId: number;
 };
 export type LoanPaymentProps = {
   userId: number

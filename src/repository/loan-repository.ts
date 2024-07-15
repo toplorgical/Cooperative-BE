@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Loan, LoanPayment } from "../models/loan";
+import { Loan, LoanType } from "../models/loan";
 import { LoanProps, LoanQueryProps } from "../types/index";
 
 class LoanRepository {
@@ -22,7 +22,7 @@ class LoanRepository {
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
     if (query.loanId) where.loanId = query.loanId;
-    const result = await Loan.findOne({ where, include: [{ model: LoanPayment }] });
+    const result = await Loan.findOne({ where, include: [{ model: LoanType }] });
     return result?.toJSON() as LoanProps;
   }
 
@@ -51,6 +51,7 @@ class LoanRepository {
     const response = await Loan.findAll({
       where,
       limit,
+      include: [{ model: LoanType }],
       attributes: { exclude: ["amountPaid", "balance"] },
       offset: (page - 1) * limit,
       order: [["id", "DESC"]],
