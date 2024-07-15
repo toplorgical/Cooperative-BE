@@ -42,6 +42,8 @@ export type UserProps = {
   isDeleted: boolean;
   updatedAt: string;
   createdAt: string;
+
+  loans:LoanProps[]
 };
 
 export interface UserQueryProps extends UserProps {
@@ -76,6 +78,7 @@ export type ResetPasswordProps = {
 };
 
 export type LoanProps = {
+  amountPaid : number
   totalAmountToBePaid :number,
   interest : number,
   id: number;

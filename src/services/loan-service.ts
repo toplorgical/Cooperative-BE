@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { CalculatorTypeProps, LoanProps, LoanTypeProps } from "../types/index";
+import { CalculatorTypeProps, LoanProps, LoanTypeProps, UserProps } from "../types/index";
 import { ApplicationError, LoanRequestError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import LoanValidations from "../validations/loan-validation";
 import { RESPONSE } from "../constants/index";
@@ -47,6 +47,8 @@ static calculateLoan (data:CalculatorTypeProps){
   return  {interest, totalAmount}
 
 }
+
+
 
   static async cancel(id: number, userId: number) {
     const loan = await LoanRepository.findOne({ id, userId });

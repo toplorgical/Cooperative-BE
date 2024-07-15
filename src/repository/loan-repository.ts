@@ -46,6 +46,7 @@ class LoanRepository {
         ],
       };
     }
+    
 
     const response = await Loan.findAll({
       where,

@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import User from "../models/user";
 import { UserProps, UserQueryProps } from "../types";
+import { Loan } from "../models/loan";
 
 class UserRepository {
   static async create(data: UserProps) {
@@ -14,6 +15,16 @@ class UserRepository {
     const result = await User.findByPk(id);
     return result?.toJSON() as UserProps;
   }
+
+  static async  findUserWithLoans(userId: number) {
+ 
+      const result = await User.findByPk(userId, {
+        include: [{model: Loan}],
+      });
+      return result?.toJSON() as UserProps;
+
+  }
+  
   static async findOne(query: Partial<UserProps>) {
     const where = {} as UserProps;
     if (query.id) where.id = query.id;
