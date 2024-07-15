@@ -71,6 +71,11 @@ const User = dbClient.sequelize.define(
       defaultValue: "PENDING",
       values: ["PENDING", "APPROVED", "REJECTED"],
     },
+    profileSetup: {
+      type: DataTypes.ENUM,
+      defaultValue: "PERSONAL_INFO",
+      values: ["PERSONAL_INFO", "WORK_INFO", "COMPLETED"],
+    },
     companyName: {
       type: DataTypes.STRING,
     },
