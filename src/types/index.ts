@@ -1,7 +1,3 @@
-import { number } from "joi";
-import { FLOAT } from "sequelize";
-import { DecimalDataType } from "sequelize";
-
 export type UserProps = {
   id: number;
   firstName: string;

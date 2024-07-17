@@ -8,14 +8,14 @@ import UserRepository from "../repository/user-repository";
 class UserController {
   static async signup(req: Request, res: Response) {
     const data = req.body as UserProps;
-    const accessToken = await UserService.signup(data);
-    ResponseManager.success(res, { accessToken }, 201);
+    const result = await UserService.signup(data);
+    ResponseManager.success(res, result, 201);
   }
 
   static async signin(req: Request, res: Response) {
     const data = req.body as UserProps;
-    const accessToken = await UserService.sigin(data);
-    ResponseManager.success(res, { accessToken }, 200);
+    const result = await UserService.sigin(data);
+    ResponseManager.success(res, result, 200);
   }
 
   static async requestOTP(req: any, res: Response) {
