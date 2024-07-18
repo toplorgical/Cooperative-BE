@@ -132,5 +132,14 @@ export type AccountProps = {
 };
 
 
+export interface SendMailProps {
+  to : [],
+  sender : string,
+  subject  : string,
+  content : string,
+  name :  string,
+
+}
+
 
 

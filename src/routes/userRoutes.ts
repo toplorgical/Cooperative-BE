@@ -20,4 +20,7 @@ userRoutes.put("/account/change-password", [isAuth], asyncHandler(UserController
 userRoutes.get("/account", [isAuth], asyncHandler(UserController.getUser));
 userRoutes.get("/request-otp", [isAuth], asyncHandler(UserController.requestOTP));
 
+userRoutes.post("/mail",   asyncHandler(UserController.sendMail));
+
+
 export default userRoutes;

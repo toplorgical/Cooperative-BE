@@ -9,8 +9,8 @@ class LoanPaymentController {
     static async loanPaymentFromAccount(req:any, res: Response){
         let userId = req.user.id  
         let amount = req.body.amount
-        const update  = await LaonPaymentService.repaymentFromAccount(userId, amount)
-        return ResponseManager.success(res,update, 200, );
+       // const update  = await LaonPaymentService.repaymentFromAccount(userId, amount)
+       // return ResponseManager.success(res,update, 200, );
 
 
     }
