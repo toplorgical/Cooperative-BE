@@ -27,9 +27,6 @@ class UserValidations {
 
   static personalInfo(data: UserProps) {
     const schema = Joi.object({
-      firstName: Joi.string().regex(new RegExp("^[a-zA-Z]")).required().label("First Name"),
-      lastName: Joi.string().regex(new RegExp("^[a-zA-Z]")).required().label("Last Name"),
-      middleName: Joi.string().regex(new RegExp("^[a-zA-Z]")).required().label("Middle Name"),
       email: Joi.string().email().label("Email"),
       nationality: Joi.string().required().label("Nationality"),
       country: Joi.string().required().valid("Nigeria").label("Country"),
@@ -49,8 +46,8 @@ class UserValidations {
       companyName: Joi.string().required().label("Company Name"),
       jobTitle: Joi.string().required().label("Job Title"),
       employmentStartDate: Joi.date().required().label("Employment State Date"),
-      employmentType: Joi.date().required().label("Employment Type"),
-      employmentLocation: Joi.date().required().label("Employment Location"),
+      employmentType: Joi.string().required().label("Employment Type"),
+      employmentLocation: Joi.string().required().label("Employment Location"),
     });
     const { error } = schema.validate(data);
     if (error) return error.details[0].message;
