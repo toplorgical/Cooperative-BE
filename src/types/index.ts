@@ -39,6 +39,8 @@ export type UserProps = {
   isDeleted: boolean;
   updatedAt: string;
   createdAt: string;
+
+  loans:LoanProps[]
 };
 
 export interface UserQueryProps extends UserProps {
@@ -73,8 +75,9 @@ export type ResetPasswordProps = {
 };
 
 export type LoanProps = {
-  totalAmountToBePaid: number;
-  interest: number;
+  amountPaid : number
+  totalAmountToBePaid :number,
+  interest : number,
   id: number;
   amount: number;
   userId: number;
@@ -85,6 +88,18 @@ export type LoanProps = {
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
   loanTypeId: number;
 };
+export type LoanPaymentProps = {
+  userId: number
+  id: number;
+  loanId: number;
+  amount: number;
+  status: "PENDING" | "COMPLETED";
+};
+
+export interface LoanPaymentQueryProps extends LoanPaymentProps {
+  page: string;
+  limit: string;
+}
 
 export interface LoanQueryProps extends LoanProps {
   keyword: string;
@@ -108,4 +123,19 @@ export type AccountProps = {
   accountNumber: number;
   balance: number;
   userId: number;
+  amount : number;
+  
 };
+
+
+export interface SendMailProps {
+  to : [],
+  sender : string,
+  subject  : string,
+  content : string,
+  name :  string,
+
+}
+
+
+

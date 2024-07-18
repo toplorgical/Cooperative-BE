@@ -9,6 +9,10 @@ const config = {
     API_KEY: process.env.TERMII_API_KEY as string,
     URL: process.env.TERMII_API_URL as string,
   },
+  BROVO_MAIL: {
+    API_KEY: process.env.BROVO_API_KEY as string,
+  
+  },
   DATABASE: {
     URL: process.env.DATABASE_URL,
     PORT: process.env.DATABASE_PORT,

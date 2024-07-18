@@ -1,5 +1,6 @@
 import { Router } from "express";
 import LoanController from "../controllers/loan-controller";
+import LoanPaymentController from "../controllers/loanpayment-controller";
 import asyncHandler from "../middlewares/asyncHandler";
 import authenticationMiddleware from "../middlewares/authMiddleware";
 
@@ -11,5 +12,9 @@ loanRoutes.post("/cancel/:id", authenticationMiddleware, asyncHandler(LoanContro
 loanRoutes.get("/", authenticationMiddleware, asyncHandler(LoanController.getLoans));
 loanRoutes.get("/:id", authenticationMiddleware, asyncHandler(LoanController.getLoan));
 loanRoutes.get("/types", authenticationMiddleware, asyncHandler(LoanController.getLoanTypes));
+
+loanRoutes.post("/repayment-from-account", 
+    authenticationMiddleware, 
+    asyncHandler(LoanPaymentController.loanPaymentFromAccount));
 
 export default loanRoutes;

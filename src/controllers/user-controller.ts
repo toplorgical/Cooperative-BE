@@ -4,6 +4,7 @@ import UserService from "../services/user-service";
 import ResponseManager from "../utils/response-manager";
 import _ from "lodash";
 import UserRepository from "../repository/user-repository";
+import { MailMessagingservices } from "../services/messaging-service";
 
 class UserController {
   static async signup(req: Request, res: Response) {
@@ -76,6 +77,12 @@ class UserController {
     const id = req.params.id;
     const result = await UserRepository.findByPk(id);
     ResponseManager.success(res, result, 200);
+  }
+  static async sendMail (req:any, res: any ){
+    const data = req.body
+    const result = await  MailMessagingservices.SendMail(data)
+    ResponseManager.success(res, result, 200);
+
   }
 }
 

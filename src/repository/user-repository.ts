@@ -1,9 +1,11 @@
 import { Op } from "sequelize";
 import User from "../models/user";
-import { AccountProps, UserProps, UserQueryProps } from "../types";
+import { UserProps, UserQueryProps, AccountProps } from "../types";
+import { Loan } from "../models/loan";
+import AccountRepository from "./account-repository";
 import dbClient from "../config/dbClient";
 import Account from "../models/account";
-import AccountRepository from "./account-repository";
+
 
 class UserRepository {
   static async create(data: UserProps) {
@@ -43,6 +45,15 @@ class UserRepository {
     return result?.toJSON() as UserProps;
   }
 
+  static async  findUserWithLoans(userId: number) {
+ 
+      const result = await User.findByPk(userId, {
+        include: [{model: Loan}],
+      });
+      return result?.toJSON() as UserProps;
+
+  }
+  
   static async findOne(query: Partial<UserProps>) {
     const where = {} as UserProps;
     if (query.id) where.id = query.id;

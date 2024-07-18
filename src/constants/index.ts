@@ -11,7 +11,9 @@ export const RESPONSE = {
   FAILED_UPDATE: "could not update request",
   NOT_ELIGIBLE_FOR_LOAN : "You Are Not Eligible This Loan",
    NO_PENDING_LOAN : "No Pending Loan",
-   NO_LOAN_TYPE : "No Loan Type"
+   NO_LOAN_TYPE : "No Loan Type",
+   INSUFFICIENT_FUND :"Insufficient Fund In Your Account",
+   PAYMENT_COMPLETED :"Loan Payment completed"
 };
 
 export const smsResponse = {
