@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import { phone } from "phone";
 import crypto from "crypto";
 import generateUniqueId from "generate-unique-id";
 
@@ -12,10 +11,6 @@ export const hashPassword = async (password: string) => {
 export const comparePassword = async (password: string, hashed: string) => {
   return await bcrypt.compare(password, hashed);
 };
-
-export function isValidPhone(phoneNumber: string) {
-  return phone(phoneNumber, { country: "NG" }).isValid;
-}
 
 export function generateRandomUUID() {
   return crypto.randomUUID();

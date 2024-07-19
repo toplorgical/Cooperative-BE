@@ -1,5 +1,6 @@
-import Joi from "joi";
+import Joi, { CustomHelpers } from "joi";
 import { ResetPasswordProps, UserProps } from "../types";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 class UserValidations {
   static signup(data: UserProps) {
@@ -90,7 +91,18 @@ class UserValidations {
     lastName: Joi.string().regex(new RegExp("^[a-zA-Z]")).required().max(55).label("Last Name"),
     email: Joi.string().email().required().max(255).label("Email"),
     password: Joi.string().required().max(55).label("Password"),
-    phone: Joi.string().required().max(14).label("Phone"),
+    phone: Joi.string()
+      .length(11)
+      .custom((value, helpers) => {
+        const phoneNumber = parsePhoneNumberFromString(value, "NG");
+        if (!phoneNumber || !phoneNumber.isValid()) {
+          return helpers.error("any.invalid");
+        }
+        return value;
+      })
+      .required()
+      .messages({ "any.invalid": "Phone number is invalid" })
+      .label("Phone"),
     code: Joi.number().integer().required().label("Verification Code"),
     token: Joi.string().required().label("Token"),
   };
