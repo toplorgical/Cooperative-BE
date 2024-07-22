@@ -5,24 +5,26 @@ import { AccountProps, LoanProps, TransactionHistoryProps } from "../types";
 import AccountRepository from "./account-repository";
 import { Op } from "sequelize";
 import _ from "lodash";
-import LoanRepository from "./loan-repository";
 
 class AnanlyticsRepository {
   static async __default(query: { userId: number }) {
     const data = {
       loansBalance: 0,
-      loansCount: 0,
       txnsCount: 0,
       accountBalance: 0,
+      approvedLoansCount: 0,
+      loansCount: await Loan.count({ where: { userId: query?.userId } }),
+      rejectedLoansCount: await Loan.count({ where: { userId: query?.userId, status: "REJECTED" } }),
     };
 
     const account = await AccountRepository.findOne({ userId: query.userId } as AccountProps);
     const loanResult = await Loan.findAll({ where: { userId: query?.userId, status: "APPROVED" } });
+
     const txnsResult = await TransactionHistory.findAll({ where: { userId: query?.userId } });
     const loans = loanResult.map((item) => item.toJSON()) as LoanProps[];
     const txns = txnsResult.map((item) => item.toJSON()) as TransactionHistoryProps[];
 
-    data.loansCount = loans.length;
+    data.approvedLoansCount = loanResult.length;
     data.loansBalance = loans.reduce((a, c) => a + c.amount, 0);
     data.accountBalance = account.balance;
     data.txnsCount = txns.length;
