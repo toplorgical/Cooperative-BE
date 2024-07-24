@@ -21,8 +21,8 @@ class AnanlyticsRepository {
     const account = await AccountRepository.findOne({ userId: query.userId } as AccountProps);
     const loanResult = await Loan.findAll({ where: { userId: query.userId, status: "APPROVED" } });
 
-    const endDate = moment().startOf("day");
-    const startDate = moment().subtract(7, "days").startOf("day");
+    const endDate = moment().add(1, "day").format("YYYY-MM-DD");
+    const startDate = moment().subtract(7, "days").format("YYYY-MM-DD");
 
     const loans = loanResult.map((item) => item.toJSON()) as LoanProps[];
 
@@ -31,7 +31,7 @@ class AnanlyticsRepository {
     data.accountBalance = account.balance;
 
     data.txnsCountLastWeek = await TransactionHistory.count({
-      where: { userId: query?.userId, createdAt: { [Op.between]: [startDate.toDate(), endDate.toDate()] } },
+      where: { userId: query?.userId, createdAt: { [Op.between]: [startDate, endDate] } },
     });
 
     return data;

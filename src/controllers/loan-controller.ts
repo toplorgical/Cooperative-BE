@@ -10,7 +10,7 @@ class LoanController {
   static async create(req: any, res: Response) {
     const userId = req.user.id as number;
     const data = {
-      loanTypeId : req.body.loanTypeId,
+      loanTypeId: req.body.loanTypeId,
       amount: req.body.amount,
       duration: req.body.duration,
       userId,
