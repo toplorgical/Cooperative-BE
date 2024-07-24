@@ -34,7 +34,9 @@ const TransactionHistory = dbClient.sequelize.define(
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
+      defaultValue: Date.now(),
     },
+
     metadata: {
       type: DataTypes.TEXT,
       get() {

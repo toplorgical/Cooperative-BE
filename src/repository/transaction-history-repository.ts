@@ -41,7 +41,6 @@ class TransactionHistoryRepository {
     const response = await TransactionHistory.findAll({
       where,
       limit,
-      attributes: { exclude: ["amountPaid", "balance"] },
       offset: (page - 1) * limit,
       order: [["id", "DESC"]],
     });
