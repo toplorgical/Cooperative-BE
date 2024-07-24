@@ -53,7 +53,7 @@ class PaymentService{
             if (data.data.status !== 'success') throw new ApplicationError(RESPONSE.NOT_SUCCESS);
             
             const amount = data.data.amount / 100;
-            const phone = data.data.customer.phone;
+            const phone = data.data.metadata.phone;
             const reference = data.data.reference;
             const transaction_type = "DEPOSIT";
     
@@ -81,7 +81,7 @@ class PaymentService{
                 userId: user.id,
                 type: transaction_type,
                 description: RESPONSE.CREDIT_DEC.replace("PLATFORM", "PAYSTACK"),
-                metadata: data.data.metadata
+                metadata: data.data.customer
             };
             const transaction = await TransactionHistoryRepository.create(transactionInfo);
     
