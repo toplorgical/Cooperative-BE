@@ -67,7 +67,7 @@ class PaymentService{
                 throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
             }
     
-            const accountInfo = await AccountRepository.findOne({ userId: user.id });
+            const accountInfo = await AccountRepository.findOne({ userId: user.id } as AccountProps);
             if (!accountInfo) {
                 throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
             }
