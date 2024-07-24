@@ -1,39 +1,42 @@
-
 import TransactionHistory from "../models/transaction-history";
-import { LoanPaymentProps, LoanPaymentQueryProps } from "../types/index";
+import { LoanPaymentProps, LoanPaymentQueryProps, TransactionHistoryProps } from "../types/index";
+
+interface TransactionQueryProps extends TransactionHistoryProps {
+  page: string;
+  limit: string;
+}
 
 class TransactionHistoryRepository {
-  static async create(data: LoanPaymentProps) {
+  static async create(data: TransactionHistoryProps) {
     const result = await TransactionHistory.create(data);
-    return result.toJSON() as LoanPaymentProps;
+    return result.toJSON() as TransactionHistoryProps;
   }
 
-  static async updateById(data: LoanPaymentProps, id: number) {
+  static async updateById(data: TransactionHistoryProps, id: number) {
     return await TransactionHistory.update(data, { where: { id } });
   }
 
   static async findById(id: number) {
     const result = await TransactionHistory.findByPk(id);
-    return result?.toJSON() as LoanPaymentProps;
+    return result?.toJSON() as TransactionHistoryProps;
   }
 
-  static async findOne(query: Partial<LoanPaymentProps>) {
-    const where = {} as LoanPaymentProps;
+  static async findOne(query: Partial<TransactionQueryProps>) {
+    const where = {} as any;
     if (query.userId) where.id = query.userId;
 
     const result = await TransactionHistory.findOne({ where });
     return result?.toJSON() as LoanPaymentProps;
   }
 
-  static async findAll(query: LoanPaymentQueryProps) {
+  static async findAll(query: TransactionQueryProps) {
     const limit = parseInt(query.limit || "20");
     const page = parseInt(query.page || "1");
     const totalPages = (count: number, limit: number) => Math.ceil(count / limit);
 
-    let where = {} as LoanPaymentProps;
-    if (query.status) where.status = query.status;
+    let where = {} as any;
     if (query.id) where.id = query.id;
-    if (query.loanId) where.loanId = query.loanId;
+    if (query.userId) where.userId = query.userId;
 
     const response = await TransactionHistory.findAll({
       where,

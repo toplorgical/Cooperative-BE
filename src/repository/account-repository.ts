@@ -1,4 +1,5 @@
 import Account from "../models/account";
+import User from "../models/user";
 import { AccountProps } from "../types";
 import { generateId } from "../utils";
 
@@ -22,7 +23,7 @@ class AccountRepository {
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
 
-    const result = await Account.findOne({ where, include: [{ model: Account }] });
+    const result = await Account.findOne({ where, include: [{ model: User }] });
     return result?.toJSON() as AccountProps;
   }
   static async updateById(data: AccountProps, id: number) {

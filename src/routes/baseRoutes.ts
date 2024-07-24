@@ -4,12 +4,14 @@ import adminRoutes from "./adminRoutes";
 import DefaultController from "../controllers";
 import loanRoutes from "./loanRoutes";
 import analyticRoute from "./analyticsRoutes";
+import transactionsRoute from "./transactionRoute";
 
 function appRouter(app: Application) {
   app.get("/", DefaultController.home);
   app.use("/api/v1/user", userRoutes);
   app.use("/api/v1/user/loans", loanRoutes);
   app.use("/api/v1/user/analytics", analyticRoute);
+  app.use("/api/v1/user/transactions", transactionsRoute);
   app.use("/api/v1/admin", adminRoutes);
   app.use("*", DefaultController.notFound);
 }

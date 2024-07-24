@@ -1,10 +1,7 @@
 import axios from "axios";
 import config from "../config/config";
-import { SendMailProps, UserProps } from "../types";
+import { SendMailProps } from "../types";
 import ejs from "ejs";
-const fs = require("fs");
-const path = require("path");
-const nodemailer = require("nodemailer");
 var SibApiV3Sdk = require("sib-api-v3-sdk");
 var defaultClient = SibApiV3Sdk.ApiClient.instance;
 
@@ -19,13 +16,12 @@ export interface MassagingProps {
 
 export class MessagingService {
   static async send(data: Partial<MassagingProps>) {
-    console.log(data);
     try {
-      data.to = data.to?.map((item) => item);
-      data.from = "Toplorgical";
-      data.api_key = config.TERMII.API_KEY;
       data.type = "plain";
       data.channel = "generic";
+      data.from = "Toplorgical";
+      data.api_key = config.TERMII.API_KEY;
+      data.to = data.to?.map((item) => "+234".concat(item.slice(1)));
       const { data: response } = await axios.post(config.TERMII.URL, data);
       console.log("MESSAGE SENT::", response);
       return { status: "success", response };

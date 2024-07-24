@@ -1,7 +1,6 @@
 import { DataTypes } from "sequelize";
 import dbClient from "../config/dbClient";
-import { AccountProps } from "../types";
-import { generateId } from "../utils";
+import User from "./user";
 
 const Account = dbClient.sequelize.define(
   "account",
@@ -33,6 +32,9 @@ const Account = dbClient.sequelize.define(
   },
   { timestamps: true }
 );
+
+User.hasOne(Account);
+Account.belongsTo(User, { foreignKey: "userId" });
 
 dbClient.sequelize
   .sync()

@@ -14,7 +14,7 @@ const TransactionHistory = dbClient.sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    accountId: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

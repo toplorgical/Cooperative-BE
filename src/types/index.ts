@@ -110,7 +110,7 @@ export interface LoanQueryProps extends LoanProps {
 
 export type TransactionHistoryProps = {
   id: number;
-  accountId: number;
+  userId: number;
   date: string | Date;
   metadata: { [key: string]: any };
   description: string;

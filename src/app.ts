@@ -12,7 +12,7 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
 appRouter(app);
 Logger.setupErrorLogging();
