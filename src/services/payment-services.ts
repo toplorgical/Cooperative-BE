@@ -47,15 +47,11 @@ class PaymentService{
                 .update(JSON.stringify(data))
                 .digest('hex');
     
-            if (hash !== data.headers[PAYSTACK_SIGNATURE_HEADER]) {
-                throw new ApplicationError('Invalid signature');
-            }
-    
+            if (hash !== data.headers[PAYSTACK_SIGNATURE_HEADER]) throw new ApplicationError('Invalid signature');
+            
             // Check if payment was successful
-            if (data.data.status !== 'success') {
-                throw new ApplicationError(RESPONSE.NOT_SUCCESS);
-            }
-    
+            if (data.data.status !== 'success') throw new ApplicationError(RESPONSE.NOT_SUCCESS);
+            
             const amount = data.data.amount / 100;
             const phone = data.data.customer.phone;
             const reference = data.data.reference;
@@ -63,11 +59,12 @@ class PaymentService{
     
             // Find the user by phone
             const user = await UserRepository.findOne({ phone });
-            if (!user) {
-                throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
-            }
-    
+            
+            if (!user) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
+            
+            console.log(user, "user info")
             const accountInfo = await AccountRepository.findOne({ userId: user.id } as AccountProps);
+            console.log(accountInfo, "account info")
             if (!accountInfo) {
                 throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
             }
@@ -75,6 +72,7 @@ class PaymentService{
             // Update account balance
             accountInfo.balance += amount;
             const update = await AccountRepository.updateById({ balance: accountInfo.balance } as AccountProps, accountInfo.id);
+            console.log(update, "update info" )
     
             // Create transaction record
             const transactionInfo :any = {
@@ -89,7 +87,8 @@ class PaymentService{
     
             return { transaction, update };
         } catch (error: any) {
-            return error.data.message;
+            console.log(error)
+            return error;
         }
 
 

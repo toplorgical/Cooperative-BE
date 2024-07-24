@@ -9,6 +9,7 @@ class PaymentController{
         const data = req.body
 
         const result = PaymentService.paystackWebhook(data)
+        console.log(result)
 
         ResponseManager.success(res, { result }, 200);
 
