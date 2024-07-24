@@ -1,5 +1,6 @@
 export const RESPONSE = {
   SUCCESS: "successful",
+  NOT_SUCCESS: "Not Successful",
   INVALID_CREDENTAILS: "Invalid credentails, check your details and try again",
   USER_NOT_FOUND: "The requsted user could not be found",
   USER_EXIST: "Request could not be completed as user already exist",
@@ -13,7 +14,8 @@ export const RESPONSE = {
    NO_PENDING_LOAN : "No Pending Loan",
    NO_LOAN_TYPE : "No Loan Type",
    INSUFFICIENT_FUND :"Insufficient Fund In Your Account",
-   PAYMENT_COMPLETED :"Loan Payment completed"
+   PAYMENT_COMPLETED :"Loan Payment completed",
+   CREDIT_DEC :  "FUND DEP. FROM PLATFORM"
 };
 
 export const smsResponse = {

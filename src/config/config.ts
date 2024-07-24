@@ -18,6 +18,12 @@ const config = {
     PORT: process.env.DATABASE_PORT,
     PASSWORD: process.env.DATABASE_PASSWORD,
   },
+
+  PAYSTACK: {
+    SECRET_KEY: process.env.PAYSTACK_SECRET_KEY as string,
+    PUBLIC_KEY: process.env.PAYSTACK_PUBLIC_KEY as string,
+   
+  },
 } as const;
 
 export default config;
