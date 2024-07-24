@@ -73,16 +73,17 @@ class UserController {
     const result = await UserRepository.findAll(query);
     ResponseManager.success(res, result, 200);
   }
+
   static async findOneUser(req: any, res: any) {
     const id = req.params.id;
     const result = await UserRepository.findByPk(id);
     ResponseManager.success(res, result, 200);
   }
-  static async sendMail (req:any, res: any ){
-    const data = req.body
-    const result = await  MailMessagingservices.SendMail(data)
-    ResponseManager.success(res, result, 200);
 
+  static async sendMail(req: any, res: any) {
+    const data = req.body;
+    const result = await MailMessagingservices.SendMail(data);
+    ResponseManager.success(res, result, 200);
   }
 }
 

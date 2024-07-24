@@ -35,7 +35,7 @@ const Account = dbClient.sequelize.define(
 );
 
 dbClient.sequelize
-  .sync({ alter: true })
+  .sync()
   .then(() => console.log("account table"))
   .catch((error) => console.log(error));
 

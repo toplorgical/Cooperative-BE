@@ -40,7 +40,7 @@ export type UserProps = {
   updatedAt: string;
   createdAt: string;
 
-  loans:LoanProps[]
+  loans: LoanProps[];
 };
 
 export interface UserQueryProps extends UserProps {
@@ -75,9 +75,9 @@ export type ResetPasswordProps = {
 };
 
 export type LoanProps = {
-  amountPaid : number
-  totalAmountToBePaid :number,
-  interest : number,
+  amountPaid: number;
+  totalAmountToBePaid: number;
+  interest: number;
   id: number;
   amount: number;
   userId: number;
@@ -87,9 +87,10 @@ export type LoanProps = {
   duration: number;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
   loanTypeId: number;
+  createdAt: string;
 };
 export type LoanPaymentProps = {
-  userId: number
+  userId: number;
   id: number;
   loanId: number;
   amount: number;
@@ -116,6 +117,7 @@ export type TransactionHistoryProps = {
   type: "DEPOSIT" | "WITHDRAWAL" | "TRANSFER";
   amount: number;
   reference: string;
+  createdAt: string;
 };
 
 export type AccountProps = {
@@ -123,19 +125,13 @@ export type AccountProps = {
   accountNumber: number;
   balance: number;
   userId: number;
-  amount : number;
-  
+  amount: number;
 };
 
-
 export interface SendMailProps {
-  to : [],
-  sender : string,
-  subject  : string,
-  content : string,
-  name :  string,
-
+  to: [];
+  sender: string;
+  subject: string;
+  content: string;
+  name: string;
 }
-
-
-

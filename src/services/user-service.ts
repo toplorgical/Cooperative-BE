@@ -3,7 +3,7 @@ import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
 import { ResetPasswordProps, UserProps, VerificationProps } from "../types";
-import { hashPassword, comparePassword, generateOtp, isValidPhone, generateRandomUUID } from "../utils";
+import { hashPassword, comparePassword, generateOtp, generateRandomUUID } from "../utils";
 import { ApplicationError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
@@ -15,7 +15,6 @@ class UserService {
   static async signup(data: UserProps) {
     const error = UserValidations.signup(data);
     if (error) throw new ValidationError(error, 400);
-    if (!isValidPhone(data.phone)) throw new ValidationError(RESPONSE.INVALID_PHONE, 400);
 
     let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
     if (user) throw new ApplicationError(RESPONSE.USER_EXIST, 400);
@@ -32,7 +31,6 @@ class UserService {
   static async sigin(data: UserProps) {
     const error = UserValidations.signin(data);
     if (error) throw new ValidationError(error, 400);
-
     let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
@@ -78,8 +76,6 @@ class UserService {
   }
 
   static async forgotPassword(data: UserProps) {
-    if (!isValidPhone(data.phone)) throw new ValidationError(RESPONSE.INVALID_PHONE, 400);
-
     const user = await UserRepository.findOne({ phone: data.phone });
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 

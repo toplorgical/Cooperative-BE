@@ -80,7 +80,7 @@ class PaymentService{
             const transactionInfo :any = {
                 reference,
                 amount,
-                accountId: accountInfo.id,
+                userId: user.id,
                 type: transaction_type,
                 description: RESPONSE.CREDIT_DEC.replace("PLATFORM", "PAYSTACK"),
                 metadata: data.data.metadata

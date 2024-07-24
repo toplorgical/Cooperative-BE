@@ -13,7 +13,6 @@ userRoutes.post("/forgot-password", asyncHandler(UserController.forgotPassword))
 userRoutes.post("/reset-password", asyncHandler(UserController.resetPassword));
 
 userRoutes.put("/account/personal-info", [isAuth], asyncHandler(UserController.personalInfo));
-
 userRoutes.put("/account/work-info", [isAuth], asyncHandler(UserController.workInfo));
 userRoutes.put("/account/change-password", [isAuth], asyncHandler(UserController.changePassword));
 
