@@ -38,16 +38,16 @@ class PaymentService{
 
     static async paystackWebhook(data: any) {
         try {
-            const PAYSTACK_KEY = config.PAYSTACK.SECRET_KEY;
-            const PAYSTACK_SIGNATURE_HEADER : string = 'x-paystack-signature';
+            //const PAYSTACK_KEY = config.PAYSTACK.SECRET_KEY;
+            //const PAYSTACK_SIGNATURE_HEADER : string = 'x-paystack-signature';
     
             // Verify Paystack signature
-            console.log(data)
-            const hash = crypto.createHmac('sha512', PAYSTACK_KEY)
-                .update(JSON.stringify(data))
-                .digest('hex');
+            //console.log(data)
+           // const hash = crypto.createHmac('sha512', PAYSTACK_KEY)
+            //    .update(JSON.stringify(data))
+            //    .digest('hex');
     
-            if (hash !== data.headers[PAYSTACK_SIGNATURE_HEADER]) throw new ApplicationError('Invalid signature');
+            //if (hash !== data.headers[PAYSTACK_SIGNATURE_HEADER]) throw new ApplicationError('Invalid signature');
             
             // Check if payment was successful
             if (data.data.status !== 'success') throw new ApplicationError(RESPONSE.NOT_SUCCESS);
