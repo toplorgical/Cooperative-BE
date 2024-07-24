@@ -28,18 +28,16 @@ const TransactionHistory = dbClient.sequelize.define(
       },
     },
     type: {
-      type: DataTypes.ENUM,
+      type: DataTypes.STRING,
       allowNull: false,
-      values: ["DEPOSIT", "WITHDRAWAL", "TRANSFER"],
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
+      defaultValue :Date.now()
+
     },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
+   
     metadata: {
       type: DataTypes.TEXT,
       get() {
