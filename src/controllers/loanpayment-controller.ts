@@ -1,5 +1,5 @@
 import { Response, Request} from "express"
-import LaonPaymentService from "../services/loanpayment-services"
+import LaonPaymentService from "../services/payment-services"
 import { UserProps } from "../types"
 import ResponseManager from "../utils/response-manager"
 
