@@ -24,6 +24,7 @@ class TransactionHistoryRepository {
   static async findOne(query: Partial<TransactionQueryProps>) {
     const where = {} as any;
     if (query.userId) where.id = query.userId;
+    if (query.type) where.type = query.type;
 
     const result = await TransactionHistory.findOne({ where });
     return result?.toJSON() as LoanPaymentProps;
@@ -37,6 +38,7 @@ class TransactionHistoryRepository {
     let where = {} as any;
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
+    if (query.type) where.type = query.type;
 
     const response = await TransactionHistory.findAll({
       where,

@@ -10,8 +10,9 @@ loanRoutes.post("/", authenticationMiddleware, asyncHandler(LoanController.creat
 loanRoutes.post("/cancel/:id", authenticationMiddleware, asyncHandler(LoanController.cancelLoan));
 
 loanRoutes.get("/", authenticationMiddleware, asyncHandler(LoanController.getLoans));
-loanRoutes.get("/:id", authenticationMiddleware, asyncHandler(LoanController.getLoan));
 loanRoutes.get("/types", authenticationMiddleware, asyncHandler(LoanController.getLoanTypes));
+
+loanRoutes.get("/:id", authenticationMiddleware, asyncHandler(LoanController.getLoan));
 
 loanRoutes.post(
   "/repayment-from-account",
