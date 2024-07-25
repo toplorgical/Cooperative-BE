@@ -2,12 +2,12 @@ import Joi from "joi";
 import { LoanProps, LoanTypeProps } from "../types";
 
 class LoanValidations {
-  static validate(data: LoanProps) {
+  static create(data: LoanProps) {
     const schema = Joi.object({
       amount: LoanValidations.loanProperties.amount,
       duration: LoanValidations.loanProperties.duration,
       userId: LoanValidations.loanProperties.userId,
-      loanTypeId: LoanValidations.loanProperties.loanTypeId
+      loanTypeId: LoanValidations.loanProperties.loanTypeId,
     });
 
     const { error } = schema.validate(data);
@@ -30,7 +30,6 @@ class LoanValidations {
     userId: Joi.number().required().label("userId"),
     loanTypeId: Joi.number().required().label("id"),
     duration: Joi.number().integer().required().label("duration"),
-   
   };
 }
 

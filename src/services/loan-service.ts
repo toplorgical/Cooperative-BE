@@ -1,44 +1,59 @@
 import _ from "lodash";
-import { CalculatorTypeProps, LoanProps, LoanTypeProps } from "../types/index";
-import { ApplicationError, LoanRequestError, NotFoundError, ValidationError } from "../utils/errorHandler";
+import { LoanProps, LoanQueryProps, LoanTypeProps, UserProps } from "../types/index";
+import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import LoanValidations from "../validations/loan-validation";
-import { RESPONSE } from "../constants/index";
 import LoanRepository from "../repository/loan-repository";
-import UserRepository from "../repository/user-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
 
 class LoanServices {
-  static async create(data: LoanProps) {
-    const validate = LoanValidations.validate(data);
+  static async create(data: LoanProps, user: UserProps) {
+    const error = LoanValidations.create(data);
+    if (error) throw new ValidationError(error);
 
-    if (validate) throw new ValidationError(validate);
-    const getUserDetails = await UserRepository.findByPk(data.userId);
-    let loanData = await LoanTypeRepository.findById(data.loanTypeId);
-    if (!loanData) throw new LoanRequestError(RESPONSE.NO_LOAN_TYPE);
-    let result = {
-      amount: data.amount,
-      duration: data.duration,
-      rate: loanData.rate,
-    } as CalculatorTypeProps;
+    const loanType = await LoanTypeRepository.findOne({ id: data.loanTypeId });
+    if (!loanType) throw new ApplicationError(`Loan type is invalid`);
 
-    let calculate = LoanServices.calculateLoan(result);
+    await LoanServices.checkLoanEligibility(user, data);
 
-    const loan = {
-      ...data,
-      ...calculate,
-      loanTypeId: loanData.id,
-    };
-    const loanDetails = await LoanRepository.create(loan);
-    return loanDetails;
+    const total = LoanServices.calculateLoan({ ...data, rate: loanType.rate });
+    data.rate = loanType.rate;
+    data.totalInterest = total.totalInterest;
+    data.totalRepayments = total.totalRepayments;
+    data.monthlyRepayment = total.monthlyRepayment;
+    const result = await LoanRepository.create(data);
+    return result;
   }
 
-  static calculateLoan(data: CalculatorTypeProps) {
-    const { rate, amount, duration } = data;
-    const interest = (amount * rate * duration) / 12;
-    const totalAmount = amount + interest;
-    const monthlyReturn = totalAmount / duration;
+  private static async checkLoanEligibility(user: UserProps, data: LoanProps) {
+    if (user.profileSetup !== "COMPLETED") {
+      throw new ApplicationError("Complete your profile to be eligible for loan");
+    }
 
-    return { interest, totalAmount };
+    const pendingLoan = await LoanRepository.findOne({ userId: user.id, status: "PENDING" } as LoanQueryProps);
+    if (pendingLoan) throw new ApplicationError("Request could not be completed as previous loans is pending");
+
+    const result = await LoanRepository.findAll({ userId: user.id, status: "APPROVED" } as LoanQueryProps);
+    const total = result.data?.reduce((a, c) => a + c.totalRepayments, 0);
+    const balance = user.account.balance - total;
+
+    if (balance * 3 < Number(data.amount)) {
+      throw new ApplicationError("Insufficient savings balance. Topup your account to complete this process");
+    }
+  }
+
+  static calculateLoan(loan: LoanProps) {
+    const principal = Number(loan?.amount || 0);
+    const annualInterestRate = Number(loan?.rate || 0);
+    const loanDurationMonths = Number(loan?.duration || 0);
+    const monthlyInterestRate = annualInterestRate / 12 / 100;
+
+    const monthlyRepayment =
+      (principal * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -loanDurationMonths)) || 0;
+
+    const totalRepayments = monthlyRepayment * loanDurationMonths;
+    const totalInterest = totalRepayments - principal;
+
+    return { principal, monthlyRepayment, totalRepayments, totalInterest };
   }
 
   static async cancel(id: number, userId: number) {

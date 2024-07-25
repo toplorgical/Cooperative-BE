@@ -21,6 +21,8 @@ class LoanRepository {
     if (query.status) where.status = query.status;
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
+    if (query.loanTypeId) where.loanTypeId = query.loanTypeId;
+
     const result = await Loan.findOne({ where, include: [{ model: LoanType }] });
     return result?.toJSON() as LoanProps;
   }
@@ -34,6 +36,7 @@ class LoanRepository {
     if (query.status) where.status = query.status;
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
+    if (query.loanTypeId) where.loanTypeId = query.loanTypeId;
     if (query.keyword) {
       const keyword = `%${query.keyword.trim().split("").join("%")}%`;
       where = {
@@ -62,7 +65,7 @@ class LoanRepository {
       totalDocs: count,
       nextPage: page === totalPages(count, limit) ? null : page + 1,
       totalPages: totalPages(count, limit),
-      data: response.map((item) => item.toJSON()),
+      data: response.map((item) => item.toJSON()) as LoanProps[],
     };
   }
 }

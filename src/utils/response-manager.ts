@@ -1,7 +1,7 @@
 import { Response } from "express";
 
 class ResponseManager {
-  static success(res: Response, data: any, statusCode: number, message?: string) {
+  static success(res: Response, data: any, statusCode: number = 200, message: string = "success") {
     res.status(statusCode).send({
       data,
       message,
