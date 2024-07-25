@@ -30,7 +30,7 @@ class LoanServices {
     }
 
     const pendingLoan = await LoanRepository.findOne({ userId: user.id, status: "PENDING" } as LoanQueryProps);
-    if (pendingLoan) throw new ApplicationError("Request could not be completed as previous loans is pending");
+    if (pendingLoan) throw new ApplicationError("Request could not be completed as previous loans are still pending");
 
     const result = await LoanRepository.findAll({ userId: user.id, status: "APPROVED" } as LoanQueryProps);
     const total = result.data?.reduce((a, c) => a + c.totalRepayments, 0);
