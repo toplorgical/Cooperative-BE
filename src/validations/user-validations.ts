@@ -1,5 +1,5 @@
 import Joi, { CustomHelpers } from "joi";
-import { ResetPasswordProps, UserProps } from "../types";
+import { ChangePasswordProps, ResetPasswordProps, UserProps } from "../types";
 import parsePhoneNumberFromString from "libphonenumber-js";
 
 class UserValidations {
@@ -67,7 +67,7 @@ class UserValidations {
     if (error) return error.details[0].message;
     return null;
   }
-  static changePassword(data: UserProps) {
+  static changePassword(data: ChangePasswordProps) {
     const schema = Joi.object({
       password: UserValidations.userProperties.password,
       newPassword: UserValidations.userProperties.password,

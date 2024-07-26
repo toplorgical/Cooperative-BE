@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ResetPasswordProps, UserProps } from "../types";
+import { ChangePasswordProps, ResetPasswordProps, UserProps } from "../types";
 import UserService from "../services/user-service";
 import ResponseManager from "../utils/response-manager";
 import _ from "lodash";
@@ -44,7 +44,7 @@ class UserController {
   }
 
   static async changePassword(req: any, res: any) {
-    const data = req.body as UserProps;
+    const data = req.body as ChangePasswordProps;
     const user = req.user as UserProps;
     const message = await UserService.changePassword(data, user);
     ResponseManager.success(res, null, 200, message);
