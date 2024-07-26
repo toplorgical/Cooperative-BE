@@ -74,6 +74,12 @@ export type ResetPasswordProps = {
   token: string;
   password: string;
 };
+export type ChangePasswordProps = {
+  password: string;
+  newPassword : string;
+};
+
+
 
 export type LoanGuarantors = {
   loanId: number;

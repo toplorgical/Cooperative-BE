@@ -2,7 +2,7 @@ import _ from "lodash";
 import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
-import { ResetPasswordProps, UserProps, VerificationProps } from "../types";
+import { ChangePasswordProps, ResetPasswordProps, UserProps, VerificationProps } from "../types";
 import { hashPassword, comparePassword, generateOtp, generateRandomUUID } from "../utils";
 import { ApplicationError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
@@ -123,16 +123,25 @@ class UserService {
     return "Work info updated successfully";
   }
 
-  static async changePassword(data: UserProps, user: UserProps) {
+  static async changePassword(data: ChangePasswordProps, user: UserProps) {
+    console.log(data)
     const error = UserValidations.changePassword(data);
     if (error) throw new ValidationError(error, 400);
 
     const isValidPassword = await comparePassword(data.password, user.password);
     if (!isValidPassword) throw new ApplicationError("Current password is invalid");
 
-    data.password = await hashPassword(data.password);
+    data.password = await hashPassword(data.newPassword);
     await UserRepository.update({ password: data.password }, user.id);
     return "Password updated successfully";
   }
+
+  static async changePhone(data: UserProps, user: UserProps) {
+    const error = UserValidations.phoneNumber(data);
+    if (error) throw new ValidationError(error, 400);
+    const userinfo = await UserRepository.update({ phone: data.phone , isVerified :false } , user.id);
+    UserEventEmitter.emit("REQUEST_OTP", userinfo);
+    return "Phone updated successfully";
+  }
 }
-export default UserService;
+export default UserService; 
