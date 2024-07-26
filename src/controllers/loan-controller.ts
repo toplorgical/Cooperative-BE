@@ -2,22 +2,15 @@ import { Response } from "express";
 import LoanServices from "../services/loan-service";
 import { LoanProps } from "../types";
 import ResponseManager from "../utils/response-manager";
-import { RESPONSE } from "../constants/index";
 import LoanRepository from "../repository/loan-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
 
 class LoanController {
   static async create(req: any, res: Response) {
-    const userId = req.user.id as number;
-    const data = {
-      loanTypeId : req.body.loanTypeId,
-      amount: req.body.amount,
-      duration: req.body.duration,
-      userId,
-    } as LoanProps;
-
-    const result = await LoanServices.create(data);
-    ResponseManager.success(res, result, 200, RESPONSE.SUCCESS);
+    const data = { ...req.body } as LoanProps;
+    data.userId = req.user.id;
+    const result = await LoanServices.create(data, req.user);
+    ResponseManager.success(res, result, 201);
   }
 
   static async getLoans(req: any, res: Response) {
@@ -28,9 +21,9 @@ class LoanController {
   }
 
   static async getLoan(req: any, res: Response) {
-    const query = { ...req.query } as any;
+    const query = { ...req.query, id: req.params.id } as any;
     if (req.user) query.userId = req.user.id;
-    const result = await LoanRepository.findAll(query);
+    const result = await LoanRepository.findOne(query);
     ResponseManager.success(res, result, 200);
   }
 

@@ -5,7 +5,9 @@ import TransactionController from "../controllers/transaction-controller";
 
 const transactionsRoute = Router();
 
-transactionsRoute.get("/", authenticationMiddleware, asyncHandler(TransactionController.findAll));
-transactionsRoute.get("/:id", authenticationMiddleware, asyncHandler(TransactionController.findOne));
+const isAuth = asyncHandler(authenticationMiddleware);
+
+transactionsRoute.get("/", [isAuth], asyncHandler(TransactionController.findAll));
+transactionsRoute.get("/:id", [isAuth], asyncHandler(TransactionController.findOne));
 
 export default transactionsRoute;

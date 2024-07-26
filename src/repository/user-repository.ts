@@ -6,7 +6,6 @@ import AccountRepository from "./account-repository";
 import dbClient from "../config/dbClient";
 import Account from "../models/account";
 
-
 class UserRepository {
   static async create(data: UserProps) {
     const _accountData = {} as AccountProps;
@@ -41,19 +40,17 @@ class UserRepository {
   }
 
   static async findByPk(id: number) {
-    const result = await User.findByPk(id);
+    const result = await User.findByPk(id, { include: [{ model: Account }] });
     return result?.toJSON() as UserProps;
   }
 
-  static async  findUserWithLoans(userId: number) {
- 
-      const result = await User.findByPk(userId, {
-        include: [{model: Loan}],
-      });
-      return result?.toJSON() as UserProps;
-
+  static async findUserWithLoans(userId: number) {
+    const result = await User.findByPk(userId, {
+      include: [{ model: Loan }],
+    });
+    return result?.toJSON() as UserProps;
   }
-  
+
   static async findOne(query: Partial<UserProps>) {
     const where = {} as UserProps;
     if (query.id) where.id = query.id;
@@ -65,7 +62,7 @@ class UserRepository {
     if (query.isDeleted) where.isDeleted = query.isDeleted;
     if (query.isVerified) where.isVerified = query.isVerified;
     if (query.profileSetup) where.profileSetup = query.profileSetup;
-    const result = await User.findOne({ where });
+    const result = await User.findOne({ where, include: [{ model: Account }] });
     return result?.toJSON() as UserProps;
   }
 

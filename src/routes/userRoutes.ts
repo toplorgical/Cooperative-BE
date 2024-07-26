@@ -6,6 +6,7 @@ import authenticationMiddleware from "../middlewares/authMiddleware";
 const userRoutes = Router();
 
 const isAuth = asyncHandler(authenticationMiddleware);
+
 userRoutes.post("/signup", asyncHandler(UserController.signup));
 userRoutes.post("/signin", asyncHandler(UserController.signin));
 userRoutes.post("/verify-otp", [isAuth], asyncHandler(UserController.verifyOTP));
@@ -20,7 +21,6 @@ userRoutes.put("/account/change-phone", [isAuth], asyncHandler(UserController.ch
 userRoutes.get("/account", [isAuth], asyncHandler(UserController.getUser));
 userRoutes.get("/request-otp", [isAuth], asyncHandler(UserController.requestOTP));
 
-userRoutes.post("/mail",   asyncHandler(UserController.sendMail));
-
+userRoutes.post("/mail", asyncHandler(UserController.sendMail));
 
 export default userRoutes;

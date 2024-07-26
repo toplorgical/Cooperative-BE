@@ -13,7 +13,7 @@ const Loan = dbClient.sequelize.define(
     },
     amount: {
       type: DataTypes.DECIMAL,
-      allowNull: true,
+      allowNull: false,
       defaultValue: 0,
       get() {
         const value = this.getDataValue("amount");
@@ -22,7 +22,7 @@ const Loan = dbClient.sequelize.define(
     },
     loanTypeId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
     duration: {
       type: DataTypes.INTEGER,
@@ -30,16 +30,50 @@ const Loan = dbClient.sequelize.define(
     },
     disbursedAt: {
       type: DataTypes.DATE,
-      allowNull: true,
     },
     approveAt: {
       type: DataTypes.DATE,
-      allowNull: true,
+    },
+    monthlyRepayment: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+      defaultValue: 0,
+      get() {
+        const value = this.getDataValue("monthlyRepayment");
+        return value === null ? 0 : parseFloat(value);
+      },
+    },
+    totalInterest: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+      defaultValue: 0,
+      get() {
+        const value = this.getDataValue("totalInterest");
+        return value === null ? 0 : parseFloat(value);
+      },
+    },
+    totalRepayments: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+      defaultValue: 0,
+      get() {
+        const value = this.getDataValue("totalRepayments");
+        return value === null ? 0 : parseFloat(value);
+      },
+    },
+    rate: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+      defaultValue: 0,
+      get() {
+        const value = this.getDataValue("rate");
+        return value === null ? 0 : parseFloat(value);
+      },
     },
     status: {
       type: DataTypes.ENUM,
       defaultValue: "PENDING",
-      allowNull: true,
+      allowNull: false,
       values: ["PENDING", "APPROVED", "REJECTED", "CANCELED"],
     },
   },
@@ -57,7 +91,7 @@ const LoanType = dbClient.sequelize.define(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     rate: {
       type: DataTypes.DECIMAL,

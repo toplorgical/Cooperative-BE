@@ -41,6 +41,7 @@ export type UserProps = {
   createdAt: string;
 
   loans: LoanProps[];
+  account: AccountProps;
 };
 
 export interface UserQueryProps extends UserProps {
@@ -75,17 +76,18 @@ export type ResetPasswordProps = {
 };
 
 export type LoanProps = {
-  amountPaid: number;
-  totalAmountToBePaid: number;
-  interest: number;
-  id: number;
   amount: number;
+  totalInterest: number;
+  monthlyRepayment: number;
+  totalRepayments: number;
+  rate: number;
+  id: number;
   userId: number;
   disbursedAt: string;
   approvedAt: string;
   loanId: number;
   duration: number;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED" | "ENDED";
   loanTypeId: number;
   createdAt: string;
 };

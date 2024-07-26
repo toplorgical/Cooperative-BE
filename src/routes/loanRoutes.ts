@@ -6,17 +6,16 @@ import authenticationMiddleware from "../middlewares/authMiddleware";
 
 const loanRoutes = Router();
 
-loanRoutes.post("/", authenticationMiddleware, asyncHandler(LoanController.create));
-loanRoutes.post("/cancel/:id", authenticationMiddleware, asyncHandler(LoanController.cancelLoan));
+const isAuth = asyncHandler(authenticationMiddleware);
 
-loanRoutes.get("/", authenticationMiddleware, asyncHandler(LoanController.getLoans));
-loanRoutes.get("/:id", authenticationMiddleware, asyncHandler(LoanController.getLoan));
-loanRoutes.get("/types", authenticationMiddleware, asyncHandler(LoanController.getLoanTypes));
+loanRoutes.post("/", [isAuth], asyncHandler(LoanController.create));
+loanRoutes.post("/cancel/:id", [isAuth], asyncHandler(LoanController.cancelLoan));
 
-loanRoutes.post(
-  "/repayment-from-account",
-  authenticationMiddleware,
-  asyncHandler(LoanPaymentController.loanPaymentFromAccount)
-);
+loanRoutes.get("/", [isAuth], asyncHandler(LoanController.getLoans));
+loanRoutes.get("/types", [isAuth], asyncHandler(LoanController.getLoanTypes));
+
+loanRoutes.get("/:id", [isAuth], asyncHandler(LoanController.getLoan));
+
+loanRoutes.post("/repayment-from-account", [isAuth], asyncHandler(LoanPaymentController.loanPaymentFromAccount));
 
 export default loanRoutes;
