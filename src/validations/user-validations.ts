@@ -21,10 +21,23 @@ class UserValidations {
       password: UserValidations.userProperties.password,
     });
 
+    
+
     const { error } = schema.validate(data);
     if (error) return error.details[0].message;
     return null;
   }
+
+  static phoneNumber(data: UserProps) {
+    const schema = Joi.object({
+      phone: UserValidations.userProperties.phone,
+      
+    });
+    const { error } = schema.validate(data);
+    if (error) return error.details[0].message;
+    return null;
+  }
+
 
   static personalInfo(data: UserProps) {
     const schema = Joi.object({

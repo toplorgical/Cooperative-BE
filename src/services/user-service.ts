@@ -134,5 +134,12 @@ class UserService {
     await UserRepository.update({ password: data.password }, user.id);
     return "Password updated successfully";
   }
+
+  static async changePhone(data: UserProps, user: UserProps) {
+    const error = UserValidations.phoneNumber(data);
+    if (error) throw new ValidationError(error, 400);
+    await UserRepository.update({ phone: data.phone }, user.id);
+    return "Phone updated successfully";
+  }
 }
-export default UserService;
+export default UserService; 

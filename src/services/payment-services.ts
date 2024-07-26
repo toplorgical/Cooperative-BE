@@ -63,6 +63,7 @@ class PaymentService{
                 description: RESPONSE.CREDIT_DEC.replace("PLATFORM", "PAYSTACK"),
                 metadata: data.data.customer
             };
+            //update user transaction history
             const transaction = await TransactionHistoryRepository.create(transactionInfo);
     
             return { transaction, update };

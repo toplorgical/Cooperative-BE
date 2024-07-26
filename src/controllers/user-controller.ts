@@ -49,6 +49,12 @@ class UserController {
     const message = await UserService.changePassword(data, user);
     ResponseManager.success(res, null, 200, message);
   }
+  static async changePhone(req: any, res: any) {
+    const data = req.body as UserProps;
+    const user = req.user as UserProps;
+    const message = await UserService.changePhone(data, user);
+    ResponseManager.success(res, null, 200, message);
+  }
 
   static async getUser(req: any, res: any) {
     const user = _.omit(req.user, ["password"]) as UserProps;

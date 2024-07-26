@@ -15,6 +15,7 @@ userRoutes.post("/reset-password", asyncHandler(UserController.resetPassword));
 userRoutes.put("/account/personal-info", [isAuth], asyncHandler(UserController.personalInfo));
 userRoutes.put("/account/work-info", [isAuth], asyncHandler(UserController.workInfo));
 userRoutes.put("/account/change-password", [isAuth], asyncHandler(UserController.changePassword));
+userRoutes.put("/account/change-phone", [isAuth], asyncHandler(UserController.changePhone));
 
 userRoutes.get("/account", [isAuth], asyncHandler(UserController.getUser));
 userRoutes.get("/request-otp", [isAuth], asyncHandler(UserController.requestOTP));
