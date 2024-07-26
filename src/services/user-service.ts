@@ -124,7 +124,6 @@ class UserService {
   }
 
   static async changePassword(data: ChangePasswordProps, user: UserProps) {
-    console.log(data)
     const error = UserValidations.changePassword(data);
     if (error) throw new ValidationError(error, 400);
 
@@ -139,9 +138,9 @@ class UserService {
   static async changePhone(data: UserProps, user: UserProps) {
     const error = UserValidations.phoneNumber(data);
     if (error) throw new ValidationError(error, 400);
-    const userinfo = await UserRepository.update({ phone: data.phone , isVerified :false } , user.id);
+    const userinfo = await UserRepository.update({ phone: data.phone, isVerified: false }, user.id);
     UserEventEmitter.emit("REQUEST_OTP", userinfo);
     return "Phone updated successfully";
   }
 }
-export default UserService; 
+export default UserService;
