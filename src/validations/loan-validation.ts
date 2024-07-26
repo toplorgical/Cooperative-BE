@@ -8,6 +8,12 @@ class LoanValidations {
       duration: LoanValidations.loanProperties.duration,
       userId: LoanValidations.loanProperties.userId,
       loanTypeId: LoanValidations.loanProperties.loanTypeId,
+      guarantors: Joi.array()
+        .max(2)
+        .min(2)
+        .items({
+          registrationId: Joi.string().required().label("Membership ID"),
+        }),
     });
 
     const { error } = schema.validate(data);

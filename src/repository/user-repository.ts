@@ -62,6 +62,7 @@ class UserRepository {
     if (query.isDeleted) where.isDeleted = query.isDeleted;
     if (query.isVerified) where.isVerified = query.isVerified;
     if (query.profileSetup) where.profileSetup = query.profileSetup;
+    if (query.registrationId) where.registrationId = query.registrationId;
     const result = await User.findOne({ where, include: [{ model: Account }] });
     return result?.toJSON() as UserProps;
   }
@@ -79,6 +80,8 @@ class UserRepository {
     if (query.isVerified) where.isVerified = query.isVerified;
     if (query.profileSetup) where.profileSetup = query.profileSetup;
     if (query.phone) where.phone = query.phone;
+    if (query.registrationId) where.registrationId = query.registrationId;
+
     if (query.keyword) {
       where[Op.or] = {
         email: { [Op.like]: `%${query.keyword.trim().split("").join("%")}%` },

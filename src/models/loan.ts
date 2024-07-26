@@ -106,8 +106,35 @@ const LoanType = dbClient.sequelize.define(
   { timestamps: true }
 );
 
+const LoanGuarantor = dbClient.sequelize.define(
+  "guarantor",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    registrationId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  { timestamps: true }
+);
+
 User.hasMany(Loan);
 Loan.belongsTo(User, { foreignKey: "userId" });
+
+Loan.hasMany(LoanGuarantor);
+LoanGuarantor.belongsTo(Loan, { foreignKey: "loanId" });
+
+User.hasMany(LoanGuarantor);
+LoanGuarantor.belongsTo(User, { foreignKey: "userId" });
 
 LoanType.hasMany(Loan);
 Loan.belongsTo(LoanType, { foreignKey: "loanTypeId" });
@@ -117,4 +144,4 @@ dbClient.sequelize
   .then(() => console.log("loans table sync"))
   .catch((error) => console.error(error));
 
-export { Loan, LoanType };
+export { Loan, LoanType, LoanGuarantor };

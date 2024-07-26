@@ -1,11 +1,19 @@
 import { Op } from "sequelize";
-import { Loan, LoanType } from "../models/loan";
+import { Loan, LoanGuarantor, LoanType } from "../models/loan";
 import { LoanProps, LoanQueryProps } from "../types/index";
+import dbClient from "../config/dbClient";
+import User from "../models/user";
 
 class LoanRepository {
   static async create(data: LoanProps) {
-    const result = await Loan.create(data);
-    return result.toJSON() as LoanProps;
+    return await dbClient.sequelize.transaction(async (transaction) => {
+      const result = await Loan.create(data, { transaction });
+      const loan = result.toJSON() as LoanProps;
+
+      data.guarantors = data.guarantors.map((item) => ({ ...item, loanId: loan.id }));
+      await LoanGuarantor.bulkCreate(data.guarantors, { transaction });
+      return loan;
+    });
   }
   static async updateById(data: LoanProps, id: number) {
     return await Loan.update(data, { where: { id } });
@@ -23,7 +31,13 @@ class LoanRepository {
     if (query.userId) where.userId = query.userId;
     if (query.loanTypeId) where.loanTypeId = query.loanTypeId;
 
-    const result = await Loan.findOne({ where, include: [{ model: LoanType }] });
+    const result = await Loan.findOne({
+      where,
+      include: [
+        { model: LoanType },
+        { model: LoanGuarantor, include: [{ model: User, attributes: ["firstName", "lastName", "registrationId"] }] },
+      ],
+    });
     return result?.toJSON() as LoanProps;
   }
 
@@ -51,7 +65,10 @@ class LoanRepository {
     const response = await Loan.findAll({
       where,
       limit,
-      include: [{ model: LoanType }],
+      include: [
+        { model: LoanType },
+        { model: LoanGuarantor, include: [{ model: User, attributes: ["firstName", "lastName", "registrationId"] }] },
+      ],
       attributes: { exclude: ["amountPaid", "balance"] },
       offset: (page - 1) * limit,
       order: [["id", "DESC"]],

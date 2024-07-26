@@ -1,11 +1,15 @@
 import _ from "lodash";
-import { LoanProps, LoanQueryProps, LoanTypeProps, UserProps } from "../types/index";
+import { LoanGuarantors, LoanProps, LoanQueryProps, LoanTypeProps, UserProps } from "../types/index";
 import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import LoanValidations from "../validations/loan-validation";
 import LoanRepository from "../repository/loan-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
+import UserRepository from "../repository/user-repository";
 
 class LoanServices {
+  static accountBalance: number = 0;
+  static loanGuarantors: LoanGuarantors[] = [];
+
   static async create(data: LoanProps, user: UserProps) {
     const error = LoanValidations.create(data);
     if (error) throw new ValidationError(error);
@@ -14,19 +18,27 @@ class LoanServices {
     if (!loanType) throw new ApplicationError(`Loan type is invalid`);
 
     await LoanServices.checkLoanEligibility(user, data);
+    await LoanServices.checkGuarantorsEligibility(data);
 
     const total = LoanServices.calculateLoan({ ...data, rate: loanType.rate });
     data.rate = loanType.rate;
     data.totalInterest = total.totalInterest;
     data.totalRepayments = total.totalRepayments;
     data.monthlyRepayment = total.monthlyRepayment;
+    data.guarantors = LoanServices.loanGuarantors;
     const result = await LoanRepository.create(data);
     return result;
   }
 
   private static async checkLoanEligibility(user: UserProps, data: LoanProps) {
+    const guarantorsId = data.guarantors.map((item) => item.registrationId);
+
     if (user.profileSetup !== "COMPLETED") {
       throw new ApplicationError("Complete your profile to be eligible for loan");
+    }
+
+    if (guarantorsId.includes(user.registrationId)) {
+      throw new ApplicationError(`You can't use yourself as a guarantor`);
     }
 
     const pendingLoan = await LoanRepository.findOne({ userId: user.id, status: "PENDING" } as LoanQueryProps);
@@ -36,9 +48,40 @@ class LoanServices {
     const total = result.data?.reduce((a, c) => a + c.totalRepayments, 0);
     const balance = user.account.balance - total;
 
+    LoanServices.accountBalance = balance;
+
     if (balance * 3 < Number(data.amount)) {
       throw new ApplicationError("Insufficient savings balance. Topup your account to complete this process");
     }
+  }
+
+  private static async checkGuarantorsEligibility(data: LoanProps) {
+    const _gurantors = [] as LoanGuarantors[];
+    const guarantors = data.guarantors as LoanGuarantors[];
+
+    for (const guarantor of guarantors) {
+      const user = await UserRepository.findOne({ registrationId: guarantor.registrationId });
+      if (!user) throw new NotFoundError(`Membership ID "${guarantor.registrationId}" is invalid`);
+
+      if (user.profileSetup !== "COMPLETED") {
+        throw new ApplicationError(`Guarantor with membership ID "${user.registrationId}" is ineligible`);
+      }
+
+      const pendingLoan = await LoanRepository.findOne({ userId: user.id, status: "PENDING" } as LoanQueryProps);
+      if (pendingLoan) {
+        throw new ApplicationError(`Guarantor with membership ID "${user.registrationId}" is ineligible`);
+      }
+
+      const result = await LoanRepository.findAll({ userId: user.id, status: "APPROVED" } as LoanQueryProps);
+      const total = result.data?.reduce((a, c) => a + c.totalRepayments, 0);
+      const balance = user.account.balance - total;
+
+      if (balance * 3 < Number(data.amount)) {
+        throw new ApplicationError(`Guarantor with membership ID "${user.registrationId}" is ineligible`);
+      }
+      _gurantors.push({ registrationId: user.registrationId, userId: user.id } as LoanGuarantors);
+    }
+    LoanServices.loanGuarantors = _gurantors;
   }
 
   static calculateLoan(loan: LoanProps) {

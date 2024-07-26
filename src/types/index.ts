@@ -75,6 +75,12 @@ export type ResetPasswordProps = {
   password: string;
 };
 
+export type LoanGuarantors = {
+  loanId: number;
+  userId: number;
+  registrationId: string;
+};
+
 export type LoanProps = {
   amount: number;
   totalInterest: number;
@@ -90,6 +96,7 @@ export type LoanProps = {
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED" | "ENDED";
   loanTypeId: number;
   createdAt: string;
+  guarantors: LoanGuarantors[];
 };
 export type LoanPaymentProps = {
   userId: number;
