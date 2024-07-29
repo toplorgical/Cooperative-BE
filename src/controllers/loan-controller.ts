@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import LoanServices from "../services/loan-service";
 import { LoanProps } from "../types";
 import ResponseManager from "../utils/response-manager";
@@ -29,6 +29,11 @@ class LoanController {
 
   static async cancelLoan(req: any, res: Response) {
     const result = await LoanServices.cancel(req.params.id, req.user.id);
+    ResponseManager.success(res, result.result, 200, result.message);
+  }
+
+  static async changeStatus(req: Request, res: Response) {
+    const result = await LoanServices.changeStatus(req.body);
     ResponseManager.success(res, result.result, 200, result.message);
   }
 

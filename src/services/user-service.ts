@@ -4,7 +4,7 @@ import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
 import { ChangePasswordProps, ResetPasswordProps, UserProps, VerificationProps } from "../types";
 import { hashPassword, comparePassword, generateOtp, generateRandomUUID } from "../utils";
-import { ApplicationError, ValidationError } from "../utils/errorHandler";
+import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
 import { MessagingService, MassagingProps } from "./messaging-service";
@@ -141,6 +141,17 @@ class UserService {
     const userinfo = await UserRepository.update({ phone: data.phone, isVerified: false }, user.id);
     UserEventEmitter.emit("REQUEST_OTP", userinfo);
     return "Phone updated successfully";
+  }
+
+  static async changeRole(data: UserProps) {
+    const error = UserValidations.role(data);
+    if (error) throw new ValidationError(error, 400);
+
+    const user = await UserRepository.findByPk(data.userId);
+    if (!user) throw new NotFoundError("The requested user could not be found");
+
+    await UserRepository.update(data, user.id);
+    return "User role updated successfully";
   }
 }
 export default UserService;

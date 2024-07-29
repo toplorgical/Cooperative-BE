@@ -1,15 +1,16 @@
 import { Response, NextFunction } from "express";
-import { AuthorizationError, NotFoundError } from "../utils/errorHandler";
-import JWTManager from "../manager/jwtManager";
+import { ApplicationError, NotFoundError } from "../utils/errorHandler";
 import { UserProps } from "../types";
 
 const administratorMiddleware = async (req: any, res: Response, next: NextFunction) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) throw new AuthorizationError("No token provided");
+  const user = req.user as UserProps;
 
-  const result = JWTManager.verify(token);
-  const admin = {} as UserProps;
-  req.admin = admin;
+  if (!user) throw new NotFoundError("Requested user could not be found.");
+  if (!user.role.includes("ADMIN")) {
+    throw new ApplicationError("You don't have the permission to access this resource", 403);
+  }
+
+  req.admin = user;
   next();
 };
 

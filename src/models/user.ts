@@ -88,6 +88,12 @@ const User = dbClient.sequelize.define(
     employmentType: {
       type: DataTypes.STRING,
     },
+    role: {
+      type: DataTypes.ENUM,
+      allowNull: false,
+      defaultValue: "USER",
+      values: ["USER", "ADMIN", "SUPER_ADMIN"],
+    },
     employmentLocation: {
       type: DataTypes.STRING,
     },

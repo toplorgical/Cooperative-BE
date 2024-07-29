@@ -3,8 +3,9 @@ import { Loan } from "../models/loan";
 import TransactionHistory from "../models/transaction-history";
 import { AccountProps, LoanProps, TransactionHistoryProps } from "../types";
 import AccountRepository from "./account-repository";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import _ from "lodash";
+import User from "../models/user";
 
 class AnanlyticsRepository {
   static async __default(query: { userId: number }) {
@@ -37,81 +38,77 @@ class AnanlyticsRepository {
     return data;
   }
 
-  static async loans(query: { userId: number; type: "WEEKLY" | "MONTHLY" | "YEARLY" }) {
-    const { periods, startDate } = AnanlyticsRepository.getPeriods(query.type);
+  static async loans(query: { userId?: number; period: "WEEKLY" | "MONTHLY" | "YEARLY" }) {
+    const { periods, startDate } = AnanlyticsRepository.getPeriods(query.period);
+    const where = { createdAt: { [Op.gte]: startDate, status: "APPROVED" } } as any;
+    if (query?.userId) where.userId = query.userId;
 
-    const loanResult = await Loan.findAll({
-      where: {
-        userId: query?.userId,
-        status: "APPROVED",
-        createdAt: {
-          [Op.gte]: startDate,
-        },
-      },
-    });
-
+    const loanResult = await Loan.findAll({ where });
     const loans = loanResult.map((item) => item.toJSON()) as LoanProps[];
-    const analyticResult = [] as { period: string; sum: number }[];
+    const analyticResult = [] as { period: string; sum: number; count: number }[];
 
     const groupLoans = _.groupBy(loans, (item) => {
-      if (query.type === "WEEKLY") {
-        return moment(item.createdAt).day("ddd");
-      }
-      if (query.type === "MONTHLY") {
-        return moment(item.createdAt).day("MMM");
-      }
-      if (query.type === "YEARLY") {
-        return moment(item.createdAt).day("YYYY");
-      }
+      if (query.period === "WEEKLY") return moment(item.createdAt).format("ddd");
+      if (query.period === "MONTHLY") return moment(item.createdAt).format("MMM");
+      return moment(item.createdAt).format("YYYY");
     });
 
     for (const period of periods) {
-      if (!groupLoans[period]) analyticResult.push({ period, sum: 0 });
+      if (!groupLoans[period]) analyticResult.push({ period, sum: 0, count: 0 });
       else {
         const sum = groupLoans[period].reduce((a, c) => a + c.amount, 0);
-        analyticResult.push({ period, sum });
+        analyticResult.push({ period, sum, count: groupLoans[period].length });
       }
     }
 
     return analyticResult;
   }
 
-  static async txns(query: { userId: number; type: "WEEKLY" | "MONTHLY" | "YEARLY" }) {
-    const { periods, startDate } = AnanlyticsRepository.getPeriods(query.type);
+  static async txns(query: { userId?: number; period: "WEEKLY" | "MONTHLY" | "YEARLY" }) {
+    const { periods, startDate } = AnanlyticsRepository.getPeriods(query.period);
+    const where = { createdAt: { [Op.gte]: startDate } } as any;
+    if (query?.userId) where.userId = query.userId;
 
-    const txnsResult = await TransactionHistory.findAll({
-      where: {
-        userId: query?.userId,
-        createdAt: {
-          [Op.gte]: startDate,
-        },
-      },
-    });
-
+    const txnsResult = await TransactionHistory.findAll({ where });
     const txns = txnsResult.map((item) => item.toJSON()) as TransactionHistoryProps[];
-    const analyticResult = [] as { period: string; sum: number }[];
+    const analyticResult = [] as { period: string; sum: number; count: number }[];
 
     const groupTxns = _.groupBy(txns, (item) => {
-      if (query.type === "WEEKLY") {
-        return moment(item.createdAt).day("ddd");
-      }
-      if (query.type === "MONTHLY") {
-        return moment(item.createdAt).day("MMM");
-      }
-      if (query.type === "YEARLY") {
-        return moment(item.createdAt).day("YYYY");
-      }
+      if (query.period === "WEEKLY") return moment(item.createdAt).format("ddd");
+      if (query.period === "MONTHLY") return moment(item.createdAt).format("MMM");
+      return moment(item.createdAt).format("YYYY");
     });
 
     for (const period of periods) {
-      if (!groupTxns[period]) analyticResult.push({ period, sum: 0 });
+      if (!groupTxns[period]) analyticResult.push({ period, sum: 0, count: 0 });
       else {
         const sum = groupTxns[period].reduce((a, c) => a + c.amount, 0);
-        analyticResult.push({ period, sum });
+        analyticResult.push({ period, sum, count: groupTxns[period].length });
       }
     }
-
     return analyticResult;
+  }
+
+  static async adminAnalytics() {
+    const loans = await Loan.findAll({
+      attributes: ["status", [Sequelize.fn("COUNT", Sequelize.col("id")), "count"]],
+      group: ["status"],
+    });
+
+    const users = await User.findAll({
+      attributes: ["isVerified", [Sequelize.fn("COUNT", Sequelize.col("id")), "count"]],
+      group: ["isVerified"],
+    });
+
+    const savings = await TransactionHistory.sum("amount", {
+      where: { type: "DEPOSIT" },
+    });
+
+    return {
+      users: users.map((item) => item.toJSON()),
+      loans: loans.map((item) => item.toJSON()),
+      savings,
+    };
   }
 
   static getPeriods(type: "WEEKLY" | "MONTHLY" | "YEARLY") {
@@ -119,21 +116,21 @@ class AnanlyticsRepository {
     let periods = [];
     if (type === "WEEKLY") {
       startDate = moment().subtract(7, "days");
-      for (let i = 0; i <= 7; i++) {
+      for (let i = 1; i <= 7; i++) {
         periods.push(startDate.clone().add(i, "days").format("ddd"));
       }
     } else if (type === "MONTHLY") {
       startDate = moment().subtract(12, "months");
-      for (let i = 0; i <= 12; i++) {
+      for (let i = 1; i <= 12; i++) {
         periods.push(startDate.clone().add(i, "months").format("MMM"));
       }
     } else if (type === "YEARLY") {
       startDate = moment().subtract(5, "years");
-      for (let i = 0; i <= 5; i++) {
+      for (let i = 1; i <= 5; i++) {
         periods.push(startDate.clone().add(i, "years").format("YYYY"));
       }
     }
-    return { startDate, periods };
+    return { startDate: startDate?.format("YYYY-MM-DD"), periods };
   }
 }
 

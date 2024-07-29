@@ -87,8 +87,12 @@ class UserController {
   }
 
   static async sendMail(req: any, res: any) {
-    const data = req.body;
-    const result = await MailMessagingservices.SendMail(data);
+    const result = await MailMessagingservices.SendMail(req.body);
+    ResponseManager.success(res, result, 200);
+  }
+
+  static async changeRole(req: any, res: any) {
+    const result = await UserService.changeRole(req.body);
     ResponseManager.success(res, result, 200);
   }
 }

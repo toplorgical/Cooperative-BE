@@ -109,6 +109,18 @@ class LoanServices {
     return { result, message: "Loan cancelled successfully" };
   }
 
+  static async changeStatus(data: LoanProps) {
+    const error = LoanValidations.status(data);
+    if (error) throw new ValidationError(error);
+
+    const loan = await LoanRepository.findById(data.id);
+    if (!loan) throw new NotFoundError("The requested loan could not be found");
+    if (loan.status !== "PENDING") throw new ApplicationError("Request count not be completed as loan is not pending");
+
+    const result = await LoanRepository.updateById(data, data.id);
+    return { result, message: "Loan cancelled successfully" };
+  }
+
   static async createLoanType(data: LoanTypeProps) {
     const error = LoanValidations.loanType(data);
     if (error) throw new ValidationError(error);

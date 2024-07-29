@@ -1,5 +1,6 @@
 export type UserProps = {
   id: number;
+  userId: number;
   firstName: string;
   lastName: string;
   phone: string;
@@ -27,6 +28,7 @@ export type UserProps = {
   employmentType: string;
   employmentLocation: string;
   balance: number;
+  role: "USER" | "ADMIN" | "SUPER_ADMIN";
 
   documents: {
     title: string;
@@ -76,10 +78,8 @@ export type ResetPasswordProps = {
 };
 export type ChangePasswordProps = {
   password: string;
-  newPassword : string;
+  newPassword: string;
 };
-
-
 
 export type LoanGuarantors = {
   loanId: number;
