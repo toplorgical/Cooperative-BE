@@ -35,7 +35,18 @@ class LoanRepository {
       where,
       include: [
         { model: LoanType },
-        { model: User, attributes: ["firstName", "lastName", "registrationId"] },
+        {
+          model: User,
+          attributes: [
+            "firstName",
+            "lastName",
+            "registrationId",
+            "isVerified",
+            "employmentType",
+            "jobTitle",
+            "contactAddress",
+          ],
+        },
         { model: LoanGuarantor, include: [{ model: User, attributes: ["firstName", "lastName", "registrationId"] }] },
       ],
     });
@@ -62,12 +73,15 @@ class LoanRepository {
         ],
       };
     }
-
     const response = await Loan.findAll({
       where,
       limit,
       include: [
         { model: LoanType },
+        {
+          model: User,
+          attributes: ["firstName", "lastName", "registrationId"],
+        },
         { model: LoanGuarantor, include: [{ model: User, attributes: ["firstName", "lastName", "registrationId"] }] },
       ],
       attributes: { exclude: ["amountPaid", "balance"] },
