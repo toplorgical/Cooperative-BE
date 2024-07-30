@@ -144,9 +144,4 @@ class AnanlyticsRepository {
   }
 }
 
-(async function () {
-  const result = await AnanlyticsRepository.adminAnalytics();
-  console.log(result);
-})();
-
 export default AnanlyticsRepository;

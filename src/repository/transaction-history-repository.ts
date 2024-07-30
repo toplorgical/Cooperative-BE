@@ -1,5 +1,6 @@
 import TransactionHistory from "../models/transaction-history";
-import { LoanPaymentProps, LoanPaymentQueryProps, TransactionHistoryProps } from "../types/index";
+import User from "../models/user";
+import { LoanPaymentProps, TransactionHistoryProps } from "../types/index";
 
 interface TransactionQueryProps extends TransactionHistoryProps {
   page: string;
@@ -17,7 +18,7 @@ class TransactionHistoryRepository {
   }
 
   static async findById(id: number) {
-    const result = await TransactionHistory.findByPk(id);
+    const result = await TransactionHistory.findByPk(id, { include: [{ model: User }] });
     return result?.toJSON() as TransactionHistoryProps;
   }
 
@@ -26,7 +27,7 @@ class TransactionHistoryRepository {
     if (query.userId) where.id = query.userId;
     if (query.type) where.type = query.type;
 
-    const result = await TransactionHistory.findOne({ where });
+    const result = await TransactionHistory.findOne({ where, include: [{ model: User }] });
     return result?.toJSON() as LoanPaymentProps;
   }
 
@@ -42,6 +43,7 @@ class TransactionHistoryRepository {
 
     const response = await TransactionHistory.findAll({
       where,
+      include: [{ model: User }],
       limit,
       offset: (page - 1) * limit,
       order: [["id", "DESC"]],

@@ -11,6 +11,7 @@ const administratorMiddleware = async (req: any, res: Response, next: NextFuncti
   }
 
   req.admin = user;
+  req.user = undefined;
   next();
 };
 

@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import dbClient from "../config/dbClient";
+import User from "./user";
 
 const TransactionHistory = dbClient.sequelize.define(
   "transactionHistory",
@@ -51,6 +52,9 @@ const TransactionHistory = dbClient.sequelize.define(
   },
   { timestamps: true }
 );
+
+User.hasMany(TransactionHistory);
+TransactionHistory.belongsTo(User, { foreignKey: "userId" });
 
 dbClient.sequelize
   .sync()
