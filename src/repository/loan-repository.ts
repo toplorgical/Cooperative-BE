@@ -35,6 +35,7 @@ class LoanRepository {
       where,
       include: [
         { model: LoanType },
+        { model: User, attributes: ["firstName", "lastName", "registrationId"] },
         { model: LoanGuarantor, include: [{ model: User, attributes: ["firstName", "lastName", "registrationId"] }] },
       ],
     });
