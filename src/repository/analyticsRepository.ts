@@ -95,7 +95,7 @@ class AnanlyticsRepository {
       group: ["status"],
     });
 
-    const users = await User.findAll({
+    let users = await User.findAll({
       attributes: ["isVerified", [Sequelize.fn("COUNT", Sequelize.col("id")), "count"]],
       group: ["isVerified"],
     });
@@ -104,11 +104,21 @@ class AnanlyticsRepository {
       where: { type: "DEPOSIT" },
     });
 
-    return {
-      users: users.map((item) => item.toJSON()),
-      loans: loans.map((item) => item.toJSON()),
-      savings,
-    };
+    const usersMap = { isVerified: 0, isUnverified: 0, total: 0 };
+    const _users = users.map((item) => item.toJSON() as { isVerified: boolean; count: number });
+    usersMap.isVerified = _users.find((item) => item?.isVerified)?.count || 0;
+    usersMap.isVerified = _users.find((item) => item?.isVerified === false)?.count || 0;
+    usersMap.total = _users.reduce((a, c) => a + Number(c?.count), 0);
+
+    const loansMap = { cancelled: 0, approved: 0, rejected: 0, pending: 0, total: 0 };
+    const _loans = loans.map((item) => item.toJSON() as { status: string; count: number });
+    loansMap.cancelled = _loans.find((item) => item?.status === "CANCELED")?.count || 0;
+    loansMap.approved = _loans.find((item) => item?.status === "APPROVED")?.count || 0;
+    loansMap.rejected = _loans.find((item) => item?.status === "REJECTED")?.count || 0;
+    loansMap.pending = _loans.find((item) => item?.status === "PENDING")?.count || 0;
+    loansMap.total = _loans.reduce((a, c) => a + Number(c?.count), 0);
+
+    return { users: usersMap, loans: loansMap, savings };
   }
 
   static getPeriods(type: "WEEKLY" | "MONTHLY" | "YEARLY") {
@@ -133,5 +143,10 @@ class AnanlyticsRepository {
     return { startDate: startDate?.format("YYYY-MM-DD"), periods };
   }
 }
+
+(async function () {
+  const result = await AnanlyticsRepository.adminAnalytics();
+  console.log(result);
+})();
 
 export default AnanlyticsRepository;
