@@ -83,12 +83,14 @@ class UserRepository {
     if (query.registrationId) where.registrationId = query.registrationId;
 
     if (query.keyword) {
+      const keywordPattern = `%${query.keyword.trim().split("").join("%")}%`;
       where[Op.or] = {
-        email: { [Op.like]: `%${query.keyword.trim().split("").join("%")}%` },
-        lastName: { [Op.like]: `%${query.keyword.trim().split("").join("%")}%` },
-        firstName: { [Op.like]: `%${query.keyword.trim().split("").join("%")}%` },
+        email: { [Op.iLike]: keywordPattern },
+        lastName: { [Op.iLike]: keywordPattern },
+        firstName: { [Op.iLike]: keywordPattern },
       };
     }
+
     const response = await User.findAll({
       where,
       limit: limit,

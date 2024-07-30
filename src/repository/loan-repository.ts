@@ -67,9 +67,9 @@ class LoanRepository {
       const keyword = `%${query.keyword.trim().split("").join("%")}%`;
       where = {
         [Op.or]: [
-          { status: { [Op.like]: keyword } },
-          { loanId: { [Op.like]: keyword } },
-          { userId: { [Op.like]: keyword } },
+          { status: { [Op.iLike]: keyword } },
+          { loanId: { [Op.iLike]: keyword } },
+          { userId: { [Op.iLike]: keyword } },
         ],
       };
     }

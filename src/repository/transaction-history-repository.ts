@@ -31,7 +31,7 @@ class TransactionHistoryRepository {
 
     const result = await TransactionHistory.findOne({
       where,
-      include: [{ model: User, attributes: ["firstName", "lastName", "phone"] }],
+      include: [{ model: User, attributes: ["firstName", "lastName", "phone", "registrationId"] }],
     });
     return result?.toJSON() as LoanPaymentProps;
   }
@@ -48,7 +48,7 @@ class TransactionHistoryRepository {
 
     const response = await TransactionHistory.findAll({
       where,
-      include: [{ model: User, attributes: ["firstName", "lastName", "phone"] }],
+      include: [{ model: User, attributes: ["firstName", "lastName", "phone", "registrationId"] }],
       limit,
       offset: (page - 1) * limit,
       order: [["id", "DESC"]],
