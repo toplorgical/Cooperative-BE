@@ -18,7 +18,9 @@ class TransactionHistoryRepository {
   }
 
   static async findById(id: number) {
-    const result = await TransactionHistory.findByPk(id, { include: [{ model: User }] });
+    const result = await TransactionHistory.findByPk(id, {
+      include: [{ model: User, attributes: ["firstName", "lastName", "phone"] }],
+    });
     return result?.toJSON() as TransactionHistoryProps;
   }
 
@@ -27,7 +29,10 @@ class TransactionHistoryRepository {
     if (query.userId) where.id = query.userId;
     if (query.type) where.type = query.type;
 
-    const result = await TransactionHistory.findOne({ where, include: [{ model: User }] });
+    const result = await TransactionHistory.findOne({
+      where,
+      include: [{ model: User, attributes: ["firstName", "lastName", "phone"] }],
+    });
     return result?.toJSON() as LoanPaymentProps;
   }
 
@@ -43,7 +48,7 @@ class TransactionHistoryRepository {
 
     const response = await TransactionHistory.findAll({
       where,
-      include: [{ model: User }],
+      include: [{ model: User, attributes: ["firstName", "lastName", "phone"] }],
       limit,
       offset: (page - 1) * limit,
       order: [["id", "DESC"]],
