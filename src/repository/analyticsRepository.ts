@@ -107,7 +107,7 @@ class AnanlyticsRepository {
     const usersMap = { isVerified: 0, isUnverified: 0, total: 0 };
     const _users = users.map((item) => item.toJSON() as { isVerified: boolean; count: number });
     usersMap.isVerified = _users.find((item) => item?.isVerified)?.count || 0;
-    usersMap.isVerified = _users.find((item) => item?.isVerified === false)?.count || 0;
+    usersMap.isUnverified = _users.find((item) => item?.isVerified === false)?.count || 0;
     usersMap.total = _users.reduce((a, c) => a + Number(c?.count), 0);
 
     const loansMap = { cancelled: 0, approved: 0, rejected: 0, pending: 0, total: 0 };
