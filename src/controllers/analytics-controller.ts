@@ -9,7 +9,7 @@ class AnanlyticsController {
     ResponseManager.success(res, result, 200);
   }
   static async getTill(req: any, res: any) {
-    const result = await AnanlyticsRepository.adminAnalytics();
+    const result = await AnanlyticsRepository.adminAnalytics({ ...req.query });
     ResponseManager.success(res, result, 200);
   }
 

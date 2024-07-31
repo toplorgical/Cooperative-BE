@@ -89,13 +89,19 @@ class AnanlyticsRepository {
     return analyticResult;
   }
 
-  static async adminAnalytics() {
+  static async adminAnalytics(query?: { userId?: number }) {
+    const where = {} as any;
+    const _usersWhere = {} as any;
+    if (query?.userId) where.userId = query.userId;
+    if (query?.userId) _usersWhere.id = query.userId;
     const loans = await Loan.findAll({
+      where,
       attributes: ["status", [Sequelize.fn("COUNT", Sequelize.col("id")), "count"]],
       group: ["status"],
     });
 
     let users = await User.findAll({
+      where: { ..._usersWhere },
       attributes: ["isVerified", [Sequelize.fn("COUNT", Sequelize.col("id")), "count"]],
       group: ["isVerified"],
     });
@@ -118,6 +124,7 @@ class AnanlyticsRepository {
     loansMap.pending = _loans.find((item) => item?.status === "PENDING")?.count || 0;
     loansMap.total = _loans.reduce((a, c) => a + Number(c?.count), 0);
 
+    if (query?.userId) return { loans: loansMap, savings };
     return { users: usersMap, loans: loansMap, savings };
   }
 
