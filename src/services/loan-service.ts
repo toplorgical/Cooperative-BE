@@ -7,9 +7,6 @@ import LoanTypeRepository from "../repository/loan-type-repository";
 import UserRepository from "../repository/user-repository";
 
 class LoanServices {
-  static accountBalance: number = 0;
-  static loanGuarantors: LoanGuarantors[] = [];
-
   static async create(data: LoanProps, user: UserProps) {
     const error = LoanValidations.create(data);
     if (error) throw new ValidationError(error);
@@ -18,14 +15,14 @@ class LoanServices {
     if (!loanType) throw new ApplicationError(`Loan type is invalid`);
 
     await LoanServices.checkLoanEligibility(user, data);
-    await LoanServices.checkGuarantorsEligibility(data);
+    const _gurantors = await LoanServices.checkGuarantorsEligibility(data);
 
     const total = LoanServices.calculateLoan({ ...data, rate: loanType.rate });
     data.rate = loanType.rate;
     data.totalInterest = total.totalInterest;
     data.totalRepayments = total.totalRepayments;
     data.monthlyRepayment = total.monthlyRepayment;
-    data.guarantors = LoanServices.loanGuarantors;
+    data.guarantors = _gurantors;
     const result = await LoanRepository.create(data);
     return result;
   }
@@ -47,8 +44,6 @@ class LoanServices {
     const result = await LoanRepository.findAll({ userId: user.id, status: "APPROVED" } as LoanQueryProps);
     const total = result.data?.reduce((a, c) => a + c.totalRepayments, 0);
     const balance = user.account.balance - total;
-
-    LoanServices.accountBalance = balance;
 
     if (balance * 3 < Number(data.amount)) {
       throw new ApplicationError("Insufficient savings balance. Topup your account to complete this process");
@@ -81,7 +76,7 @@ class LoanServices {
       }
       _gurantors.push({ registrationId: user.registrationId, userId: user.id } as LoanGuarantors);
     }
-    LoanServices.loanGuarantors = _gurantors;
+    return _gurantors;
   }
 
   static calculateLoan(loan: LoanProps) {

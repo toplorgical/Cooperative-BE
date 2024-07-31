@@ -28,6 +28,7 @@ class TransactionHistoryRepository {
     const where = {} as any;
     if (query.userId) where.id = query.userId;
     if (query.type) where.type = query.type;
+    if (query.id) where.id = query.id;
 
     const result = await TransactionHistory.findOne({
       where,
