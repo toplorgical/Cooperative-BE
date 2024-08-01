@@ -32,7 +32,7 @@ class LoanValidations {
   }
   static status(data: LoanProps) {
     const schema = Joi.object({
-      id: Joi.number().required().label("Loan ID"),
+      id: Joi.number().integer().required().label("Loan ID"),
       status: Joi.string().valid("APPROVED", "REJECTED").required(),
     });
 
@@ -43,8 +43,8 @@ class LoanValidations {
 
   static loanProperties = {
     amount: Joi.number().required().label("amount"),
-    userId: Joi.number().required().label("userId"),
-    loanTypeId: Joi.number().required().label("id"),
+    userId: Joi.number().integer().required().label("userId"),
+    loanTypeId: Joi.number().integer().required().label("id"),
     duration: Joi.number().integer().required().label("duration"),
   };
 }

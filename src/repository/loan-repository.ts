@@ -3,6 +3,7 @@ import { Loan, LoanGuarantor, LoanType } from "../models/loan";
 import { LoanGuarantorProps, LoanProps, LoanQueryProps } from "../types/index";
 import dbClient from "../config/dbClient";
 import User from "../models/user";
+import crypto from "crypto";
 import _ from "lodash";
 
 class LoanRepository {
@@ -122,5 +123,10 @@ class LoanRepository {
     };
   }
 }
+
+// (async function () {
+//   await Loan.update({ ref: crypto.randomUUID() }, { where: { ref: null } });
+//   console.log("Loans ref updated");
+// })();
 
 export default LoanRepository;
