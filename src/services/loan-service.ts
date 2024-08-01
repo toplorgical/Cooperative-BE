@@ -1,10 +1,11 @@
 import _ from "lodash";
-import { LoanGuarantors, LoanProps, LoanQueryProps, LoanTypeProps, UserProps } from "../types/index";
+import { LoanGuarantorProps, LoanProps, LoanQueryProps, LoanTypeProps, MessageProps, UserProps } from "../types/index";
 import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import LoanValidations from "../validations/loan-validation";
 import LoanRepository from "../repository/loan-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
 import UserRepository from "../repository/user-repository";
+import MessageRepository from "../repository/message-repository";
 
 class LoanServices {
   static async create(data: LoanProps, user: UserProps) {
@@ -24,6 +25,25 @@ class LoanServices {
     data.monthlyRepayment = total.monthlyRepayment;
     data.guarantors = _gurantors;
     const result = await LoanRepository.create(data);
+    const messages = LoanServices.constructMessage(result, user, loanType);
+    await MessageRepository.bulkCreate(messages);
+    return result;
+  }
+
+  static constructMessage(loan: LoanProps, user: UserProps, loanType: LoanTypeProps) {
+    const result = [] as MessageProps[];
+    for (const guarantor of loan.guarantors) {
+      const _data = {} as MessageProps;
+      const meta = _.pick(loan, ["amount", "totalInterest", "monthlyRepayment", "totalRepayments"]) as LoanProps;
+      meta.loanType = loanType;
+
+      _data.title = "Notification of Loan Request";
+      _data.description = `This is to inform you that [${user.firstName} ${user.lastName}] with membership ID ${user.registrationId} has submitted a loan request. As part of the application process, [${user.firstName} ${user.lastName}] has listed you as their guarantor for this loan.`;
+      _data.from = loan.userId;
+      _data.to = guarantor.userId;
+      _data.metadata = { type: "loan", data: meta };
+      result.push(_data);
+    }
     return result;
   }
 
@@ -51,8 +71,8 @@ class LoanServices {
   }
 
   private static async checkGuarantorsEligibility(data: LoanProps) {
-    const _gurantors = [] as LoanGuarantors[];
-    const guarantors = data.guarantors as LoanGuarantors[];
+    const _gurantors = [] as LoanGuarantorProps[];
+    const guarantors = data.guarantors as LoanGuarantorProps[];
 
     for (const guarantor of guarantors) {
       const user = await UserRepository.findOne({ registrationId: guarantor.registrationId });
@@ -74,7 +94,7 @@ class LoanServices {
       if (balance * 3 < Number(data.amount)) {
         throw new ApplicationError(`Guarantor with membership ID "${user.registrationId}" is ineligible`);
       }
-      _gurantors.push({ registrationId: user.registrationId, userId: user.id } as LoanGuarantors);
+      _gurantors.push({ registrationId: user.registrationId, userId: user.id } as LoanGuarantorProps);
     }
     return _gurantors;
   }
@@ -143,6 +163,18 @@ class LoanServices {
     if (!loanType) throw new NotFoundError("The requested loan could not be found");
 
     await LoanTypeRepository.deleteOne(id);
+    return { message: "Loan type deleted successfully" };
+  }
+
+  static async updateGuarantorStatus(data: LoanGuarantorProps, id: number, userId: number) {
+    const guarantor = await LoanRepository.findOneGuarantor({ id, userId });
+    if (!guarantor) throw new NotFoundError("The requested loan could not be found");
+
+    if (guarantor.status !== "PENDING") {
+      throw new ApplicationError("Request could not be completed as loan is not pending.");
+    }
+
+    await LoanRepository.updateOneGuarantor(data, id);
     return { message: "Loan type deleted successfully" };
   }
 }

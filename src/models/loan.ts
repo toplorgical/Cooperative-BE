@@ -11,6 +11,11 @@ const Loan = dbClient.sequelize.define(
       autoIncrement: true,
       allowNull: false,
     },
+    ref: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      defaultValue: DataTypes.UUIDV4,
+    },
     amount: {
       type: DataTypes.DECIMAL,
       allowNull: false,
@@ -122,6 +127,16 @@ const LoanGuarantor = dbClient.sequelize.define(
     registrationId: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    loanId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM,
+      allowNull: false,
+      defaultValue: "PENDING",
+      values: ["PENDING", "ACCEPTED", "REJECTED"],
     },
   },
   { timestamps: true }

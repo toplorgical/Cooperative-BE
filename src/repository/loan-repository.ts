@@ -1,8 +1,9 @@
 import { Op } from "sequelize";
 import { Loan, LoanGuarantor, LoanType } from "../models/loan";
-import { LoanProps, LoanQueryProps } from "../types/index";
+import { LoanGuarantorProps, LoanProps, LoanQueryProps } from "../types/index";
 import dbClient from "../config/dbClient";
 import User from "../models/user";
+import _ from "lodash";
 
 class LoanRepository {
   static async create(data: LoanProps) {
@@ -21,6 +22,26 @@ class LoanRepository {
 
   static async findById(id: number) {
     const result = await Loan.findByPk(id);
+    return result?.toJSON() as LoanProps;
+  }
+
+  static async updateOneGuarantor(data: LoanGuarantorProps, id: number) {
+    return await LoanGuarantor.update(data, { where: { id } });
+  }
+  static async findOneGuarantor(query: { userId?: number; id: number }) {
+    const where = {} as any;
+    if (query.id) where.id = query.id;
+    if (query.userId) where.userId = query.userId;
+    const result = await LoanGuarantor.findOne({ where });
+    return result?.toJSON() as LoanGuarantorProps;
+  }
+
+  static async findByRef(ref: string) {
+    const result = await Loan.findOne({
+      where: { ref },
+      attributes: ["amount", "loanTypeId", "duration", "totalInterest", "totalRepayments", "rate"],
+      include: [{ model: LoanType }],
+    });
     return result?.toJSON() as LoanProps;
   }
 

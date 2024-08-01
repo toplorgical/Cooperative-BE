@@ -81,10 +81,22 @@ export type ChangePasswordProps = {
   newPassword: string;
 };
 
-export type LoanGuarantors = {
+export type LoanGuarantorProps = {
   loanId: number;
   userId: number;
   registrationId: string;
+  status: "PENDING" | "ACCEPTED" | "REJECTED";
+};
+
+export type MessageProps = {
+  id: number;
+  from: number;
+  to: number;
+  title: string;
+  description: string;
+  status: "READ" | "UNREAD";
+  createdAt: string;
+  metadata: { type: "loan"; data: LoanProps };
 };
 
 export type LoanProps = {
@@ -94,6 +106,7 @@ export type LoanProps = {
   totalRepayments: number;
   rate: number;
   id: number;
+  ref: string;
   userId: number;
   disbursedAt: string;
   approvedAt: string;
@@ -101,8 +114,9 @@ export type LoanProps = {
   duration: number;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELED" | "ENDED";
   loanTypeId: number;
+  loanType: LoanTypeProps;
   createdAt: string;
-  guarantors: LoanGuarantors[];
+  guarantors: LoanGuarantorProps[];
 };
 export type LoanPaymentProps = {
   userId: number;
