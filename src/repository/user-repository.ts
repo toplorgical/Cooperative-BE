@@ -46,7 +46,7 @@ class UserRepository {
 
   static async findUserWithLoans(userId: number) {
     const result = await User.findByPk(userId, {
-      include: [{ model: Loan }],
+      include: [{ model: Loan }, { model: Account }],
     });
     return result?.toJSON() as UserProps;
   }
@@ -93,6 +93,7 @@ class UserRepository {
 
     const response = await User.findAll({
       where,
+      include: [{ model: Account }],
       limit: limit,
       offset: (page - 1) * limit,
       attributes: { exclude: ["password"] },
