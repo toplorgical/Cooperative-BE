@@ -10,6 +10,7 @@ class GuarantorController {
     await LoanServices.updateGuarantorStatus(data, id, req.user.id);
     ResponseManager.success(res, "Loan guarantor approval successful...");
   }
+
   static async reject(req: any, res: Response) {
     const id = req.params.id;
     const data = { status: "REJECTED" } as LoanGuarantorProps;

@@ -90,8 +90,8 @@ export type LoanGuarantorProps = {
 
 export type MessageProps = {
   id: number;
-  from: number;
-  to: number;
+  from: number | string;
+  to: number | string;
   title: string;
   description: string;
   status: "READ" | "UNREAD";

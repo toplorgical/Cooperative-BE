@@ -38,7 +38,7 @@ class LoanServices {
       meta.loanType = loanType;
 
       _data.title = "Notification of Loan Request";
-      _data.description = `This is to inform you that [${user.firstName} ${user.lastName}] with membership ID ${user.registrationId} has submitted a loan request. As part of the application process, [${user.firstName} ${user.lastName}] has listed you as their guarantor for this loan.`;
+      _data.description = `This is to inform you that [${user.firstName} ${user.lastName}] with membership ID: [${user.registrationId}] has submitted a loan request. As part of the application process, [${user.firstName} ${user.lastName}] has listed you as their guarantor for this loan.`;
       _data.from = loan.userId;
       _data.to = guarantor.userId;
       _data.metadata = { type: "loan", data: meta };
@@ -177,10 +177,13 @@ class LoanServices {
   static async updateGuarantorStatus(data: LoanGuarantorProps, id: number, userId: number) {
     const guarantor = await LoanRepository.findOneGuarantor({ id, userId });
     if (!guarantor) throw new NotFoundError("The requested loan could not be found");
-
     if (guarantor.status !== "PENDING") {
       throw new ApplicationError("Request could not be completed as loan is not pending.");
     }
+
+    const loan = await LoanRepository.findById(guarantor.loanId);
+    if (!loan) throw new NotFoundError("The requested loan could not be found");
+    if (loan.status !== "PENDING") throw new ApplicationError("Request count not be completed as loan is not pending");
 
     await LoanRepository.updateOneGuarantor(data, id);
     return { message: "Loan type deleted successfully" };
