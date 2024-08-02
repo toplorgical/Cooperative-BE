@@ -29,6 +29,13 @@ class LoanRepository {
   static async updateOneGuarantor(data: LoanGuarantorProps, id: number) {
     return await LoanGuarantor.update(data, { where: { id } });
   }
+  static async findGuarantors(query?: { userId?: number; loanId?: number }) {
+    const where = {} as any;
+    if (query?.loanId) where.loanId = query.loanId;
+    if (query?.userId) where.userId = query.userId;
+    const result = await LoanGuarantor.findAll({ where });
+    return result?.map((item) => item.toJSON() as LoanGuarantorProps);
+  }
   static async findOneGuarantor(query: { userId?: number; id: number }) {
     const where = {} as any;
     if (query.id) where.id = query.id;

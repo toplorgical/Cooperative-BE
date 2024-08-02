@@ -25,14 +25,15 @@ class LoanServices {
     data.monthlyRepayment = total.monthlyRepayment;
     data.guarantors = _gurantors;
     const result = await LoanRepository.create(data);
-    const messages = LoanServices.constructMessage(result, user, loanType);
+    const messages = await LoanServices.constructMessage(result, user, loanType);
     await MessageRepository.bulkCreate(messages);
     return result;
   }
 
-  static constructMessage(loan: LoanProps, user: UserProps, loanType: LoanTypeProps) {
+  static async constructMessage(loan: LoanProps, user: UserProps, loanType: LoanTypeProps) {
     const result = [] as MessageProps[];
-    for (const guarantor of loan.guarantors) {
+    const guarantors = await LoanRepository.findGuarantors({ loanId: loan.id });
+    for (const guarantor of guarantors) {
       const _data = {} as MessageProps;
       const meta = _.pick(loan, ["amount", "totalInterest", "monthlyRepayment", "totalRepayments"]) as LoanProps;
       meta.loanType = loanType;
