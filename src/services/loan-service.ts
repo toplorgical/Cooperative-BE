@@ -38,7 +38,7 @@ class LoanServices {
       const meta = _.pick(loan, ["amount", "totalInterest", "monthlyRepayment", "totalRepayments"]) as LoanProps;
       meta.loanType = loanType;
 
-      _data.title = "Notification of Loan Request";
+      _data.title = "Loan Request";
       _data.description = `This is to inform you that [${user.firstName} ${user.lastName}] with membership ID: [${user.registrationId}] has submitted a loan request. As part of the application process, [${user.firstName} ${user.lastName}] has listed you as their guarantor for this loan.`;
       _data.from = loan.userId;
       _data.to = guarantor.userId;
@@ -85,7 +85,7 @@ class LoanServices {
 
       const pendingLoan = await LoanRepository.findOne({ userId: user.id, status: "PENDING" } as LoanQueryProps);
       if (pendingLoan) {
-        throw new ApplicationError(`Guarantor with membership ID "${user.registrationId}" is ineligible`);
+        throw new ApplicationError(`Guarantor with membership ID "${user.registrationId}" is ineligible. `);
       }
 
       const result = await LoanRepository.findAll({ userId: user.id, status: "APPROVED" } as LoanQueryProps);
