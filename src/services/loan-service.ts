@@ -6,6 +6,7 @@ import LoanRepository from "../repository/loan-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
 import UserRepository from "../repository/user-repository";
 import MessageRepository from "../repository/message-repository";
+import { MassagingProps, MessagingService } from "./messaging-service";
 
 class LoanServices {
   static async create(data: LoanProps, user: UserProps) {
@@ -27,9 +28,19 @@ class LoanServices {
     const result = await LoanRepository.create(data);
     const messages = await LoanServices.constructMessage(result, user, loanType);
     await MessageRepository.bulkCreate(messages);
+
+    const textMessage = await LoanServices.constructGuarantorTextMessage(result, user);
+    MessagingService.send(textMessage);
     return result;
   }
 
+  static async constructGuarantorTextMessage(loan: LoanProps, user: UserProps) {
+    const guarantors = await LoanRepository.findGuarantors({ loanId: loan.id });
+    const data = {} as MassagingProps;
+    data.to = guarantors.map((item) => item.user.phone);
+    data.sms = `This is to inform you that ${user.firstName} ${user.lastName} with membership ID: ${user.registrationId} has submitted a loan request. As part of the application process, ${user.firstName} ${user.lastName} has listed you as their guarantor for this loan.`;
+    return data;
+  }
   static async constructMessage(loan: LoanProps, user: UserProps, loanType: LoanTypeProps) {
     const result = [] as MessageProps[];
     const guarantors = await LoanRepository.findGuarantors({ loanId: loan.id });

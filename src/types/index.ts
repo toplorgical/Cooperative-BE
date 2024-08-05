@@ -84,6 +84,7 @@ export type ChangePasswordProps = {
 export type LoanGuarantorProps = {
   loanId: number;
   userId: number;
+  user: UserProps;
   registrationId: string;
   status: "PENDING" | "ACCEPTED" | "REJECTED";
 };

@@ -33,14 +33,20 @@ class LoanRepository {
     const where = {} as any;
     if (query?.loanId) where.loanId = query.loanId;
     if (query?.userId) where.userId = query.userId;
-    const result = await LoanGuarantor.findAll({ where });
+    const result = await LoanGuarantor.findAll({
+      where,
+      include: [{ model: User, attributes: ["firstName", "lastName", "email", "phone"] }],
+    });
     return result?.map((item) => item.toJSON() as LoanGuarantorProps);
   }
   static async findOneGuarantor(query: { userId?: number; id: number }) {
     const where = {} as any;
     if (query.id) where.id = query.id;
     if (query.userId) where.userId = query.userId;
-    const result = await LoanGuarantor.findOne({ where });
+    const result = await LoanGuarantor.findOne({
+      where,
+      include: [{ model: User, attributes: ["firstName", "lastName", "email", "phone"] }],
+    });
     return result?.toJSON() as LoanGuarantorProps;
   }
 
