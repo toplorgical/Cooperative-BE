@@ -50,7 +50,7 @@ class LoanServices {
       meta.loanType = loanType;
 
       _data.title = "Loan Request";
-      _data.description = `This is to inform you that [${user.firstName} ${user.lastName}] with membership ID: [${user.registrationId}] has submitted a loan request. As part of the application process, [${user.firstName} ${user.lastName}] has listed you as their guarantor for this loan.`;
+      _data.description = `Dear ${guarantor.user.firstName}, This is to inform you that ${user.firstName} ${user.lastName} with membership ID:${user.registrationId} has listed you as their guarantor for their loan.`;
       _data.from = loan.userId;
       _data.to = guarantor.userId;
       _data.metadata = { type: "loan", data: meta };

@@ -10,14 +10,14 @@ export const RESPONSE = {
   INVALID_PHONE: "Phone number is invalid",
   SMS_FAILED: "could not send sms",
   FAILED_UPDATE: "could not update request",
-  NOT_ELIGIBLE_FOR_LOAN : "You Are Not Eligible This Loan",
-   NO_PENDING_LOAN : "No Pending Loan",
-   NO_LOAN_TYPE : "No Loan Type",
-   INSUFFICIENT_FUND :"Insufficient Fund In Your Account",
-   PAYMENT_COMPLETED :"Loan Payment completed",
-   CREDIT_DEC :  "FUND DEP. FROM PLATFORM"
+  NOT_ELIGIBLE_FOR_LOAN: "You Are Not Eligible This Loan",
+  NO_PENDING_LOAN: "No Pending Loan",
+  NO_LOAN_TYPE: "No Loan Type",
+  INSUFFICIENT_FUND: "Insufficient Fund In Your Account",
+  PAYMENT_COMPLETED: "Loan Payment completed",
+  CREDIT_DEC: "FUND DEP. FROM PLATFORM",
 };
 
 export const smsResponse = {
-  message: `Your verification code is otp Use this code to verify your account`,
+  message: `Your Toplorgical verification code is otp. The code is valid for the next 10 minutes. Do not share it with anyone.`,
 };
