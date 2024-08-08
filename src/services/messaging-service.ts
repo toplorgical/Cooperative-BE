@@ -10,7 +10,7 @@ export interface MassagingProps {
   to: string[];
   sms: string;
   type: "plain";
-  channel: "generic";
+  channel: "generic" | "dnd";
   api_key: string;
 }
 
@@ -18,8 +18,8 @@ export class MessagingService {
   static async send(data: Partial<MassagingProps>) {
     try {
       data.type = "plain";
-      data.channel = "generic";
-      data.from = "Toplorgical";
+      data.channel = "dnd";
+      data.from = "N-Alert";
       data.api_key = config.TERMII.API_KEY;
       data.to = data.to?.map((item) => "+234".concat(item.slice(1)));
       const { data: response } = await axios.post(config.TERMII.URL, data);
