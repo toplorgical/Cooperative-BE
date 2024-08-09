@@ -138,8 +138,12 @@ class UserService {
   static async changePhone(data: UserProps, user: UserProps) {
     const error = UserValidations.phoneNumber(data);
     if (error) throw new ValidationError(error, 400);
-    const userinfo = await UserRepository.update({ phone: data.phone, isVerified: false }, user.id);
-    UserEventEmitter.emit("REQUEST_OTP", userinfo);
+
+    const isExist = await UserRepository.findOne({ phone: data.phone });
+    if (isExist) throw new ApplicationError("Phone number already exist");
+
+    await UserRepository.update({ phone: data.phone, isVerified: false }, user.id);
+    UserEventEmitter.emit("REQUEST_OTP", { ...user, phone: data.phone });
     return "Phone updated successfully";
   }
 

@@ -3,7 +3,6 @@ import { Loan, LoanGuarantor, LoanType } from "../models/loan";
 import { LoanGuarantorProps, LoanProps, LoanQueryProps } from "../types/index";
 import dbClient from "../config/dbClient";
 import User from "../models/user";
-import crypto from "crypto";
 import _ from "lodash";
 
 class LoanRepository {
