@@ -112,9 +112,4 @@ class UserRepository {
   }
 }
 
-// (async function () {
-//   await User.update({ role: "SUPER_ADMIN" }, { where: { id: { [Op.in]: [10] } } });
-//   console.log("roles updated successfully...");
-// })();
-
 export default UserRepository;
