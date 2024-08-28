@@ -50,7 +50,7 @@ export class EmailMessagingservices {
 
     sendSmtpEmail = {
       to: [{ email: recipient.email, name: recipient.firstName  }],
-      sender: { email: "dev.team@toplorgical.com", name: "toplorgical" },
+      sender: { email: "dev.team@toplorgical.com", name: "Toplorgical" },
       htmlContent: htmlContent,
       subject: data.subject,
     };
