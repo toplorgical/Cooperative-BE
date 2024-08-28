@@ -28,6 +28,7 @@ class MessageController {
 
   static async sendMailToUsers(req: any, res: any){
     //UserValidations
+    console.log(req.body)
     const error = UserValidations.message(req.body);
     if (error) throw new ValidationError(error);
     const {usersQuery,loansQuery,  data } = req.body 

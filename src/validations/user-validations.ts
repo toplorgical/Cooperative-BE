@@ -109,7 +109,7 @@ class UserValidations {
       isVerified: Joi.boolean(),
       isActive : Joi.string(),
       isBanned : Joi.string(),
-      content: Joi.string().required().label("content"),
+      
     },
     data:{
       subject: Joi.string().required().label("message"),
