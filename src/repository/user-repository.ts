@@ -120,10 +120,16 @@ class UserRepository {
     const loanWhere = {} as any
     if(loanQ?.status)loanWhere.status = {[Op.in]:loanQ.status}
 
-     const result = await User.findAll({
+     const result1 = await User.findAll({
       where,
+     
+    });
+     const result2 = await User.findAll({
+    
       include: [{ model: Loan, where:loanWhere }],
     });
+    const result = [...result1, ...result2]
+
     return result?.map(item => item.toJSON()) as UserProps[];
   }
 
