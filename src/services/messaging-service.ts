@@ -41,8 +41,6 @@ export class EmailMessagingservices {
     apiKey.apiKey = config.BROVO_MAIL.API_KEY;
 
     for (const recipient of data.to) {
-     
-        // Render personalized HTML content for each recipient
         const htmlContent = await ejs.renderFile("./views/emailTemplate.ejs", {
           name: recipient.firstName,
           subject: data.subject,

@@ -2,11 +2,12 @@ import { Response } from "express";
 import { MessageProps } from "../types";
 import ResponseManager from "../utils/response-manager";
 import MessageRepository from "../repository/message-repository";
-import { ApplicationError, NotFoundError } from "../utils/errorHandler";
+import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import UserRepository from "../repository/user-repository";
 import { EmailMessagingservices } from "../services/messaging-service";
 import { RESPONSE } from "../constants";
 import _ from "lodash";
+import UserValidations from "../validations/user-validations";
 
 class MessageController {
   static async find(req: any, res: Response) {
@@ -26,6 +27,9 @@ class MessageController {
   }
 
   static async sendMailToUsers(req: any, res: any){
+    //UserValidations
+    const error = UserValidations.message(req.body);
+    if (error) throw new ValidationError(error);
     const {usersQuery,loansQuery,  data } = req.body 
     const id = req.admin.id
     if (!id) throw new ApplicationError(RESPONSE.UNAUTHORIZED, 401);

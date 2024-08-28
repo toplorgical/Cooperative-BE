@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { LoanProps, LoanTypeProps } from "../types";
+import { LoanProps, LoanTypeProps, SendMailProps } from "../types";
 
 class LoanValidations {
   static create(data: LoanProps) {
@@ -47,6 +47,31 @@ class LoanValidations {
     loanTypeId: Joi.number().integer().required().label("id"),
     duration: Joi.number().integer().required().label("duration"),
   };
+ 
+
+  static message(data : SendMailProps) {
+    const schema = Joi.object({
+      usersQuery: {
+      isVerified: Joi.boolean(),
+      isActive : Joi.string(),
+      isBanned : Joi.string(),
+      content: Joi.string().required().label("content"),
+    },
+    data:{
+      subject: Joi.string().required().label("message"),
+      content: Joi.string().required().label("content"),
+    },
+    lonsQuery:{
+      status: Joi.array()
+
+    }
+    } 
+  );
+    const { error } = schema.validate(data);
+    if (error) return error.details[0].message;
+    return null;
+  }
+  
 }
 
 export default LoanValidations;

@@ -1,5 +1,5 @@
 import Joi, { CustomHelpers } from "joi";
-import { ChangePasswordProps, ResetPasswordProps, UserProps } from "../types";
+import { ChangePasswordProps, ResetPasswordProps, SendMailProps, UserProps } from "../types";
 import parsePhoneNumberFromString from "libphonenumber-js";
 
 class UserValidations {
@@ -99,6 +99,28 @@ class UserValidations {
       password: UserValidations.userProperties.password,
     });
 
+    const { error } = schema.validate(data);
+    if (error) return error.details[0].message;
+    return null;
+  }
+  static message(data : SendMailProps) {
+    const schema = Joi.object({
+      usersQuery: {
+      isVerified: Joi.boolean(),
+      isActive : Joi.string(),
+      isBanned : Joi.string(),
+      content: Joi.string().required().label("content"),
+    },
+    data:{
+      subject: Joi.string().required().label("message"),
+      content: Joi.string().required().label("content"),
+    },
+    lonsQuery:{
+      status: Joi.array()
+
+    }
+    } 
+  );
     const { error } = schema.validate(data);
     if (error) return error.details[0].message;
     return null;
