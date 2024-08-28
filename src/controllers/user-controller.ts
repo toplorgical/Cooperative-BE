@@ -4,7 +4,7 @@ import UserService from "../services/user-service";
 import ResponseManager from "../utils/response-manager";
 import _ from "lodash";
 import UserRepository from "../repository/user-repository";
-import { MailMessagingservices } from "../services/messaging-service";
+import { EmailMessagingservices } from "../services/messaging-service";
 
 class UserController {
   static async signup(req: Request, res: Response) {
@@ -87,7 +87,7 @@ class UserController {
   }
 
   static async sendMail(req: any, res: any) {
-    const result = await MailMessagingservices.SendMail(req.body);
+    const result = await EmailMessagingservices.SendMail(req.body);
     ResponseManager.success(res, result, 200);
   }
 
@@ -95,6 +95,7 @@ class UserController {
     const result = await UserService.changeRole(req.body);
     ResponseManager.success(res, result, 200);
   }
+  
 }
 
 export default UserController;

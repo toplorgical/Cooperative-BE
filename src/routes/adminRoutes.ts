@@ -6,11 +6,12 @@ import authenticationMiddleware from "../middlewares/authMiddleware";
 import LoanController from "../controllers/loan-controller";
 import TransactionController from "../controllers/transaction-controller";
 import AnanlyticsController from "../controllers/analytics-controller";
+import MessageController from "../controllers/message-controller";
 
 const adminRoutes = Router();
 
 const isAuth = asyncHandler(authenticationMiddleware);
-const isAdmin = asyncHandler(administratorMiddleware);
+const isAdmin = asyncHandler(administratorMiddleware); 
 
 adminRoutes.get("/users", [isAuth, isAdmin], asyncHandler(UserController.findUsers));
 adminRoutes.get("/loans/", [isAuth, isAdmin], asyncHandler(LoanController.getLoans));
@@ -26,6 +27,7 @@ adminRoutes.get("/loans/:id", [isAuth, isAdmin], asyncHandler(LoanController.get
 
 adminRoutes.post("/loan-types", [isAuth, isAdmin], asyncHandler(LoanController.createLoanType));
 adminRoutes.post("/users/change-role", [isAuth, isAdmin], asyncHandler(UserController.changeRole));
+adminRoutes.post("/users/send-email", [isAuth, isAdmin], asyncHandler(MessageController.sendMailToUsers))
 adminRoutes.post("/loans/change-status", [isAuth, isAdmin], asyncHandler(LoanController.changeStatus));
 
 adminRoutes.put("/loan-types/:id", [isAuth, isAdmin], asyncHandler(LoanController.updateLoanType));

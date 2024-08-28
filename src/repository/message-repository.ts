@@ -1,5 +1,7 @@
 import Message from "../models/message";
+import { EmailMessagingservices } from "../services/messaging-service";
 import { LoanProps, MessageProps } from "../types";
+import UserRepository from "./user-repository";
 
 class MessageRepository {
   static async create(data: MessageProps) {
@@ -50,38 +52,10 @@ class MessageRepository {
       data: response.map((item) => item.toJSON()),
     };
   }
+
+  
 }
 
-(async function () {
-  const _data = {} as MessageProps;
-  _data.title = "Notification of Loan Request";
-  _data.description = `This is to inform you that [James] with membership ID SGN-REG-24-00002 has submitted a loan request. As part of the application process, [SGN-REG-24-00002] has listed you as their guarantor for this loan.`;
-  _data.from = 10;
-  _data.to = 10;
-  _data.metadata = {
-    type: "loan",
-    data: {
-      amount: 6800,
-      monthlyRepayment: 1141.6115542891068,
-      totalInterest: 49.66932573464146,
-      totalRepayments: 6849.6693257346415,
-      rate: 2.5,
-      id: 6,
-      ref: "4ff4db1c-7a30-4d5a-931c-9bb7dca72e6c",
-      loanTypeId: 1,
-      duration: 6,
-      status: "PENDING",
-      userId: 10,
-      loanType: {
-        rate: 2.5,
-        id: 1,
-        name: "Personal Loan",
-      },
-    } as LoanProps,
-  };
 
-  await MessageRepository.create(_data);
-  console.log("Message created");
-});
 
 export default MessageRepository;

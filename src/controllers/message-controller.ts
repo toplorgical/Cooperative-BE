@@ -2,7 +2,11 @@ import { Response } from "express";
 import { MessageProps } from "../types";
 import ResponseManager from "../utils/response-manager";
 import MessageRepository from "../repository/message-repository";
-import { NotFoundError } from "../utils/errorHandler";
+import { ApplicationError, NotFoundError } from "../utils/errorHandler";
+import UserRepository from "../repository/user-repository";
+import { EmailMessagingservices } from "../services/messaging-service";
+import { RESPONSE } from "../constants";
+import _ from "lodash";
 
 class MessageController {
   static async find(req: any, res: Response) {
@@ -19,6 +23,20 @@ class MessageController {
     if (!result) throw new NotFoundError("The requested message could not be found");
 
     ResponseManager.success(res, result);
+  }
+
+  static async sendMailToUsers(req: any, res: any){
+    const {usersQuery,loansQuery,  data } = req.body 
+    const id = req.admin.id
+    if (!id) throw new ApplicationError(RESPONSE.UNAUTHORIZED, 401);
+    const users = await UserRepository.findAllWithoutPagination(usersQuery, loansQuery )
+    const uniqueEmails = _.uniqBy(users, (item) => item.email)
+    data["to"] = uniqueEmails
+    const response = await EmailMessagingservices.SendMail(data)
+    ResponseManager.success(res, response);
+
+    
+
   }
 }
 

@@ -6,7 +6,7 @@ import LoanRepository from "../repository/loan-repository";
 import LoanTypeRepository from "../repository/loan-type-repository";
 import UserRepository from "../repository/user-repository";
 import MessageRepository from "../repository/message-repository";
-import { MassagingProps, MessagingService } from "./messaging-service";
+import { MassagingProps, SMSMessagingService } from "./messaging-service";
 
 class LoanServices {
   static async create(data: LoanProps, user: UserProps) {
@@ -30,7 +30,7 @@ class LoanServices {
     await MessageRepository.bulkCreate(messages);
 
     const textMessage = await LoanServices.constructGuarantorTextMessage(result, user);
-    MessagingService.send(textMessage);
+    SMSMessagingService.send(textMessage);
     return result;
   }
 

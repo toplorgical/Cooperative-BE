@@ -42,7 +42,7 @@ export class LoanRequestError extends ApplicationError {
 function errorHandler(err: ApplicationError, req: Request, res: Response, next: NextFunction) {
   if (err.statusCode) ResponseManager.error(res, err.name, err.message, err.statusCode);
   else ResponseManager.error(res, err.name, err.message, 500);
- if (!err.statusCode || err.statusCode >= 500) console.log(err, req);
+ //if (!err.statusCode || err.statusCode >= 500) console.log(err, req);
 }
 
 export default errorHandler;

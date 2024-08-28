@@ -16,6 +16,8 @@ export const RESPONSE = {
   INSUFFICIENT_FUND: "Insufficient Fund In Your Account",
   PAYMENT_COMPLETED: "Loan Payment completed",
   CREDIT_DEC: "FUND DEP. FROM PLATFORM",
+  UNAUTHORIZED: "Login is Required ",
+
 };
 
 export const smsResponse = {

@@ -7,7 +7,7 @@ import { hashPassword, comparePassword, generateOtp, generateRandomUUID } from "
 import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
-import { MessagingService, MassagingProps } from "./messaging-service";
+import { SMSMessagingService, MassagingProps } from "./messaging-service";
 import UserEventEmitter from "../event/user-event-emitter";
 import JWTManager from "../manager/jwtManager";
 
@@ -55,7 +55,7 @@ class UserService {
     await VerificationRepository.create(_data);
 
     const _message = { to: [user.phone], sms: message } as MassagingProps;
-    const result = await MessagingService.send(_message);
+    const result = await SMSMessagingService.send(_message);
     if (result.status === "success") return { data: result.response };
     else throw new ApplicationError(RESPONSE.SMS_FAILED);
   }

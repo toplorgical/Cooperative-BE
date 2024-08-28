@@ -160,9 +160,14 @@ export type AccountProps = {
 };
 
 export interface SendMailProps {
-  to: [];
+  to:UserProps[];
   sender: string;
   subject: string;
   content: string;
   name: string;
+  userQuery: UserProps;
+  loanQuery : LoanProps;
+ 
 }
+
+

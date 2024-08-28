@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import User from "../models/user";
-import { UserProps, UserQueryProps, AccountProps } from "../types";
+import { UserProps, UserQueryProps, AccountProps, LoanProps } from "../types";
 import { Loan } from "../models/loan";
 import AccountRepository from "./account-repository";
 import dbClient from "../config/dbClient";
@@ -90,7 +90,7 @@ class UserRepository {
         firstName: { [Op.iLike]: keywordPattern },
       };
     }
-
+   
     const response = await User.findAll({
       where,
       include: [{ model: Account }],
@@ -110,6 +110,24 @@ class UserRepository {
       data: response.map((item) => item.toJSON()) as UserProps[],
     };
   }
+
+  static async findAllWithoutPagination(query?: UserProps,loanQ?:LoanProps){
+    const where = {} as UserProps
+    if(query?.isActive) where.isActive = query.isActive
+    if(query?.isVerified) where.isVerified = query.isVerified 
+    if (query?.isDeleted) where.isDeleted = query.isDeleted
+    if (query?.isBanned) where.isBanned =  query.isBanned
+    const loanWhere = {} as any
+    if(loanQ?.status)loanWhere.status = {[Op.in]:loanQ.status}
+
+     const result = await User.findAll({
+      where,
+      include: [{ model: Loan, where:loanWhere }],
+    });
+    return result?.map(item => item.toJSON()) as UserProps[];
+  }
+
+  
 }
 
 export default UserRepository;
