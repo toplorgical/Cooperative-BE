@@ -115,7 +115,7 @@ class UserValidations {
       subject: Joi.string().required().label("message"),
       content: Joi.string().required().label("content"),
     },
-    lonsQuery:{
+    loansQuery:{
       status: Joi.array()
 
     }
