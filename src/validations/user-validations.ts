@@ -107,8 +107,8 @@ class UserValidations {
     const schema = Joi.object({
       usersQuery: {
       isVerified: Joi.boolean(),
-      isActive : Joi.string(),
-      isBanned : Joi.string(),
+      isActive : Joi.boolean(),
+      isBanned : Joi.boolean(),
       
     },
     data:{
