@@ -14,7 +14,6 @@ class PaymentController {
       .createHmac("sha512", PAYSTACK_KEY)
       .update(JSON.stringify(req.body))
       .digest("hex");
-    console.log(hash, req.headers[PAYSTACK_SIGNATURE_HEADER]);
     if (hash !== req.headers[PAYSTACK_SIGNATURE_HEADER])
       throw new ApplicationError("Invalid signature");
     const data = req.body;
