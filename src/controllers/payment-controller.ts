@@ -10,8 +10,13 @@ class PaymentController {
     const PAYSTACK_KEY = config.PAYSTACK.SECRET_KEY;
     const PAYSTACK_SIGNATURE_HEADER = "x-paystack-signature";
     //Verify Paystack signature
-    const hash = crypto.createHmac("sha512", PAYSTACK_KEY).update(JSON.stringify(req.body)).digest("hex");
-    if (hash !== req.headers[PAYSTACK_SIGNATURE_HEADER]) throw new ApplicationError("Invalid signature");
+    const hash = crypto
+      .createHmac("sha512", PAYSTACK_KEY)
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+    console.log(hash, req.headers[PAYSTACK_SIGNATURE_HEADER]);
+    if (hash !== req.headers[PAYSTACK_SIGNATURE_HEADER])
+      throw new ApplicationError("Invalid signature");
     const data = req.body;
     const result = PaymentService.paystackWebhook(data);
 

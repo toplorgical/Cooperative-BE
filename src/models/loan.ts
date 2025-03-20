@@ -129,7 +129,7 @@ const LoanGuarantor = dbClient.sequelize.define(
       allowNull: false,
     },
     loanId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     status: {

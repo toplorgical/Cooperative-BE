@@ -14,11 +14,7 @@ class TransactionController {
     if (req.user) query.userId = req.user.id;
     const result = await TransactionHistoryRepository.findAll(query);
     ResponseManager.success(res, result, 200);
-
-
   }
-
-  
 }
 
 export default TransactionController;

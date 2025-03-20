@@ -10,7 +10,8 @@ class UserRepository {
   static async create(data: UserProps) {
     const _accountData = {} as AccountProps;
     data.registrationId = await UserRepository.generateRegNumber();
-    _accountData.accountNumber = await AccountRepository.generateAccountNumber();
+    _accountData.accountNumber =
+      await AccountRepository.generateAccountNumber();
 
     return await dbClient.sequelize.transaction(async (transaction) => {
       const result = await User.create(data, { transaction });
@@ -53,6 +54,7 @@ class UserRepository {
 
   static async findOne(query: Partial<UserProps>) {
     const where = {} as UserProps;
+    if (!query) return null;
     if (query.id) where.id = query.id;
     if (query.phone) where.phone = query.phone;
     if (query.publicId) where.publicId = query.publicId;
