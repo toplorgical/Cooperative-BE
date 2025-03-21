@@ -42,7 +42,8 @@ class UserValidations {
       country: Joi.string().required().valid("Nigeria").label("Country"),
       state: Joi.string().required().label("State"),
       lga: Joi.string().required().label("LGA"),
-      contactAddress: Joi.string().required().label("Address"),
+      // fix: added proper label for contact address
+      contactAddress: Joi.string().required().label("Contact Address"),
       postalCode: Joi.string().label("Postal Code"),
       dateOfBirth: Joi.date().required().label("Date of Birth"),
       gender: Joi.string().required().label("Gender"),
@@ -105,8 +106,16 @@ class UserValidations {
   }
 
   static userProperties = {
-    firstName: Joi.string().regex(new RegExp("^[a-zA-Z]")).required().max(55).label("First Name"),
-    lastName: Joi.string().regex(new RegExp("^[a-zA-Z]")).required().max(55).label("Last Name"),
+    firstName: Joi.string()
+      .regex(new RegExp("^[a-zA-Z]"))
+      .required()
+      .max(55)
+      .label("First Name"),
+    lastName: Joi.string()
+      .regex(new RegExp("^[a-zA-Z]"))
+      .required()
+      .max(55)
+      .label("Last Name"),
     email: Joi.string().email().required().max(255).label("Email"),
     password: Joi.string().required().max(55).label("Password"),
     phone: Joi.string()

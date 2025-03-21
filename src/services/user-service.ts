@@ -2,9 +2,23 @@ import _ from "lodash";
 import moment from "moment";
 import UserRepository from "../repository/user-repository";
 import VerificationRepository from "../repository/verificationRepository";
-import { ChangePasswordProps, ResetPasswordProps, UserProps, VerificationProps } from "../types";
-import { hashPassword, comparePassword, generateOtp, generateRandomUUID } from "../utils";
-import { ApplicationError, NotFoundError, ValidationError } from "../utils/errorHandler";
+import {
+  ChangePasswordProps,
+  ResetPasswordProps,
+  UserProps,
+  VerificationProps,
+} from "../types";
+import {
+  hashPassword,
+  comparePassword,
+  generateOtp,
+  generateRandomUUID,
+} from "../utils";
+import {
+  ApplicationError,
+  NotFoundError,
+  ValidationError,
+} from "../utils/errorHandler";
 import UserValidations from "../validations/user-validations";
 import { RESPONSE, smsResponse } from "../constants";
 import { MessagingService, MassagingProps } from "./messaging-service";
@@ -35,7 +49,8 @@ class UserService {
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
     const isValidPassword = await comparePassword(data.password, user.password);
-    if (!isValidPassword) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
+    if (!isValidPassword)
+      throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
     user = _.omit(user, ["password"]) as UserProps;
     const accessToken = JWTManager.generate(user.id, "7d");
@@ -43,7 +58,9 @@ class UserService {
   }
 
   static async requestOTP(data: UserProps) {
-    const user = await UserRepository.findOne({ phone: data.phone } as UserProps);
+    const user = await UserRepository.findOne({
+      phone: data.phone,
+    } as UserProps);
     if (!user) throw new ApplicationError(RESPONSE.USER_NOT_FOUND);
 
     const _data = {} as VerificationProps;
@@ -61,14 +78,19 @@ class UserService {
   }
 
   static async verifyOTP(data: { code: string }, user: UserProps) {
-    if (user.isVerified) throw new ApplicationError(RESPONSE.USER_VERIFIED, 400);
+    if (user.isVerified)
+      throw new ApplicationError(RESPONSE.USER_VERIFIED, 400);
 
     const error = UserValidations.verification(data);
     if (error) throw new ValidationError(error, 400);
 
-    const code = await VerificationRepository.findOne({ code: data.code, userId: user.id });
+    const code = await VerificationRepository.findOne({
+      code: data.code,
+      userId: user.id,
+    });
     if (!code) throw new ApplicationError(RESPONSE.OTP_EXPIRED, 400);
-    if (moment() > moment(code.expiresAt)) throw new ApplicationError(RESPONSE.OTP_EXPIRED, 400);
+    if (moment() > moment(code.expiresAt))
+      throw new ApplicationError(RESPONSE.OTP_EXPIRED, 400);
 
     const _userPayload = { isVerified: true } as UserProps;
     await UserRepository.update(_userPayload, user.id);
@@ -76,6 +98,9 @@ class UserService {
   }
 
   static async forgotPassword(data: UserProps) {
+    // BUG : fixed: tweak find one function to return null if the user is not found
+    if (!data.phone)
+      throw new ApplicationError("Phone number is required", 400);
     const user = await UserRepository.findOne({ phone: data.phone });
     if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
 
@@ -90,14 +115,18 @@ class UserService {
     const error = UserValidations.resetPassword(data);
     if (error) throw new ValidationError(error, 400);
 
-    const publicId = JWTManager.verify(data.token)?.id;
-    const user = await UserRepository.findOne({ publicId });
+    const id = JWTManager.verify(data.token)?.id;
+    console.log("resetPassword");
+    console.log(JWTManager.verify(data.token).id);
+    // BUG : fixed : switch publicId to id
+    const user = await UserRepository.findOne({ publicId: id });
     if (!user) throw new ApplicationError("Token is invalid or expired", 400);
 
     const _vQuery = { userId: user.id, code: data.code } as VerificationProps;
     const code = await VerificationRepository.findOne(_vQuery);
     if (!code) throw new ApplicationError(RESPONSE.OTP_EXPIRED);
-    if (moment() > moment(code.expiresAt)) throw new ApplicationError(RESPONSE.OTP_EXPIRED);
+    if (moment() > moment(code.expiresAt))
+      throw new ApplicationError(RESPONSE.OTP_EXPIRED);
 
     data.password = await hashPassword(data.password);
     await UserRepository.update({ password: data.password }, user.id);
@@ -128,7 +157,8 @@ class UserService {
     if (error) throw new ValidationError(error, 400);
 
     const isValidPassword = await comparePassword(data.password, user.password);
-    if (!isValidPassword) throw new ApplicationError("Current password is invalid");
+    if (!isValidPassword)
+      throw new ApplicationError("Current password is invalid");
 
     data.password = await hashPassword(data.newPassword);
     await UserRepository.update({ password: data.password }, user.id);
@@ -142,7 +172,10 @@ class UserService {
     const isExist = await UserRepository.findOne({ phone: data.phone });
     if (isExist) throw new ApplicationError("Phone number already exist");
 
-    await UserRepository.update({ phone: data.phone, isVerified: false }, user.id);
+    await UserRepository.update(
+      { phone: data.phone, isVerified: false },
+      user.id
+    );
     UserEventEmitter.emit("REQUEST_OTP", { ...user, phone: data.phone });
     return "Phone updated successfully";
   }
@@ -151,7 +184,7 @@ class UserService {
     const error = UserValidations.role(data);
     if (error) throw new ValidationError(error, 400);
 
-    const user = await UserRepository.findByPk(data.userId);
+    const user = await UserRepository.findByPk(data.id);
     if (!user) throw new NotFoundError("The requested user could not be found");
 
     await UserRepository.update(data, user.id);
