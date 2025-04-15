@@ -1,0 +1,117 @@
+version: "3.8"
+
+services:
+  # nginx:
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile
+  #   container_name: nginx
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"  # Exposed HTTPS port
+  #   networks:
+  #     - cooperative-network
+  #   depends_on:
+  #     - client
+  #     - server
+
+  # certbot:
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #   command: certonly --webroot -w /var/www/certbot --force-renewal --email info@toplorgical.com -d shop.toplorgical.com -d www.shop.toplorgical.com -d shop-api.toplorgical.com --agree-tos
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: cooperative_client
+    restart: unless-stopped
+    ports:
+      - "3100:3000"
+    working_dir: /app/client
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://server:8100/api/v1
+    networks:
+      - cooperative-network
+    depends_on:
+      - server
+
+  # Express Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: cooperative_server
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+    environment:
+      - NODE_ENV=development
+      - PORT=8100
+      - DB_HOST=db
+      # - DB_PORT=6432
+    volumes:
+      - ./server/.env:/app/server/.env
+    env_file:
+      - ./server/.env
+    working_dir: /app/server
+    networks:
+      - cooperative-network
+    depends_on:
+      - db
+    command: sh -c "npx sequelize-cli db:migrate && npm run start"
+
+  # PostgreSQL Database
+  db:
+    image: postgres:14.12
+    container_name: cooperative_db
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD?Variable not set}
+      - POSTGRES_USER=${DB_USER?Variable not set}
+      - POSTGRES_DB=${DB_NAME?Variable not set}
+    ports:
+      - "6432:5432"
+    env_file:
+      - ./server/.env
+    volumes:
+      - cooperative_postgres_data:/var/lib/postgresql/data
+    networks:
+      - cooperative-network
+
+# PostgreSQL Test Database
+  db_test:
+    image: postgres:14.12
+    container_name: cooperative_test_db
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${TEST_DB_PASSWORD?Variable not set}
+      - POSTGRES_USER=${TEST_DB_USER?Variable not set}
+      - POSTGRES_DB=${TEST_DB_NAME?Variable not set}
+      - POSTGRES_HOST_AUTH_METHOD=md5
+    ports:
+      - "0.0.0.0:6433:5432"
+    env_file:
+      - .env
+    volumes:
+      - ./postgres/postgresql-test.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - cooperative_postgres_test_data:/var/lib/postgresql/data
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
+    networks:
+      - cooperative-network
+
+volumes:
+  cooperative_postgres_data:
+  cooperative_postgres_test_data:
+  
+networks:
+  cooperative-network:
+    driver: bridge

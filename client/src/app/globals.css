@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+._p {
+  background: #00000069;
+}
+.auth_form {
+  background: #f6f7f9;
+}
+
+._avatar > div > div {
+  background-color: #00a3f5;
+}
+._avatar > div > div > span {
+  color: #ffffff;
+}
+.app__pagination > ul {
+  margin-top: 0;
+}
+.otp-input {
+  width: 100% !important;
+  max-width: 40px;
+  height: 40px !important;
+  border-radius: 5px !important;
+  border: 1px solid #d4d5d6 !important;
+  background: #ffffff !important;
+}
+
+@media (min-width: 720px) {
+  .otp-input {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth_form {
+    background: linear-gradient(to right, #00a3f5 50%, #f6f7f9 50%), right;
+  }
+}
