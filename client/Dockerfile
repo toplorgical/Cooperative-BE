@@ -50,4 +50,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3100
 
-CMD ["npm", "run", "start"]
+CMD ["npx", "next", "start"]
