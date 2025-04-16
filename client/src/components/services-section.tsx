@@ -5,14 +5,23 @@ import { PiHandWithdrawFill } from "react-icons/pi";
 
 const ServiceSection = () => {
   return (
-    <section
-  style={{
-    background: "linear-gradient(to right, #fafafa 70%, #00000069 30%), url(/assets/img-3.jpg) right",
-    backgroundSize: "contain",
-    backgroundPosition: "right",
-    backgroundRepeat: "no-repeat",
-  }}
->
+//     <section
+//   style={{
+//     background: "linear-gradient(to right, #fafafa 70%, #00000069 30%), url(/assets/img-3.jpg) right",
+//     backgroundSize: "contain",
+//     backgroundPosition: "right",
+//     backgroundRepeat: "no-repeat",
+//   }}
+// >
+<section className="relative w-full">
+  <div className="absolute inset-0 bg-[url(/assets/img-3.jpg)] bg-right bg-no-repeat bg-cover md:hidden"></div>
+  
+  <div className="hidden md:block absolute inset-0">
+    <div className="absolute inset-0 w-[70%] bg-[#fafafa]"></div>
+    <div className="absolute inset-y-0 right-0 w-[30%] bg-[#00000069] bg-[url(/assets/img-3.jpg)] bg-right bg-no-repeat bg-cover"></div>
+  </div>
+  
+  <div className="relative z-10 p-8">
   <div className="container px-4 py-20 mx-auto">
     <div className="grid grid-cols-1 md:grid-cols-2">
       <div className="col-span-1">
@@ -56,7 +65,9 @@ const ServiceSection = () => {
       </div>
     </div>
   </div>
+  </div>
 </section>
+// </section>
 
   );
 };
