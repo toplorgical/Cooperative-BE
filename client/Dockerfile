@@ -19,7 +19,7 @@ WORKDIR /app/client
 # Copy the built artifacts from the builder stage
 COPY --from=builder /app/client/.next/standalone ./
 COPY --from=builder /app/client/.next/static ./.next/static
-
+COPY --from=builder /app/client/public ./public
 ENV NODE_ENV=production
 ENV PORT=3100
 
