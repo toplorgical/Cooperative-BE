@@ -48,6 +48,6 @@ COPY --from=builder /app/client/.next/static ./.next/static
 
 ENV NODE_ENV=production
 
+ENV PORT=3100
 EXPOSE 3100
-
-CMD ["npx", "next", "start"]
+CMD ["node", "server.js"]
