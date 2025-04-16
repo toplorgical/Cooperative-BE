@@ -17,7 +17,7 @@
 # RUN npm run build
 
 # # Expose port
-# EXPOSE 3000
+# EXPOSE 3100
 
 # # Start the application
 # CMD ["npm", "run", "start"]
@@ -48,6 +48,6 @@ COPY --from=builder /app/client/.next/static ./.next/static
 
 ENV NODE_ENV=production
 
-EXPOSE 3000
+EXPOSE 3100
 
 CMD ["node", "server.js"]
