@@ -19,12 +19,16 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
       </div>
     );
   if (!isLoading && !user) {
+    if (currentPath === "admin") {
+      return redirect(pathnames.ADMIN_SIGNIN);
+    }
     return redirect(pathnames.SIGN_IN);
   }
   if (!isLoading && user && !user?.isVerified) {
     return redirect(pathnames.VERIFICATION);
   }
   if (user && currentPath === "admin" && user.role === "USER") {
+    alert("Access denied. Admin privileges required.");
     router.back();
     return null;
   }

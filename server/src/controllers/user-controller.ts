@@ -95,6 +95,25 @@ class UserController {
     const result = await UserService.changeRole(req.body);
     ResponseManager.success(res, result, 200);
   }
+
+  static async adminSignup(req: Request, res: Response) {
+    const data = req.body as UserProps;
+    const result = await UserService.adminSignup(data);
+    ResponseManager.success(res, result, 201);
+  }
+
+  static async adminSignin(req: Request, res: Response) {
+    const data = req.body as UserProps;
+    const result = await UserService.adminSignin(data);
+    ResponseManager.success(res, result, 200);
+  }
+
+  static async createAdmin(req: any, res: Response) {
+    const data = req.body as UserProps;
+    const admin = req.admin as UserProps; // The authenticated admin creating the new admin
+    const result = await UserService.createAdmin(data, admin);
+    ResponseManager.success(res, result, 201);
+  }
 }
 
 export default UserController;

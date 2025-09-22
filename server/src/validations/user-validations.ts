@@ -15,6 +15,19 @@ class UserValidations {
     return null;
   }
 
+  static adminSignup(data: UserProps) {
+    const schema = Joi.object({
+      firstName: UserValidations.userProperties.firstName,
+      lastName: UserValidations.userProperties.lastName,
+      email: UserValidations.userProperties.email,
+      password: UserValidations.userProperties.password,
+      phone: UserValidations.userProperties.phone,
+    });
+    const { error } = schema.validate(data);
+    if (error) return error.details[0].message;
+    return null;
+  }
+
   static signin(data: UserProps) {
     const schema = Joi.object({
       phone: UserValidations.userProperties.phone,

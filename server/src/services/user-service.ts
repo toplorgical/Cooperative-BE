@@ -190,5 +190,74 @@ class UserService {
     await UserRepository.update(data, user.id);
     return "User role updated successfully";
   }
+
+  static async adminSignup(data: UserProps) {
+    const error = UserValidations.adminSignup(data);
+    if (error) throw new ValidationError(error, 400);
+
+    let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
+    if (user) throw new ApplicationError(RESPONSE.USER_EXIST, 400);
+
+    // Set admin role
+    data.role = "ADMIN";
+    data.password = await hashPassword(data.password);
+    user = await UserRepository.create(data);
+    user = _.omit(user, ["password"]) as UserProps;
+
+    const accessToken = JWTManager.generate(user.id, "7d");
+    UserEventEmitter.emit("REQUEST_OTP", user);
+    return { accessToken };
+  }
+
+  static async adminSignin(data: UserProps) {
+    const error = UserValidations.signin(data);
+    if (error) throw new ValidationError(error, 400);
+    
+    let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
+    if (!user) throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
+
+    // Check if user has admin role
+    if (!user.role.includes("ADMIN")) {
+      throw new ApplicationError("Access denied. Admin privileges required.", 403);
+    }
+
+    const isValidPassword = await comparePassword(data.password, user.password);
+    if (!isValidPassword)
+      throw new ApplicationError(RESPONSE.INVALID_CREDENTAILS, 400);
+
+    user = _.omit(user, ["password"]) as UserProps;
+    const accessToken = JWTManager.generate(user.id, "7d");
+    return { accessToken };
+  }
+
+  static async createAdmin(data: UserProps, createdBy: UserProps) {
+    const error = UserValidations.adminSignup(data);
+    if (error) throw new ValidationError(error, 400);
+
+    let user = await UserRepository.findOne({ phone: data.phone } as UserProps);
+    if (user) throw new ApplicationError(RESPONSE.USER_EXIST, 400);
+
+    // Check if email already exists
+    const emailExists = await UserRepository.findOne({ email: data.email } as UserProps);
+    if (emailExists) throw new ApplicationError("Email address already exists", 400);
+
+    // Set admin role and complete profile
+    data.role = "ADMIN";
+    data.isVerified = true;
+    data.profileSetup = "COMPLETED";
+    data.registrationStatus = "APPROVED";
+    data.password = await hashPassword(data.password);
+    
+    user = await UserRepository.create(data);
+    user = _.omit(user, ["password"]) as UserProps;
+
+    console.log(`New admin created by ${createdBy.firstName} ${createdBy.lastName} (ID: ${createdBy.id})`);
+    console.log(`New admin: ${user.firstName} ${user.lastName} (${user.email})`);
+
+    return { 
+      message: "Admin account created successfully",
+      admin: user 
+    };
+  }
 }
 export default UserService;

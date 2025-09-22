@@ -72,6 +72,21 @@ class AuthValidation {
       .required()
       .label("Confirm Password"),
   });
+
+  static adminSignup = Yup.object({
+    password: Yup.string().min(6).required().label("Password"),
+    firstName: Yup.string().min(2).required().label("First Name"),
+    lastName: Yup.string().min(2).required().label("Last Name"),
+    email: Yup.string().email("Invalid email format").required().label("Email Address"),
+    phone: Yup.string()
+      .length(11)
+      .test("is-valid-phone", "Invalid phone number", (value) => {
+        if (!value) return false;
+        const phoneNumber = parsePhoneNumberFromString(value, "NG");
+        return phoneNumber ? phoneNumber.isValid() : false;
+      })
+      .required(),
+  });
 }
 
 export default AuthValidation;

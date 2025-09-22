@@ -12,6 +12,12 @@ const adminRoutes = Router();
 const isAuth = asyncHandler(authenticationMiddleware);
 const isAdmin = asyncHandler(administratorMiddleware);
 
+// Admin Authentication Routes
+adminRoutes.post("/signin", asyncHandler(UserController.adminSignin));
+
+// Admin User Management (Admin-only routes)
+adminRoutes.post("/create-admin", [isAuth, isAdmin], asyncHandler(UserController.createAdmin));
+
 adminRoutes.get("/users", [isAuth, isAdmin], asyncHandler(UserController.findUsers));
 adminRoutes.get("/loans/", [isAuth, isAdmin], asyncHandler(LoanController.getLoans));
 adminRoutes.get("/loan-types", [isAuth, isAdmin], asyncHandler(LoanController.getLoanTypes));

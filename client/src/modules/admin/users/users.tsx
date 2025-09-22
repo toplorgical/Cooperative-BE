@@ -59,9 +59,16 @@ const Users = () => {
     <React.Fragment>
       <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
         <div className="text-lg font-semibold">Members</div>
-        <Button outline color="blue" onClick={() => setIsBulkMail(true)}>
-          <IoSendOutline className="mr-2 h-5 w-5" /> Send Bulk E-mail
-        </Button>
+        <div className="flex gap-2">
+          <Link href="/admin/users/create-admin">
+            <Button color="blue">
+              <span className="mr-2">+</span> Create Admin
+            </Button>
+          </Link>
+          <Button outline color="blue" onClick={() => setIsBulkMail(true)}>
+            <IoSendOutline className="mr-2 h-5 w-5" /> Send Bulk E-mail
+          </Button>
+        </div>
       </div>
       <div className="flex flex-wrap justify-between gap-4 items-center mb-8">
         <ReportButton tableId={"user-table"} fileName={"Members"} data={usersResult as any} />

@@ -149,13 +149,14 @@ export type AccountProps = {
 
 export interface AuthProps {
   phone: string;
-  token: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  confirmPassword: string;
-  code: string;
-  rememberMe: boolean;
+  token?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  confirmPassword?: string;
+  code?: string;
+  rememberMe?: boolean;
 }
 
 export interface SavingProps {

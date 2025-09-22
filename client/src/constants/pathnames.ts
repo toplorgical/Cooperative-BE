@@ -15,6 +15,9 @@ const pathnames = {
   CREATE_SAVINGS: "/user/savings/funding",
 
   ADMIN: "/admin",
+  ADMIN_SIGNIN: "/admin/signin",
+  ADMIN_DASHBOARD: "/admin/dashboard",
+  ADMIN_CREATE_ADMIN: "/admin/users/create-admin",
 };
 
 export default pathnames;

@@ -19,13 +19,13 @@ const defaultValues = {
   rememberMe: false,
 };
 
-const SignInModule = () => {
+const AdminSignInModule = () => {
   const mutation = useMutation({
-    mutationFn: (data: AuthProps) => UserRepository.signin(data),
+    mutationFn: (data: AuthProps) => UserRepository.adminSignin(data),
     onError: (error) => ErrorService.handler(error),
     onSuccess: ({ data }) => {
       CookieManager.save("_tp_access_token", data?.data?.accessToken);
-      window.location.replace(pathnames.USER_DASHBOARD);
+      window.location.replace("/admin/dashboard");
     },
   });
 
@@ -43,7 +43,7 @@ const SignInModule = () => {
               height={0}
               sizes="100vw"
               src="/assets/images/login.png"
-              alt="Placeholder"
+              alt="Admin Login"
               className="w-full max-w-[600px] z-10 h-auto max-h-[580px] object-contain -mr-16"
             />
           </div>
@@ -58,9 +58,9 @@ const SignInModule = () => {
                 return (
                   <Form className="w-full">
                     <h1 className="text-2xl font-bold mb-6 text-center border-b-4 border-b-[#53A4F5] border-solid max-w-fit">
-                      Sign In
+                      Admin Sign In
                     </h1>
-                    <h3 className="text-4xl font-bold mb-16 ">Welcome Back!</h3>
+                    <h3 className="text-4xl font-bold mb-16 ">Welcome Back, Admin!</h3>
                     <div className="mb-4">
                       <label htmlFor="phone" className="block mb-2 font-medium">
                         Phone Number *
@@ -98,7 +98,7 @@ const SignInModule = () => {
                         />
                         <span className="ml-2 text-gray-700">Remember Me</span>
                       </label>
-                      <Link href="/forgot-password" className="text-[#00a3f5] font-medium">
+                      <Link href="/admin/forgot-password" className="text-[#00a3f5] font-medium">
                         Forgot Password?
                       </Link>
                     </div>
@@ -108,17 +108,14 @@ const SignInModule = () => {
                         className="p-3 w-full flex justify-center items-center px-5 rounded-md bg-[#00a3f5] text-white font-medium"
                       >
                         {mutation.isPending ? <AiOutlineLoading className="mr-2 h-6 w-6 animate-spin" /> : null}
-                        SIGN IN
+                        SIGN IN AS ADMIN
                       </button>
-                      <p className="mt-5 text-center">
-                        Don&apos;t Have An Account?{" "}
-                        <Link href="/signup" className="text-[#00a3f5] font-medium">
-                          Create an Account
-                        </Link>
+                      <p className="mt-5 text-center text-gray-600 text-sm">
+                        Contact your system administrator to create admin accounts
                       </p>
                       <p className="mt-2 text-center">
-                        <Link href="/admin/signin" className="text-gray-600 font-medium">
-                          Sign in as admin instead
+                        <Link href="/signin" className="text-gray-600 font-medium">
+                          Sign in as regular user instead
                         </Link>
                       </p>
                     </div>
@@ -133,4 +130,4 @@ const SignInModule = () => {
   );
 };
 
-export default SignInModule;
+export default AdminSignInModule;

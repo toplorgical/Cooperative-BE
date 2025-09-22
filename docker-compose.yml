@@ -12,10 +12,9 @@ services:
     working_dir: /app/client
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://server:8100/api/v1
+      - NEXT_PUBLIC_API_URL=http://localhost:8100/api/v1
     networks:
       - cooperative-network
-      - nginx-proxy
     depends_on:
       - server
 
@@ -40,7 +39,6 @@ services:
     working_dir: /app/server
     networks:
       - cooperative-network
-      - nginx-proxy
     depends_on:
       - db
     command: sh -c "npx sequelize-cli db:migrate && npm run start"
@@ -62,7 +60,6 @@ services:
       - cooperative_postgres_data:/var/lib/postgresql/data
     networks:
       - cooperative-network
-      - nginx-proxy
 
 # PostgreSQL Test Database
   db_test:
@@ -85,7 +82,6 @@ services:
     command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
     networks:
       - cooperative-network
-      - nginx-proxy
 
 volumes:
   cooperative_postgres_data:
@@ -94,5 +90,3 @@ volumes:
 networks:
   cooperative-network:
     driver: bridge
-  nginx-proxy:
-    external: true

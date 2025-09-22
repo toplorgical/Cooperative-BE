@@ -28,8 +28,12 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = React.useState<UserProps | null>(null);
 
   React.useEffect(() => {
-    if (!accessToken && ["user", "admin", "verification"].includes(currentPath)) {
+    if (!accessToken && ["user", "verification"].includes(currentPath)) {
       window.location.replace(pathnames.SIGN_IN);
+      return;
+    }
+    if (!accessToken && currentPath === "admin" && !pathname.includes("/signin") && !pathname.includes("/signup")) {
+      window.location.replace(pathnames.ADMIN_SIGNIN);
       return;
     }
     getAuthenticatedUser();
@@ -40,13 +44,20 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       if (!accessToken) return;
       if (!["user", "admin", "verification"].includes(currentPath)) return;
+      // Skip authentication check for admin signin/signup pages
+      if (currentPath === "admin" && (pathname.includes("/signin") || pathname.includes("/signup"))) return;
+      
       const { data } = await UserRepository.getAuthenticatedUser();
       setUser(data?.data);
       setIsLoading(false);
       handleRedirect(data?.data as UserProps);
     } catch (error) {
       setIsLoading(false);
-      ErrorService.handler(error);
+      if (currentPath === "admin" && !pathname.includes("/signin") && !pathname.includes("/signup")) {
+        window.location.replace(pathnames.ADMIN_SIGNIN);
+      } else {
+        ErrorService.handler(error);
+      }
     }
   }
 

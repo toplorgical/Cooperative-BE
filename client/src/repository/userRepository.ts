@@ -21,7 +21,9 @@ class UserRepository {
     return await HttpService.http.post("/user/reset-password", others);
   }
   static async verifyOTP(data: AuthProps) {
-    data.code = data.code.replaceAll(" ", "");
+    if (data.code) {
+      data.code = data.code.replaceAll(" ", "");
+    }
     return await HttpService.http.post("/user/verify-otp", data);
   }
   static async requestOTP() {
@@ -39,6 +41,19 @@ class UserRepository {
   }
   static async addWorkInfo(data: UserProps) {
     return await HttpService.http.put("/user/account/work-info", data);
+  }
+
+  // Admin Authentication Methods
+  static async adminSignup(data: AuthProps) {
+    data.phone = data.phone.replaceAll(" ", "");
+    const { confirmPassword, ...others } = data;
+    return await HttpService.http.post("/admin/signup", others);
+  }
+
+  static async adminSignin(data: AuthProps) {
+    data.phone = data.phone.replaceAll(" ", "");
+    const { rememberMe, ...others } = data;
+    return await HttpService.http.post("/admin/signin", others);
   }
 }
 

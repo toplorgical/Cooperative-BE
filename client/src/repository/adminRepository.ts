@@ -32,8 +32,7 @@ class AdminRepository {
     return await HttpService.http.get(`/loan/loan/${id}`);
   }
 
-  static async getAllLoans(data: AuthProps) {
-    data.code = data.code.replaceAll(" ", "");
+  static async getAllLoans(data?: AuthProps) {
     return await HttpService.http.get("/loan/loans");
   }
   static async getAllUsers() {
@@ -59,6 +58,11 @@ class AdminRepository {
   static async getOneTransaction(id: string, query?: TrxnQueryProps) {
     const params = { ...query };
     return await HttpService.http.get(`/admin/txns/${id}`, { params });
+  }
+
+  static async createAdmin(data: AuthProps) {
+    data.phone = data.phone.replaceAll(" ", "");
+    return await HttpService.http.post("/admin/create-admin", data);
   }
 }
 
