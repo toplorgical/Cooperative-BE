@@ -8,6 +8,7 @@ coverage
 .coverage
 .nyc_output
 dist
-src
+# Don't exclude src - we need it for TypeScript compilation
+# src
 Dockerfile*
 docker-compose*
