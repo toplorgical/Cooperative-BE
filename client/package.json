@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build && next export",
+    "start": "serve out -s -n -L -p 3100",
+    "serve": "serve out -s -n -L -p 3100",
     "lint": "next lint"
   },
   "dependencies": {
@@ -33,7 +34,8 @@
     "react-paystack": "^5.0.0",
     "react-toastify": "^10.0.5",
     "xlsx": "^0.18.5",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "serve": "^14.2.3"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",

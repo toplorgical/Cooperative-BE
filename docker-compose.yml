@@ -1,22 +1,23 @@
 version: "3.8"
 
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    container_name: cooperative_client
-    restart: unless-stopped
-    ports:
-      - "3100:3100"
-    working_dir: /app/client
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:8100/api/v1
-    networks:
-      - cooperative-network
-    depends_on:
-      - server
+  # Frontend will be run with PM2, so removing client service
+  # client:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   container_name: cooperative_client
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3100:3100"
+  #   working_dir: /app/client
+  #   environment:
+  #     - NODE_ENV=development
+  #     - NEXT_PUBLIC_API_URL=http://localhost:8100/api/v1
+  #   networks:
+  #     - cooperative-network
+  #   depends_on:
+  #     - server
 
   # Express Server
   server:
@@ -41,6 +42,7 @@ services:
       - cooperative-network
     depends_on:
       - db
+    # Remove frontend dependency since it runs with PM2
     command: sh -c "npx sequelize-cli db:migrate && npm run start"
 
   # PostgreSQL Database
