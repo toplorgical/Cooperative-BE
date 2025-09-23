@@ -7,12 +7,12 @@ cd client
 echo 📦 Installing dependencies...
 call npm install
 
-echo 🔨 Building Next.js application for static export...
+echo 🔨 Building Next.js application (standalone mode)...
 call npm run build
 
 REM Check if build was successful
-if not exist "out" (
-    echo ❌ Build failed! 'out' directory not found.
+if not exist ".next\standalone" (
+    echo ❌ Build failed! '.next\standalone' directory not found.
     exit /b 1
 )
 

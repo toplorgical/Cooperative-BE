@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "serve out -s -n -L -p 3100",
-    "serve": "serve out -s -n -L -p 3100",
+    "start": "next start -p 3100",
+    "serve": "next start -p 3100",
     "lint": "next lint"
   },
   "dependencies": {
