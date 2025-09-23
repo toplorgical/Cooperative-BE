@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: "standalone",
+    // Standard production build (no standalone)
     // Ensure static assets are properly included
     trailingSlash: false,
     // Handle images and other assets
